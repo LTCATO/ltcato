@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Login {% endblock %}
+
+{% block content %}
+<!-- Login Section -->
+<section class="login-section">
+  <div class="login-container">
+    <!-- Left Side - Welcome Content -->
+    <div class="login-welcome">
+      <div class="welcome-content">
+        <h2 class="welcome-title">Welcome to LTCATO</h2>
+        <p class="welcome-subtitle">Discover the beauty of Laguna Province</p>
+        <p class="welcome-description">
+          Experience the perfect blend of natural wonders, rich culture, and warm hospitality 
+          in the heart of the Philippines. Sign in to explore exclusive content and 
+          plan your perfect Laguna adventure.
+        </p>
+        <div class="welcome-features">
+          <div class="feature-item">
+            <div class="feature-icon">🏞️</div>
+            <span>Natural Wonders</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🎭</div>
+            <span>Rich Culture</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🍜</div>
+            <span>Culinary Delights</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right Side - Login Form -->
+    <div class="login-form-container">
+      <div class="login-card">
+        <!-- Login Header -->
+        <div class="login-header">
+          <div class="login-logo">
+            <img src="{{ url_for('static', filename='images/ltcato-logo.png') }}" alt="LTCATO Logo">
+          </div>
+          <h2 class="login-title">Sign In</h2>
+          <p class="login-subtitle">Access your LTCATO account</p>
+        </div>
+        
+        <!-- Login Form -->
+        <div class="login-body">
+          <form id="loginForm" method=POST>
+            <div class="form-group">
+              <label for="email" class="form-label">Email Address</label>
+              <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                class="form-input" 
+                placeholder="Enter your email"
+                required
+              >
+            </div>
+            
+            <div class="form-group">
+              <label for="password" class="form-label">Password</label>
+              <input 
+                type="password" 
+                id="password" 
+                name="password" 
+                class="form-input" 
+                placeholder="Enter your password"
+                required
+              >
+            </div>
+            
+            <div class="form-options">
+              <div class="form-checkbox">
+                <input type="checkbox" id="remember" name="remember" class="checkbox-input">
+                <label for="remember" class="checkbox-label">Remember me</label>
+              </div>
+              
+              <a href="#" class="forgot-password">Forgot password?</a>
+            </div>
+            
+            <button type="submit" class="login-button">Sign In</button>
+          </form>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

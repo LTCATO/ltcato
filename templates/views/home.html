@@ -1,0 +1,364 @@
+{% extends 'base.html' %} 
+{% block title %}Home {% endblock %}
+
+{% block style %}
+<style>
+/* Hero Section Styles */
+.hero-section {
+  background: linear-gradient(135deg, var(--primary) 0%, #7f1d1d 100%);
+  color: var(--primary-foreground);
+  padding: 80px 0 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  font-family: var(--font-sans);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.hero-subtitle {
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+  opacity: 0.95;
+  font-family: var(--font-sans);
+}
+
+/* Search Section */
+.search-section {
+  background: var(--card);
+  padding: 3rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.search-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-input {
+  background: var(--background);
+  border: 2px solid var(--border);
+  border-radius: 50px;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  width: 100%;
+  transition: all 0.3s ease;
+  font-family: var(--font-sans);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(155, 44, 44, 0.1);
+}
+
+/* Featured Section */
+.featured-section {
+  padding: 4rem 0;
+  background: var(--background);
+}
+
+.section-title {
+  color: var(--foreground);
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  font-family: var(--font-sans);
+  text-align: center;
+}
+
+.section-subtitle {
+  color: var(--muted-foreground);
+  font-size: 1rem;
+  margin-bottom: 3rem;
+  font-family: var(--font-sans);
+  text-align: center;
+}
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.featured-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.featured-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+.featured-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.featured-content {
+  padding: 1.5rem;
+}
+
+.featured-title {
+  color: var(--foreground);
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-family: var(--font-sans);
+}
+
+.featured-description {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  font-family: var(--font-sans);
+}
+
+.featured-badge {
+  display: inline-block;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-sans);
+}
+
+/* Stats Section */
+.stats-section {
+  background: var(--muted);
+  padding: 4rem 0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.stat-item {
+  text-align: center;
+  background: var(--card);
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+  font-family: var(--font-sans);
+}
+
+.stat-label {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  font-family: var(--font-sans);
+}
+
+/* CTA Section */
+.cta-section {
+  background: linear-gradient(135deg, var(--primary) 0%, #7f1d1d 100%);
+  padding: 4rem 0;
+  text-align: center;
+  color: var(--primary-foreground);
+}
+
+.cta-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  font-family: var(--font-sans);
+}
+
+.cta-description {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  opacity: 0.95;
+  font-family: var(--font-sans);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  
+  .section-title {
+    font-size: 1.75rem;
+  }
+  
+  .featured-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+  }
+  
+  .cta-title {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-section {
+    padding: 60px 0 40px;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .featured-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .search-input {
+    padding: 0.875rem 1.25rem;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container">
+    <div class="hero-content">
+      <div class="text-center">
+        <h1 class="hero-title">Discover Laguna</h1>
+        <p class="hero-subtitle">Experience the beauty and culture of the Philippines' hidden gem</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Search Section -->
+<section class="search-section">
+  <div class="container">
+    <div class="search-container">
+      <input type="text" class="search-input" placeholder="Search destinations, activities, and more...">
+    </div>
+  </div>
+</section>
+
+<!-- Featured Destinations -->
+<section class="featured-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">Featured Destinations</h2>
+      <p class="section-subtitle">Explore the most popular spots in Laguna</p>
+    </div>
+    
+    <div class="featured-grid">
+      <div class="featured-card">
+        <img src="{{ url_for('static', filename='images/pagsanjan-falls.jpg') }}" alt="Pagsanjan Falls" class="featured-image">
+        <div class="featured-content">
+          <span class="featured-badge">Most Popular</span>
+          <h3 class="featured-title">Pagsanjan Falls</h3>
+          <p class="featured-description">Experience the thrill of shooting the rapids to this magnificent waterfall, one of Laguna's most famous natural wonders.</p>
+        </div>
+      </div>
+      
+      <div class="featured-card">
+        <img src="{{ url_for('static', filename='images/hot-springs.jpg') }}" alt="Hot Springs" class="featured-image">
+        <div class="featured-content">
+          <span class="featured-badge">Relaxation</span>
+          <h3 class="featured-title">Los Baños Hot Springs</h3>
+          <p class="featured-description">Relax and rejuvenate in natural therapeutic hot springs that have been visited for centuries.</p>
+        </div>
+      </div>
+      
+      <div class="featured-card">
+        <img src="{{ url_for('static', filename='images/lake-caliraya.jpg') }}" alt="Lake Caliraya" class="featured-image">
+        <div class="featured-content">
+          <span class="featured-badge">Adventure</span>
+          <h3 class="featured-title">Lake Caliraya</h3>
+          <p class="featured-description">Perfect spot for water sports, camping, and outdoor recreational activities with stunning views.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center">
+      <button class="btn btn-primary btn-lg">View All Destinations</button>
+    </div>
+  </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="stats-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">Laguna by the Numbers</h2>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number">50+</div>
+        <div class="stat-label">Tourist Spots</div>
+      </div>
+      
+      <div class="stat-item">
+        <div class="stat-number">24</div>
+        <div class="stat-label">Municipalities</div>
+      </div>
+      
+      <div class="stat-item">
+        <div class="stat-number">3M+</div>
+        <div class="stat-label">Annual Visitors</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="cta-section">
+  <div class="container">
+    <h2 class="cta-title">Start Your Laguna Adventure</h2>
+    <p class="cta-description">Plan your perfect trip to one of the Philippines' most beautiful provinces</p>
+    <div>
+      <button class="btn btn-light btn-lg me-3">Plan Your Trip</button>
+      <button class="btn btn-outline-light btn-lg">Download Guide</button>
+    </div>
+  </div>
+</section>
+{% endblock %}
