@@ -1,0 +1,443 @@
+{% extends 'base.html' %}
+
+{% block title %}Ask Lara AI | LTCATO{% endblock %}
+
+{% block style %}
+<style>
+    body {
+        background-color: var(--background, #faf7f5);
+    }
+
+    /* Chat Container */
+    .chat-layout {
+        display: flex;
+        height: calc(100vh - 76px); /* Full height minus navbar */
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 1.5rem;
+    }
+
+    .chat-container {
+        background-color: white;
+        border-radius: 1.25rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    /* Chat Header */
+    .chat-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: white;
+    }
+
+    .ai-avatar {
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(135deg, var(--primary) 0%, #7f1d1d 100%);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 10px rgba(155, 44, 44, 0.2);
+    }
+
+    /* Chat Messages Area */
+    .chat-messages {
+        flex-grow: 1;
+        padding: 1.5rem;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        background-color: #f8fafc;
+    }
+
+    .message {
+        display: flex;
+        gap: 1rem;
+        max-width: 85%;
+    }
+
+    .message.user {
+        margin-left: auto;
+        flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 1.2rem;
+    }
+
+    .message.ai .message-avatar {
+        background-color: var(--primary);
+        color: white;
+    }
+
+    .message.user .message-avatar {
+        background-color: #e2e8f0;
+        color: #475569;
+    }
+
+    .message-bubble {
+        padding: 1rem 1.25rem;
+        border-radius: 1rem;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .message.ai .message-bubble {
+        background-color: white;
+        border: 1px solid #e2e8f0;
+        color: #1e293b;
+        border-top-left-radius: 0.25rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
+
+    .message.user .message-bubble {
+        background-color: var(--primary);
+        color: white;
+        border-top-right-radius: 0.25rem;
+        box-shadow: 0 2px 10px rgba(155, 44, 44, 0.15);
+    }
+
+    /* Suggested Prompts */
+    .suggested-prompts {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+    }
+
+    .prompt-chip {
+        background-color: white;
+        border: 1px solid var(--primary);
+        color: var(--primary);
+        padding: 0.4rem 1rem;
+        border-radius: 99px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .prompt-chip:hover {
+        background-color: var(--primary);
+        color: white;
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+        display: flex;
+        gap: 0.3rem;
+        padding: 0.5rem 1rem;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 1rem;
+        border-top-left-radius: 0.25rem;
+        width: fit-content;
+        align-items: center;
+    }
+
+    .typing-dot {
+        width: 6px;
+        height: 6px;
+        background-color: #94a3b8;
+        border-radius: 50%;
+        animation: typing 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(1) { animation-delay: 0s; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-4px); }
+    }
+
+    /* Input Area */
+    .chat-input-container {
+        padding: 1.25rem 1.5rem;
+        background-color: white;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .chat-input-wrapper {
+        display: flex;
+        align-items: flex-end;
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 1rem;
+        padding: 0.5rem;
+        transition: border-color 0.2s;
+    }
+
+    .chat-input-wrapper:focus-within {
+        border-color: var(--primary);
+        background-color: white;
+        box-shadow: 0 0 0 3px rgba(155, 44, 44, 0.05);
+    }
+
+    .chat-input {
+        flex-grow: 1;
+        border: none;
+        background: transparent;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        resize: none;
+        max-height: 120px;
+        color: #1e293b;
+    }
+
+    .chat-input:focus {
+        outline: none;
+    }
+
+    .btn-send {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        width: 42px;
+        height: 42px;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: 0.25rem;
+        margin-right: 0.25rem;
+    }
+
+    .btn-send:hover:not(:disabled) {
+        background-color: #7f1d1d;
+        transform: scale(1.05);
+    }
+
+    .btn-send:disabled {
+        background-color: #cbd5e1;
+        cursor: not-allowed;
+    }
+
+    /* Mobile Adjustments */
+    @media (max-width: 768px) {
+        .chat-layout {
+            padding: 0;
+            height: calc(100vh - 60px);
+        }
+        .chat-container {
+            border-radius: 0;
+            border: none;
+        }
+        .message {
+            max-width: 95%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="chat-layout">
+    <div class="chat-container">
+        
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="d-flex align-items-center gap-3">
+                <div class="ai-avatar">
+                    <i class="ph-fill ph-sparkle"></i>
+                </div>
+                <div>
+                    <h5 class="fw-bold mb-0 text-dark">Lara AI</h5>
+                    <span class="text-success small fw-medium d-flex align-items-center gap-1">
+                        <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block;"></span> 
+                        Online • Ready to help
+                    </span>
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-light rounded-circle p-2 text-muted shadow-sm" title="Clear Chat" onclick="location.reload()">
+                    <i class="ph ph-arrows-clockwise fs-5"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="chat-messages" id="chatMessages">
+            
+            <!-- Welcome Message from AI -->
+            <div class="message ai">
+                <div class="message-avatar">
+                    <i class="ph-fill ph-sparkle"></i>
+                </div>
+                <div>
+                    <div class="message-bubble">
+                        Mabuhay! I am <strong>Lara</strong>, your intelligent assistant for exploring the beautiful province of Laguna. 🌴<br><br>
+                        Whether you are looking for relaxing hot springs, historical shrines, or the best nature trails, I can help you plan the perfect itinerary. How can I assist you today?
+                    </div>
+                    
+                    <!-- Suggested Prompts -->
+                    <div class="suggested-prompts">
+                        <button class="prompt-chip" onclick="sendSuggested('Recommend a relaxing hot spring in Calamba.')">Relaxing hot springs</button>
+                        <button class="prompt-chip" onclick="sendSuggested('What are the best historical sites to visit?')">Historical sites</button>
+                        <button class="prompt-chip" onclick="sendSuggested('Help me plan a 1-day itinerary in Los Baños.')">1-day itinerary</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Input Area -->
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                <button class="btn text-muted p-2" title="Attach Image/Document" style="margin-bottom: 0.25rem;">
+                    <i class="ph ph-paperclip fs-5"></i>
+                </button>
+                <textarea class="chat-input" id="userInput" rows="1" placeholder="Ask Lara anything about Laguna..." oninput="autoResize(this)" onkeypress="handleKeyPress(event)"></textarea>
+                <button class="btn-send" id="sendBtn" onclick="sendMessage()" disabled>
+                    <i class="ph-fill ph-paper-plane-right"></i>
+                </button>
+            </div>
+            <div class="text-center mt-2">
+                <span class="small text-muted" style="font-size: 0.7rem;">Lara AI can make mistakes. Please verify important destination details.</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    const chatMessages = document.getElementById('chatMessages');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    // Auto-resize textarea
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = (textarea.scrollHeight < 120 ? textarea.scrollHeight : 120) + 'px';
+        
+        // Enable/Disable send button
+        if(textarea.value.trim().length > 0) {
+            sendBtn.removeAttribute('disabled');
+        } else {
+            sendBtn.setAttribute('disabled', 'true');
+        }
+    }
+
+    // Handle Enter key to send
+    function handleKeyPress(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if(!sendBtn.disabled) sendMessage();
+        }
+    }
+
+    // Send suggested prompt
+    function sendSuggested(text) {
+        userInput.value = text;
+        sendBtn.removeAttribute('disabled');
+        sendMessage();
+    }
+
+    // Main send message function
+    function sendMessage() {
+        const text = userInput.value.trim();
+        if (!text) return;
+
+        // 1. Add User Message to UI
+        const userHtml = `
+            <div class="message user">
+                <div class="message-avatar">
+                    <i class="ph-fill ph-user"></i>
+                </div>
+                <div class="message-bubble">
+                    ${escapeHtml(text)}
+                </div>
+            </div>
+        `;
+        chatMessages.insertAdjacentHTML('beforeend', userHtml);
+        
+        // Reset input
+        userInput.value = '';
+        userInput.style.height = 'auto';
+        sendBtn.setAttribute('disabled', 'true');
+        scrollToBottom();
+
+        // 2. Add Typing Indicator
+        const typingId = 'typing-' + Date.now();
+        const typingHtml = `
+            <div class="message ai" id="${typingId}">
+                <div class="message-avatar">
+                    <i class="ph-fill ph-sparkle"></i>
+                </div>
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        `;
+        chatMessages.insertAdjacentHTML('beforeend', typingHtml);
+        scrollToBottom();
+
+        // 3. Simulate AI Response (In production, replace this with an AJAX call to your Flask backend / Gemini API)
+        setTimeout(() => {
+            document.getElementById(typingId).remove(); // Remove typing indicator
+            
+            // Mock Response Logic
+            let aiResponse = "That sounds like a great plan! Laguna has so much to offer. Let me find the best recommendations for you.";
+            
+            if (text.toLowerCase().includes('hot spring') || text.toLowerCase().includes('calamba')) {
+                aiResponse = "Calamba is known as the Resort Capital of the Philippines! Based on top guest reviews, I highly recommend visiting <strong>Wonderland Hot Spring</strong>. It features therapeutic mineral pools perfect for relaxation. <br><br>Would you like me to show you how to get there?";
+            } else if (text.toLowerCase().includes('historical') || text.toLowerCase().includes('rizal')) {
+                aiResponse = "Laguna is rich in history! A must-visit is the <strong>Rizal Shrine</strong> in Calamba, which is a reproduction of the house where our national hero Dr. Jose Rizal was born. Another great spot is the <strong>St. John the Baptist Parish</strong> just nearby.";
+            }
+
+            const aiHtml = `
+                <div class="message ai">
+                    <div class="message-avatar">
+                        <i class="ph-fill ph-sparkle"></i>
+                    </div>
+                    <div class="message-bubble">
+                        ${aiResponse}
+                    </div>
+                </div>
+            `;
+            chatMessages.insertAdjacentHTML('beforeend', aiHtml);
+            scrollToBottom();
+
+        }, 1500); // 1.5 second simulated delay
+    }
+
+    function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function escapeHtml(unsafe) {
+        return unsafe
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+    }
+</script>
+{% endblock %}
