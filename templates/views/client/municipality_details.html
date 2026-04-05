@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block title %}Calamba City | LTCATO{% endblock %}
+
+{% block style %}
+<style>
+    /* Hero Section */
+    .muni-hero {
+        position: relative;
+        height: 60vh;
+        min-height: 450px;
+        background-image: url('https://images.unsplash.com/photo-1548625361-ec8464673327?auto=format&fit=crop&w=1920&q=80');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5); /* Dark overlay for text readability */
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: white;
+    }
+
+    /* Content Layout */
+    .content-section {
+        padding: 5rem 0;
+        background-color: var(--background, #faf7f5);
+    }
+
+    .about-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 3rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        margin-top: -100px; /* Overlap the hero image */
+        position: relative;
+        z-index: 3;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    /* Spots Grid */
+    .spot-card {
+        background: white;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        border: 1px solid #e2e8f0;
+        transition: transform 0.2s ease;
+        height: 100%;
+        text-decoration: none;
+        display: block;
+        color: inherit;
+    }
+
+    .spot-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    }
+
+    .spot-img {
+        height: 180px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .spot-body {
+        padding: 1.25rem;
+    }
+
+    .badge-nature { background-color: #10b981; color: white; }
+    .badge-resort { background-color: #f59e0b; color: white; }
+    .badge-pilgrimage { background-color: #8b5cf6; color: white; }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="muni-hero">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+        <span class="badge bg-white text-dark px-3 py-2 rounded-pill mb-3 fw-bold shadow-sm" style="color: var(--primary) !important;">
+            <i class="ph ph-buildings me-1"></i> Component City
+        </span>
+        <h1 class="display-3 fw-bold mb-3">Calamba City</h1>
+        <p class="fs-4 fw-light">The Resort Capital of the Philippines</p>
+    </div>
+</div>
+
+<!-- Main Content -->
+<section class="content-section">
+    <div class="container">
+        
+        <!-- About Section (Overlapping Hero) -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-10">
+                <div class="about-card text-center">
+                    <h3 class="fw-bold mb-4" style="color: var(--primary);">About Calamba</h3>
+                    <p class="fs-5 text-muted lh-lg mb-0">
+                        Calamba is a first-class component city in the province of Laguna, Philippines. It is the regional center of the CALABARZON region. Celebrated as the birthplace of the Philippine national hero, Dr. Jose Rizal, Calamba seamlessly blends rich historical heritage with natural wonders. It is renowned nationwide for its numerous hot spring resorts fed by the geothermal waters of Mount Makiling, making it the perfect destination for both history enthusiasts and relaxation seekers.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tourist Spots List -->
+        <div class="row mt-5 pt-4">
+            <div class="col-12 mb-4 d-flex justify-content-between align-items-end">
+                <div>
+                    <h2 class="fw-bold" style="color: var(--primary);">Discover Destinations</h2>
+                    <p class="text-muted mb-0">Top tourist spots you can visit in Calamba City.</p>
+                </div>
+                <a href="/explore-map" class="btn btn-outline-dark rounded-pill px-4">View on Map</a>
+            </div>
+
+            <!-- Spot Grid -->
+            <div class="col-md-4 mb-4">
+                <a href="/destination/s1" class="spot-card">
+                    <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=600&q=80" alt="Resort" class="spot-img">
+                    <div class="spot-body">
+                        <span class="badge badge-resort mb-2 px-2 py-1"><i class="ph ph-swimming-pool me-1"></i> Resort</span>
+                        <h5 class="fw-bold mb-2">Wonderland Hot Spring</h5>
+                        <p class="text-muted small mb-0 line-clamp-2">Relaxing natural hot spring resort featuring multiple therapeutic pools.</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <a href="/destination/s2" class="spot-card">
+                    <img src="https://images.unsplash.com/photo-1548625361-ec8464673327?auto=format&fit=crop&w=600&q=80" alt="Church" class="spot-img">
+                    <div class="spot-body">
+                        <span class="badge badge-pilgrimage mb-2 px-2 py-1"><i class="ph ph-hands-praying me-1"></i> Pilgrimage</span>
+                        <h5 class="fw-bold mb-2">St. John the Baptist Parish</h5>
+                        <p class="text-muted small mb-0 line-clamp-2">Historical church where the national hero Jose Rizal was baptized.</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <a href="/destination/s3" class="spot-card">
+                    <img src="https://images.unsplash.com/photo-1505305976870-c0be1cd39939?auto=format&fit=crop&w=600&q=80" alt="Shrine" class="spot-img">
+                    <div class="spot-body">
+                        <span class="badge badge-nature mb-2 px-2 py-1 bg-secondary"><i class="ph ph-bank me-1"></i> Heritage</span>
+                        <h5 class="fw-bold mb-2">Rizal Shrine</h5>
+                        <p class="text-muted small mb-0 line-clamp-2">A reproduction of the original two-story, Spanish-colonial style house where Jose Rizal was born.</p>
+                    </div>
+                </a>
+            </div>
+            
+        </div>
+
+    </div>
+</section>
+{% endblock %}

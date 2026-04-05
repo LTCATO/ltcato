@@ -5,7 +5,7 @@
         <img src="{{ url_for('static', filename='images/ltcato-logo.png') }}" alt="LTCATO Logo" height="40" class="d-inline-block align-text-top rounded">
         <div>
             <span class="fw-bold d-block lh-1" style="color: var(--primary); font-size: 1.1rem;">LTCATO</span>
-            <span class="text-muted d-block" style="font-size: 0.7rem; letter-spacing: 0.5px;">Explore Laguna</span>
+            <span class="text-muted d-block" style="font-size: 0.7rem; letter-spacing: 0.5px;">Laguna Tourism, Culture, Arts & Trade Office</span>
         </div>
       </a>
       
@@ -18,24 +18,21 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto fw-medium">
           <li class="nav-item">
-            <a class="nav-link active" href="/">Home</a>
+            <a class="nav-link active" href="/explore-map">Explore Laguna</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#interactive-map">Interactive Map</a>
+            <a class="nav-link" href="/municipalities">Municipalities</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#destinations">Destinations</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#culture">Culture & Arts</a>
+            <a class="nav-link" href="/tourist-spots">Tourist Spots</a>
           </li>
         </ul>
         
         <!-- Lara AI Trigger for Guests -->
         <div class="d-flex ms-lg-4 mt-3 mt-lg-0">
-            <button class="btn btn-outline-danger d-flex align-items-center gap-2 rounded-pill px-4" style="color: var(--primary); border-color: var(--primary);">
+          <a href="/lara-ai" class="btn btn-outline-danger d-flex align-items-center gap-2 rounded-pill px-4" style="color: var(--primary); border-color: var(--primary);">
                 <i class="ph ph-sparkle fs-5"></i> Ask Lara AI
-            </button>
+          </a>
         </div>
       </div>
     </div>

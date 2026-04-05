@@ -1,0 +1,396 @@
+{% extends 'base.html' %}
+{% set hide_footer = True %}
+{% block title %}Explore Laguna Map{% endblock %}
+
+{% block style %}
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+<style>
+    /* Full height layout minus navbar (approx 70px) */
+    .map-wrapper {
+        display: flex;
+        height: calc(100vh - 76px); 
+        width: 100%;
+        overflow: hidden;
+    }
+
+    /* Sidebar Styles */
+    .map-sidebar {
+        width: 350px;
+        background-color: var(--background, #faf7f5);
+        border-right: 1px solid #e2e8f0;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        z-index: 1000;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+    }
+
+    .sidebar-header {
+        padding: 1.5rem;
+        background-color: white;
+        border-bottom: 1px solid #e2e8f0;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .sidebar-content {
+        padding: 1rem;
+    }
+
+    /* Accordion Customization */
+    .accordion-button:not(.collapsed) {
+        background-color: rgba(155, 44, 44, 0.05);
+        color: var(--primary, #9b2c2c);
+        font-weight: 600;
+        box-shadow: none;
+    }
+    
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: rgba(155, 44, 44, 0.2);
+    }
+
+    .spot-item {
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .spot-item:hover {
+        background-color: white;
+        border-color: #e2e8f0;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
+
+    /* Map Container */
+    #leaflet-map {
+        flex-grow: 1;
+        height: 100%;
+        z-index: 1;
+        background-color: #f8fafc; /* Light clean background for the empty areas outside Laguna */
+    }
+
+    /* Custom Leaflet Marker Icons */
+    .custom-map-marker {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        color: white;
+        font-size: 1.2rem;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+        border: 2px solid white;
+    }
+
+    /* Category Colors */
+    .marker-municipality { background-color: #3b82f6; } /* Blue */
+    .marker-nature { background-color: #10b981; } /* Green */
+    .marker-resort { background-color: #f59e0b; } /* Orange/Yellow */
+    .marker-pilgrimage { background-color: #8b5cf6; } /* Purple */
+
+    .badge-nature { background-color: #10b981; color: white; }
+    .badge-resort { background-color: #f59e0b; color: white; }
+    .badge-pilgrimage { background-color: #8b5cf6; color: white; }
+
+    /* Custom Popup Styles */
+    .custom-popup .leaflet-popup-content-wrapper {
+        padding: 0;
+        overflow: hidden;
+        border-radius: 0.75rem;
+    }
+    .custom-popup .leaflet-popup-content {
+        margin: 0;
+        width: 260px !important;
+    }
+    .popup-image {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+    }
+    .popup-content-body {
+        padding: 1.25rem 1rem;
+        text-align: center;
+    }
+    .btn-view-details {
+        display: inline-block;
+        margin-top: 0.75rem;
+        padding: 0.5rem 1.25rem;
+        background-color: var(--primary, #9b2c2c);
+        color: white !important;
+        border-radius: 99px;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: background 0.2s;
+        width: 100%;
+    }
+    .btn-view-details:hover {
+        background-color: #7f1d1d;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 768px) {
+        .map-wrapper {
+            flex-direction: column-reverse;
+        }
+        .map-sidebar {
+            width: 100%;
+            height: 40%;
+            border-right: none;
+            border-top: 2px solid #e2e8f0;
+        }
+        #leaflet-map {
+            height: 60%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="map-wrapper">
+    <!-- Sidebar -->
+    <div class="map-sidebar">
+        <div class="sidebar-header">
+            <h4 class="fw-bold mb-1" style="color: var(--primary);">Discover Laguna</h4>
+            <p class="text-muted small mb-3">Browse by municipality and categories.</p>
+            
+            <!-- Quick Filter / Search -->
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0 text-muted">
+                    <i class="ph ph-magnifying-glass"></i>
+                </span>
+                <input type="text" class="form-control border-start-0 ps-0" placeholder="Search spots..." id="spotSearch">
+            </div>
+        </div>
+
+        <div class="sidebar-content">
+            <!-- Accordion populated by JS -->
+            <div class="accordion accordion-flush" id="municipalitiesAccordion">
+                <!-- Dynamic content will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Map -->
+    <div id="leaflet-map"></div>
+</div>
+{% endblock %}
+
+{% block script %}
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    
+    // --- 1. Mock Data (Will be replaced by Supabase API later) ---
+    const lagunaData = [
+        {
+            id: 'm1',
+            name: "Calamba City",
+            type: "municipality",
+            lat: 14.2046,
+            lng: 121.1553,
+            spots: [
+                { id: 's1', name: "Wonderland Hot Spring", type: "resort", lat: 14.1883, lng: 121.1714, description: "Relaxing natural hot spring resort featuring multiple therapeutic pools.", image: "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=400&q=80" },
+                { id: 's2', name: "St. John the Baptist Parish", type: "pilgrimage", lat: 14.2078, lng: 121.1557, description: "Historical church where the national hero Jose Rizal was baptized.", image: "https://images.unsplash.com/photo-1548625361-ec8464673327?auto=format&fit=crop&w=400&q=80" }
+            ]
+        },
+        {
+            id: 'm2',
+            name: "Los Baños",
+            type: "municipality",
+            lat: 14.1685,
+            lng: 121.2435,
+            spots: [
+                { id: 's3', name: "Mt. Makiling Forest Reserve", type: "nature", lat: 14.1378, lng: 121.2017, description: "A dormant volcano famous for its rich biodiversity and hiking trails.", image: "https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=400&q=80" },
+                { id: 's4', name: "UPLB Freedom Park", type: "nature", lat: 14.1648, lng: 121.2422, description: "Open green space ideal for picnics, jogging, and relaxation.", image: "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=400&q=80" }
+            ]
+        },
+        {
+            id: 'm3',
+            name: "Pagsanjan",
+            type: "municipality",
+            lat: 14.2721,
+            lng: 121.4552,
+            spots: [
+                { id: 's5', name: "Pagsanjan Falls (Cavinti Falls)", type: "nature", lat: 14.2652, lng: 121.5033, description: "One of the most famous waterfalls in the Philippines, accessible via canoe ride.", image: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=400&q=80" },
+                { id: 's6', name: "Our Lady of Guadalupe Parish", type: "pilgrimage", lat: 14.2755, lng: 121.4542, description: "The oldest church in the Philippines under the patronage of Our Lady of Guadalupe.", image: "https://images.unsplash.com/photo-1514896856000-91cb6de818e0?auto=format&fit=crop&w=400&q=80" }
+            ]
+        }
+    ];
+
+    // --- 2. Initialize Leaflet Map with Bounds ---
+    
+    // Define the geographical bounds for Laguna Province
+    // [SouthWest coordinates, NorthEast coordinates]
+    const lagunaBounds = [
+        [13.9000, 120.9500], // Southwest roughly near Batangas border
+        [14.6500, 121.6000]  // Northeast roughly near Rizal/Quezon border
+    ];
+
+    const map = L.map('leaflet-map', {
+        center: [14.2, 121.3],
+        zoom: 11,
+        minZoom: 11,             // Prevent zooming out too far
+        maxBounds: lagunaBounds, // Restrict panning strictly to Laguna
+        maxBoundsViscosity: 1.0  // 1.0 means fully solid bounds, 0 is fully elastic
+    });
+
+    // Add OpenStreetMap base tiles
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 18,
+        bounds: lagunaBounds     // Tell tile layer NOT to load tiles outside these bounds
+    }).addTo(map);
+
+    // Fetch exact Laguna Province borders to highlight it like an island
+    fetch('https://nominatim.openstreetmap.org/search?state=Laguna&country=Philippines&polygon_geojson=1&format=json')
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.length > 0) {
+                // Draw a strong border around the exact shape of Laguna
+                L.geoJSON(data[0].geojson, {
+                    style: {
+                        color: 'var(--primary, #9b2c2c)',
+                        weight: 4,
+                        opacity: 0.8,
+                        fillColor: '#9b2c2c',
+                        fillOpacity: 0.05 // Slight red tint inside Laguna
+                    }
+                }).addTo(map);
+            }
+        });
+
+    // Helper to create custom HTML markers
+    function createCustomIcon(type) {
+        let iconHtml = '';
+        let className = 'custom-map-marker ';
+
+        if (type === 'municipality') {
+            iconHtml = '<i class="ph ph-buildings"></i>';
+            className += 'marker-municipality';
+        } else if (type === 'nature') {
+            iconHtml = '<i class="ph ph-tree"></i>';
+            className += 'marker-nature';
+        } else if (type === 'resort') {
+            iconHtml = '<i class="ph ph-swimming-pool"></i>';
+            className += 'marker-resort';
+        } else if (type === 'pilgrimage') {
+            iconHtml = '<i class="ph ph-hands-praying"></i>';
+            className += 'marker-pilgrimage';
+        }
+
+        return L.divIcon({
+            html: iconHtml,
+            className: className,
+            iconSize: [36, 36],
+            iconAnchor: [18, 36], // Point at the bottom center
+            popupAnchor: [0, -36]
+        });
+    }
+
+    // Keep track of markers for auto-zooming
+    const markersMap = {};
+    const accordionContainer = document.getElementById('municipalitiesAccordion');
+
+    // --- 3. Render Data on Map and Sidebar ---
+    lagunaData.forEach((mun, index) => {
+        // Plot Municipality Marker
+        const munMarker = L.marker([mun.lat, mun.lng], { icon: createCustomIcon('municipality'), zIndexOffset: 1000 })
+            .bindPopup(`<b>${mun.name}</b><br>Municipality Center`)
+            .addTo(map);
+        
+        markersMap[mun.id] = munMarker;
+
+        // Create Sidebar Accordion Item for Municipality
+        let spotsHtml = '';
+        
+        mun.spots.forEach(spot => {
+            
+            // Build the HTML for the spot popup with image and button
+            const popupHtml = `
+                <div>
+                    <img src="${spot.image}" alt="${spot.name}" class="popup-image">
+                    <div class="popup-content-body">
+                        <h6 class="mb-1 fw-bold" style="color: var(--primary);">${spot.name}</h6>
+                        <span class="badge badge-${spot.type} mb-2">${spot.type.charAt(0).toUpperCase() + spot.type.slice(1)}</span>
+                        <p class="small text-muted mb-0" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">${spot.description}</p>
+                        <a href="/destination/${spot.id}" class="btn-view-details">View Details</a>
+                    </div>
+                </div>
+            `;
+
+            // Plot Tourist Spot Marker
+            const spotMarker = L.marker([spot.lat, spot.lng], { icon: createCustomIcon(spot.type) })
+                .bindPopup(popupHtml, { className: 'custom-popup' })
+                .addTo(map);
+            
+            markersMap[spot.id] = spotMarker;
+
+            // Generate HTML for the spot item in sidebar
+            let spotIcon = '';
+            if (spot.type === 'nature') spotIcon = '<div class="badge-nature rounded p-2"><i class="ph ph-tree"></i></div>';
+            else if (spot.type === 'resort') spotIcon = '<div class="badge-resort rounded p-2"><i class="ph ph-swimming-pool"></i></div>';
+            else if (spot.type === 'pilgrimage') spotIcon = '<div class="badge-pilgrimage rounded p-2"><i class="ph ph-hands-praying"></i></div>';
+
+            spotsHtml += `
+                <div class="spot-item" onclick="zoomToSpot('${spot.id}', ${spot.lat}, ${spot.lng})">
+                    ${spotIcon}
+                    <div>
+                        <h6 class="mb-0 fw-semibold text-dark fs-6">${spot.name}</h6>
+                        <small class="text-muted text-capitalize">${spot.type}</small>
+                    </div>
+                </div>
+            `;
+        });
+
+        const isExpanded = index === 0 ? 'true' : 'false';
+        const isCollapsedClass = index === 0 ? '' : 'collapsed';
+        const isShowClass = index === 0 ? 'show' : '';
+
+        const accordionHtml = `
+            <div class="accordion-item border-0 border-bottom">
+                <h2 class="accordion-header" id="heading-${mun.id}">
+                    <button class="accordion-button ${isCollapsedClass}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${mun.id}" aria-expanded="${isExpanded}" aria-controls="collapse-${mun.id}" onclick="zoomToSpot('${mun.id}', ${mun.lat}, ${mun.lng})">
+                        <i class="ph ph-map-pin-line fs-5 me-2"></i> ${mun.name}
+                    </button>
+                </h2>
+                <div id="collapse-${mun.id}" class="accordion-collapse collapse ${isShowClass}" aria-labelledby="heading-${mun.id}" data-bs-parent="#municipalitiesAccordion">
+                    <div class="accordion-body px-2 py-2">
+                        ${spotsHtml}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        accordionContainer.insertAdjacentHTML('beforeend', accordionHtml);
+    });
+
+    // --- 4. Sidebar Interaction ---
+    window.zoomToSpot = function(id, lat, lng) {
+        // Zoom and pan to the selected marker
+        map.flyTo([lat, lng], 14, {
+            animate: true,
+            duration: 1.5
+        });
+
+        // Open the popup
+        if (markersMap[id]) {
+            setTimeout(() => {
+                markersMap[id].openPopup();
+            }, 1000);
+        }
+    };
+});
+</script>
+{% endblock %}

@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+
+{% block title %}Wonderland Hot Spring | LTCATO{% endblock %}
+
+{% block style %}
+<style>
+    /* Hero Section */
+    .destination-hero {
+        position: relative;
+        height: 50vh;
+        min-height: 400px;
+        background-image: url('https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1920&q=80');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: flex-end;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 100%);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        padding-bottom: 3rem;
+        width: 100%;
+    }
+
+    /* Content Layout */
+    .content-section {
+        padding: 4rem 0;
+        background-color: var(--background, #faf7f5);
+    }
+
+    .detail-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        border: 1px solid rgba(0,0,0,0.05);
+        position: sticky;
+        top: 100px;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .detail-icon {
+        width: 40px;
+        height: 40px;
+        background-color: rgba(155, 44, 44, 0.1);
+        color: var(--primary, #9b2c2c);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    /* Feedback Section */
+    .feedback-section {
+        margin-top: 4rem;
+        padding-top: 3rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .feedback-card {
+        background: white;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid #e2e8f0;
+    }
+
+    .star-rating i {
+        color: #fbbf24;
+        font-size: 1.1rem;
+    }
+
+    .star-rating i.empty {
+        color: #e2e8f0;
+    }
+
+    /* Form Styles */
+    .custom-form-control {
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        background-color: #f8fafc;
+    }
+    
+    .custom-form-control:focus {
+        background-color: white;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(155, 44, 44, 0.1);
+    }
+
+    /* Rating Input Widget */
+    .rating-input {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+    
+    .rating-input input {
+        display: none;
+    }
+    
+    .rating-input label {
+        cursor: pointer;
+        font-size: 2rem;
+        color: #e2e8f0;
+        transition: color 0.2s;
+        padding-right: 0.25rem;
+    }
+    
+    .rating-input input:checked ~ label,
+    .rating-input label:hover,
+    .rating-input label:hover ~ label {
+        color: #fbbf24;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Note: In a real implementation, you would pass a 'spot' object from Flask and use spot.name, spot.image, etc. -->
+
+<!-- Hero Section -->
+<div class="destination-hero">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+        <div class="row">
+            <div class="col-lg-8 text-white">
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill mb-3 fw-bold shadow-sm">
+                    <i class="ph ph-swimming-pool me-1"></i> Resort
+                </span>
+                <h1 class="display-4 fw-bold mb-2">Wonderland Hot Spring</h1>
+                <p class="fs-5 mb-0 text-white-50"><i class="ph ph-map-pin me-2"></i>Calamba City, Laguna</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<section class="content-section">
+    <div class="container">
+        <div class="row g-5">
+            
+            <!-- Left Column: Description & Feedback -->
+            <div class="col-lg-8">
+                
+                <!-- About -->
+                <div class="mb-5">
+                    <h3 class="fw-bold mb-4" style="color: var(--primary);">About this Destination</h3>
+                    <p class="fs-6 text-muted lh-lg">
+                        Nestled at the foothills of Mount Makiling, Wonderland Hot Spring offers a therapeutic escape with its naturally heated thermal pools. Known for its rich mineral waters, this resort has been a favorite destination for families and travelers seeking relaxation and wellness in the heart of Calamba City.
+                    </p>
+                    <p class="fs-6 text-muted lh-lg">
+                        The resort features multiple pools varying in temperature, private cottages, and lush garden landscapes. It's the perfect place to unwind after a long week, offering both day tours and overnight accommodations.
+                    </p>
+                </div>
+
+                <!-- Feedback Section -->
+                <div class="feedback-section">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold mb-0">Guest Experiences</h4>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fs-5 fw-bold">4.5</span>
+                            <div class="star-rating">
+                                <i class="ph-fill ph-star"></i>
+                                <i class="ph-fill ph-star"></i>
+                                <i class="ph-fill ph-star"></i>
+                                <i class="ph-fill ph-star"></i>
+                                <i class="ph-fill ph-star-half"></i>
+                            </div>
+                            <span class="text-muted small">(24 reviews)</span>
+                        </div>
+                    </div>
+
+                    <!-- Existing Feedback List -->
+                    <div class="mb-5">
+                        <!-- Review 1 (Masked Name Example) -->
+                        <div class="feedback-card">
+                            <div class="d-flex justify-content-between mb-2">
+                                <div>
+                                    <h6 class="fw-bold mb-1">De*****k A*****n</h6>
+                                    <div class="star-rating small">
+                                        <i class="ph-fill ph-star"></i>
+                                        <i class="ph-fill ph-star"></i>
+                                        <i class="ph-fill ph-star"></i>
+                                        <i class="ph-fill ph-star"></i>
+                                        <i class="ph-fill ph-star"></i>
+                                    </div>
+                                </div>
+                                <span class="text-muted small">2 days ago</span>
+                            </div>
+                            <p class="text-muted mb-0 small">The water temperature was perfect! Highly recommend renting a private cottage if you are coming with a large group. Very relaxing experience overall.</p>
+                        </div>
+
+                        <!-- Review 2 (Anonymous Example) -->
+                        <div class="feedback-card">
+                            <div class="d-flex justify-content-between mb-2">
+                                <div>
+                                    <h6 class="fw-bold mb-1 text-muted">Anonymous Guest</h6>
+                                    <div class="star-rating small">
+                                        <i class="ph-fill ph-star"></i>
+                                        <i class="ph-fill ph-star"></i>
+                                        <i class="ph-fill ph-star"></i>
+                                        <i class="ph-fill ph-star"></i>
+                                        <i class="ph ph-star empty"></i>
+                                    </div>
+                                </div>
+                                <span class="text-muted small">1 week ago</span>
+                            </div>
+                            <p class="text-muted mb-0 small">Good place to unwind, but it gets very crowded on weekends. Try to visit on a weekday morning for the best experience.</p>
+                        </div>
+                    </div>
+
+                    <!-- Leave Feedback Form -->
+                    <div class="bg-white p-4 rounded-4 shadow-sm border border-light">
+                        <h5 class="fw-bold mb-4">Share Your Experience</h5>
+                        <form action="#" method="POST">
+                            
+                            <!-- Rating -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-muted small mb-1">Overall Rating</label>
+                                <div class="rating-input">
+                                    <input type="radio" id="star5" name="rating" value="5" />
+                                    <label for="star5" title="5 stars"><i class="ph-fill ph-star"></i></label>
+                                    
+                                    <input type="radio" id="star4" name="rating" value="4" />
+                                    <label for="star4" title="4 stars"><i class="ph-fill ph-star"></i></label>
+                                    
+                                    <input type="radio" id="star3" name="rating" value="3" />
+                                    <label for="star3" title="3 stars"><i class="ph-fill ph-star"></i></label>
+                                    
+                                    <input type="radio" id="star2" name="rating" value="2" />
+                                    <label for="star2" title="2 stars"><i class="ph-fill ph-star"></i></label>
+                                    
+                                    <input type="radio" id="star1" name="rating" value="1" required />
+                                    <label for="star1" title="1 star"><i class="ph-fill ph-star"></i></label>
+                                </div>
+                            </div>
+
+                            <!-- Name (Optional) -->
+                            <div class="mb-3">
+                                <label for="guest_name" class="form-label fw-semibold text-muted small">Your Name (Optional)</label>
+                                <input type="text" class="form-control custom-form-control" id="guest_name" name="guest_name" placeholder="Leave blank to remain anonymous">
+                                <div class="form-text mt-1" style="font-size: 0.75rem;">
+                                    <i class="ph ph-shield-check text-success me-1"></i> Your privacy is protected. Names provided are partially masked (e.g., De****k A*****n) before being published.
+                                </div>
+                            </div>
+
+                            <!-- Comments -->
+                            <div class="mb-4">
+                                <label for="comments" class="form-label fw-semibold text-muted small">Your Review</label>
+                                <textarea class="form-control custom-form-control" id="comments" name="comments" rows="4" placeholder="Tell us about your visit..." required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn text-white w-100 py-2 rounded-pill fw-bold" style="background-color: var(--primary);">
+                                Submit Feedback
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Right Column: Sticky Sidebar Info -->
+            <div class="col-lg-4">
+                <div class="detail-card">
+                    <h5 class="fw-bold mb-4 border-bottom pb-3">Quick Facts</h5>
+                    
+                    <div class="detail-item">
+                        <div class="detail-icon"><i class="ph ph-map-pin-line"></i></div>
+                        <div>
+                            <span class="d-block text-muted small fw-semibold text-uppercase">Location</span>
+                            <span class="fw-medium text-dark">Calamba City</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-icon"><i class="ph ph-swimming-pool"></i></div>
+                        <div>
+                            <span class="d-block text-muted small fw-semibold text-uppercase">Category</span>
+                            <span class="fw-medium text-dark">Resort / Hot Spring</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-icon"><i class="ph ph-clock"></i></div>
+                        <div>
+                            <span class="d-block text-muted small fw-semibold text-uppercase">Status</span>
+                            <span class="badge bg-success rounded-pill fw-normal mt-1">Open Now</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-top">
+                        <button class="btn btn-outline-dark w-100 mb-2 rounded-pill d-flex align-items-center justify-content-center gap-2">
+                            <i class="ph ph-navigation-arrow"></i> Get Directions
+                        </button>
+                        <button class="btn btn-light w-100 rounded-pill text-muted border d-flex align-items-center justify-content-center gap-2">
+                            <i class="ph ph-share-network"></i> Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block script %}
+<script>
+    // In the future, you can add AJAX submission for the feedback form here
+    // so the page doesn't have to reload.
+</script>
+{% endblock %}
