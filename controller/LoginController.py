@@ -16,7 +16,6 @@ def login():
                 # Save session
                 session["user"] = res.user.id
                 session["email"] = res.user.email
-
                 flash("Login successful!", "success")
 
                 return redirect(url_for("dashboard_page"))

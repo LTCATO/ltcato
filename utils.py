@@ -15,17 +15,17 @@ def superadmin_required(f):
     def decorated_function(*args, **kwargs):
         account_type = session.get('role')
         current_app.logger.info(f"Admin check: account_type in session is '{account_type}'")
-        if account_type != 'superadmin':
+        if account_type != 'super_admin':
             flash("You do not have permission to access this page.", "error")
             return redirect(url_for('login_page'))
         return f(*args, **kwargs)
     return decorated_function
 
-def admin_required(f):
+def municipality_admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         account_type = session.get('role')
-        if account_type != 'admin':
+        if account_type != 'municipality_admin':
             flash("You do not have permission to access this page.", "error")
             return redirect(url_for('login_page'))
         return f(*args, **kwargs)
