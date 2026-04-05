@@ -1,0 +1,602 @@
+{% extends 'dashboard-base.html' %}
+
+{% block title %}Accounts Management {% endblock %}
+
+{% block content %}
+<div class="accounts-page-container">
+  <!-- Page Header with Add Account Button -->
+  <div class="page-header-section">
+    <div class="header-content">
+      <div class="page-info">
+        <h1 class="page-title">Accounts Management</h1>
+        <p class="page-description">Manage municipality accounts and user access for LTCATO system</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-add-account" data-bs-toggle="modal" data-bs-target="#addAccountModal">
+          <i class="bx bx-plus"></i>
+          Add Account
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Overview -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="bx bx-user"></i>
+      </div>
+      <div class="stat-info">
+        <h3 class="stat-number">24</h3>
+        <p class="stat-label">Total Accounts</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon active">
+        <i class="bx bx-check-circle"></i>
+      </div>
+      <div class="stat-info">
+        <h3 class="stat-number">18</h3>
+        <p class="stat-label">Active Users</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon pending">
+        <i class="bx bx-time"></i>
+      </div>
+      <div class="stat-info">
+        <h3 class="stat-number">3</h3>
+        <p class="stat-label">Pending</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="bx bx-building"></i>
+      </div>
+      <div class="stat-info">
+        <h3 class="stat-number">6</h3>
+        <p class="stat-label">Municipalities</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accounts Table Section -->
+  <div class="table-section">
+    <div class="section-header">
+      <h2 class="section-title">Account List</h2>
+    </div>
+
+    <div class="accounts-table-container">
+      <table class="accounts-table" id="accountsTable">
+        <thead>
+          <tr>
+            <th>Account Information</th>
+            <th>Municipality</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Sample Data - Replace with actual data from backend -->
+          <tr>
+            <td>
+              <div class="account-info">
+                <div class="account-avatar">JD</div>
+                <div class="account-details">
+                  <div class="account-name">Juan Dela Cruz</div>
+                  <div class="account-email">juan.delacruz@calamba.gov.ph</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="municipality-badge">Calamba City</span>
+            </td>
+            <td>
+              <span class="role-badge municipality_admin">Municipality Admin</span>
+            </td>
+            <td>
+              <div class="account-status active">
+                <span class="status-dot"></span>
+                Active
+              </div>
+            </td>
+            <td>
+              <span class="date-info">Jan 15, 2024</span>
+            </td>
+            <td>
+              <div class="account-actions">
+                <button class="btn-action view" title="View Account">
+                  <i class="bx bx-show"></i>
+                </button>
+                <button class="btn-action edit" title="Edit Account">
+                  <i class="bx bx-edit"></i>
+                </button>
+                <button class="btn-action delete" title="Delete Account">
+                  <i class="bx bx-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="account-info">
+                <div class="account-avatar">MS</div>
+                <div class="account-details">
+                  <div class="account-name">Maria Santos</div>
+                  <div class="account-email">maria.santos@sanpablo.gov.ph</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="municipality-badge">San Pablo City</span>
+            </td>
+            <td>
+              <span class="role-badge municipality_admin">Municipality Admin</span>
+            </td>
+            <td>
+              <div class="account-status active">
+                <span class="status-dot"></span>
+                Active
+              </div>
+            </td>
+            <td>
+              <span class="date-info">Jan 20, 2024</span>
+            </td>
+            <td>
+              <div class="account-actions">
+                <button class="btn-action view" title="View Account">
+                  <i class="bx bx-show"></i>
+                </button>
+                <button class="btn-action edit" title="Edit Account">
+                  <i class="bx bx-edit"></i>
+                </button>
+                <button class="btn-action delete" title="Delete Account">
+                  <i class="bx bx-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="account-info">
+                <div class="account-avatar">RR</div>
+                <div class="account-details">
+                  <div class="account-name">Roberto Reyes</div>
+                  <div class="account-email">roberto.reyes@cabuyao.gov.ph</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="municipality-badge">Cabuyao City</span>
+            </td>
+            <td>
+              <span class="role-badge staff">Staff</span>
+            </td>
+            <td>
+              <div class="account-status pending">
+                <span class="status-dot"></span>
+                Pending
+              </div>
+            </td>
+            <td>
+              <span class="date-info">Feb 1, 2024</span>
+            </td>
+            <td>
+              <div class="account-actions">
+                <button class="btn-action view" title="View Account">
+                  <i class="bx bx-show"></i>
+                </button>
+                <button class="btn-action edit" title="Edit Account">
+                  <i class="bx bx-edit"></i>
+                </button>
+                <button class="btn-action delete" title="Delete Account">
+                  <i class="bx bx-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="account-info">
+                <div class="account-avatar">LG</div>
+                <div class="account-details">
+                  <div class="account-name">Linda Garcia</div>
+                  <div class="account-email">linda.garcia@starosa.gov.ph</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="municipality-badge">Santa Rosa City</span>
+            </td>
+            <td>
+              <span class="role-badge municipality_admin">Municipality Admin</span>
+            </td>
+            <td>
+              <div class="account-status inactive">
+                <span class="status-dot"></span>
+                Inactive
+              </div>
+            </td>
+            <td>
+              <span class="date-info">Dec 10, 2023</span>
+            </td>
+            <td>
+              <div class="account-actions">
+                <button class="btn-action view" title="View Account">
+                  <i class="bx bx-show"></i>
+                </button>
+                <button class="btn-action edit" title="Edit Account">
+                  <i class="bx bx-edit"></i>
+                </button>
+                <button class="btn-action delete" title="Delete Account">
+                  <i class="bx bx-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="account-info">
+                <div class="account-avatar">AL</div>
+                <div class="account-details">
+                  <div class="account-name">Antonio Lim</div>
+                  <div class="account-email">antonio.lim@binan.gov.ph</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="municipality-badge">Biñan City</span>
+            </td>
+            <td>
+              <span class="role-badge staff">Staff</span>
+            </td>
+            <td>
+              <div class="account-status active">
+                <span class="status-dot"></span>
+                Active
+              </div>
+            </td>
+            <td>
+              <span class="date-info">Feb 5, 2024</span>
+            </td>
+            <td>
+              <div class="account-actions">
+                <button class="btn-action view" title="View Account">
+                  <i class="bx bx-show"></i>
+                </button>
+                <button class="btn-action edit" title="Edit Account">
+                  <i class="bx bx-edit"></i>
+                </button>
+                <button class="btn-action delete" title="Delete Account">
+                  <i class="bx bx-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Empty State (hidden by default) -->
+  <div class="empty-state" id="emptyState" style="display: none;">
+    <div class="empty-state-icon">
+      <i class="bx bx-user-plus"></i>
+    </div>
+    <h3 class="empty-state-title">No Accounts Found</h3>
+    <p class="empty-state-description">Start by adding your first municipality account to LTCATO system.</p>
+    <button class="btn-add-account">
+      <i class="bx bx-plus"></i>
+      Add First Account
+    </button>
+  </div>
+</div>
+
+<!-- Add Account Modal -->
+<div class="modal fade" id="addAccountModal" tabindex="-1" aria-labelledby="addAccountModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addAccountModalLabel">Add New Account</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addAccountForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="firstName" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="firstName" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="lastName" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="lastName" required>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email Address</label>
+            <input type="email" class="form-control" id="email" required>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="municipality" class="form-label">Municipality</label>
+                <select class="form-select" id="municipality" required>
+                  <option value="">Select Municipality</option>
+                  <option value="calamba">Calamba City</option>
+                  <option value="cabuyao">Cabuyao City</option>
+                  <option value="san_pablo">San Pablo City</option>
+                  <option value="sta_rosa">Santa Rosa City</option>
+                  <option value="binan">Biñan City</option>
+                  <option value="san_pedro">San Pedro City</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="role" class="form-label">Role</label>
+                <select class="form-select" id="role" required>
+                  <option value="">Select Role</option>
+                  <option value="municipality_admin">Municipality Admin</option>
+                  <option value="staff">Staff</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" required>
+          </div>
+          <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmPassword" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="saveAccountBtn">Create Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- View Account Modal -->
+<div class="modal fade" id="viewAccountModal" tabindex="-1" aria-labelledby="viewAccountModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewAccountModalLabel">Account Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center mb-4">
+          <div class="account-avatar mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+            <span id="viewAvatar">JD</span>
+          </div>
+          <h5 id="viewName">Juan Dela Cruz</h5>
+          <p id="viewEmail">juan.delacruz@calamba.gov.ph</p>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <strong>Municipality:</strong>
+            <p id="viewMunicipality">Calamba City</p>
+          </div>
+          <div class="col-6">
+            <strong>Role:</strong>
+            <p id="viewRole">Municipality Admin</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <strong>Status:</strong>
+            <p id="viewStatus">Active</p>
+          </div>
+          <div class="col-6">
+            <strong>Created:</strong>
+            <p id="viewCreated">Jan 15, 2024</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="editFromViewBtn">Edit Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+$(document).ready(function() {
+  // Initialize DataTable
+  let accountsTable = new DataTable('#accountsTable', {
+    responsive: true,
+    pageLength: 10,
+    order: [[0, 'asc']],
+    language: {
+      search: "Search accounts...",
+      lengthMenu: "Show _MENU_ accounts",
+      info: "Showing _START_ to _END_ of _TOTAL_ accounts",
+      paginate: {
+        first: "First",
+        last: "Last",
+        next: "Next",
+        previous: "Previous"
+      }
+    }
+  });
+
+  // Custom Search Functionality
+  $('#searchInput').on('keyup', function() {
+    const value = $(this).val().toLowerCase();
+    accountsTable.search(value).draw();
+  });
+
+  // Status Filter
+  $('#statusFilter').on('change', function() {
+    const status = $(this).val();
+    if (status) {
+      accountsTable.column(3).search(status).draw();
+    } else {
+      accountsTable.column(3).search('').draw();
+    }
+  });
+
+  // Add Account Form Handler
+  $('#saveAccountBtn').on('click', function() {
+    const firstName = $('#firstName').val();
+    const lastName = $('#lastName').val();
+    const email = $('#email').val();
+    const municipality = $('#municipality').val();
+    const role = $('#role').val();
+    const password = $('#password').val();
+    const confirmPassword = $('#confirmPassword').val();
+
+    // Basic validation
+    if (!firstName || !lastName || !email || !municipality || !role || !password || !confirmPassword) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Validation Error',
+        text: 'Please fill in all required fields.'
+      });
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Password Mismatch',
+        text: 'Passwords do not match. Please try again.'
+      });
+      return;
+    }
+
+    // Here you would typically make an API call to your backend
+    console.log('Creating account:', {
+      firstName, lastName, email, municipality, role, password
+    });
+
+    // Show success message
+    Swal.fire({
+      icon: 'success',
+      title: 'Account Created',
+      text: 'New account has been created successfully.',
+      showConfirmButton: false,
+      timer: 2000
+    });
+
+    // Close modal and reset form
+    $('#addAccountModal').modal('hide');
+    $('#addAccountForm')[0].reset();
+
+    // In a real application, you would refresh table or add new row
+    // For demo purposes, we'll just show success message
+  });
+
+  // View Account Handler
+  $('.btn-action.view').on('click', function() {
+    const row = $(this).closest('tr');
+    const name = row.find('.account-name').text();
+    const email = row.find('.account-email').text();
+    const municipality = row.find('.municipality-badge').text();
+    const role = row.find('.role-badge').text();
+    const status = row.find('.account-status').text().trim();
+    const created = row.find('td:nth-child(5) span').text();
+
+    // Update modal content
+    $('#viewAvatar').text(name.split(' ').map(n => n[0]).join(''));
+    $('#viewName').text(name);
+    $('#viewEmail').text(email);
+    $('#viewMunicipality').text(municipality);
+    $('#viewRole').text(role);
+    $('#viewStatus').html(`<span class="account-status ${status.toLowerCase()}"><span class="status-dot"></span>${status}</span>`);
+    $('#viewCreated').text(created);
+
+    $('#viewAccountModal').modal('show');
+  });
+
+  // Edit Account Handler
+  $('.btn-action.edit').on('click', function() {
+    const row = $(this).closest('tr');
+    const name = row.find('.account-name').text();
+    const email = row.find('.account-email').text();
+    
+    Swal.fire({
+      icon: 'info',
+      title: 'Edit Account',
+      text: `Edit functionality for ${name} (${email}) would be implemented here.`,
+      confirmButtonText: 'OK'
+    });
+  });
+
+  // Delete Account Handler
+  $('.btn-action.delete').on('click', function() {
+    const row = $(this).closest('tr');
+    const name = row.find('.account-name').text();
+    const email = row.find('.account-email').text();
+
+    Swal.fire({
+      icon: 'warning',
+      title: 'Delete Account',
+      text: `Are you sure you want to delete account for ${name} (${email})?`,
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Yes, Delete',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Here you would typically make an API call to delete account
+        console.log('Deleting account:', { name, email });
+        
+        // Show success message
+        Swal.fire({
+          icon: 'success',
+          title: 'Account Deleted',
+          text: 'Account has been deleted successfully.',
+          showConfirmButton: false,
+          timer: 2000
+        });
+
+        // In a real application, you would remove row from table
+        // For demo purposes, we'll just show success message
+      }
+    });
+  });
+
+  // Edit from View Modal
+  $('#editFromViewBtn').on('click', function() {
+    $('#viewAccountModal').modal('hide');
+    // Here you would open edit modal with account data
+    Swal.fire({
+      icon: 'info',
+      title: 'Edit Account',
+      text: 'Edit functionality would be implemented here.',
+      confirmButtonText: 'OK'
+    });
+  });
+
+  // Check if table is empty and show empty state
+  function checkEmptyState() {
+    const rowCount = $('#accountsTable tbody tr').length;
+    if (rowCount === 0) {
+      $('.table-section').hide();
+      $('#emptyState').show();
+    } else {
+      $('.table-section').show();
+      $('#emptyState').hide();
+    }
+  }
+
+  // Initial check
+  checkEmptyState();
+});
+</script>
+{% endblock %}

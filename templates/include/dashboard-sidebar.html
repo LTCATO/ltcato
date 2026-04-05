@@ -4,19 +4,20 @@
         <img src="{{ url_for('static', filename='images/ltcato-logo.png') }}" alt="LTCATO Logo" height="45" class="img-fluid rounded">
         <div class="d-flex flex-column justify-content-center">
           <span class="app-brand-text fw-bold fs-5 lh-1 mb-1" style="color: var(--primary);">LTCATO</span>
-          <span class="text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; text-transform: uppercase;">Admin Portal</span>
+          <span style="font-size: 0.75rem; letter-spacing: 0.5px; text-transform: uppercase; color:white;">Admin Portal</span>
         </div>
       </a>
-      <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none text-muted">
-        <i class="bx bx-chevron-left bx-sm d-flex align-items-center justify-content-center"></i>
-      </a>
+      <!-- Mobile Menu Toggle -->
+      <button class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none text-muted" onclick="toggleMenu()">
+        <i class="bx bx-menu bx-sm d-flex align-items-center justify-content-center"></i>
+      </button>
     </div>
 
     <div class="menu-inner-shadow"></div>
     
     <ul class="menu-inner py-1">
       <!-- Analytics -->
-      <li class="menu-item active">
+      <li class="menu-item {% if 'analytics' in menu %}active{% endif %}">
         <a href="/dashboard" class="menu-link">
           <i class="menu-icon tf-icons bx bx-bar-chart-alt-2"></i>
           <div data-i18n="Analytics">Analytics</div>
@@ -32,10 +33,18 @@
       </li>
 
       <!-- Arrivals -->
-      <li class="menu-item">
-        <a href="#" class="menu-link">
+      <li class="menu-item {% if 'arrivals' in menu %}active{% endif %}">
+        <a href="/dashboard/arrivals" class="menu-link">
           <i class="menu-icon tf-icons bx bx-group"></i>
           <div data-i18n="Arrivals">Arrivals</div>
+        </a>
+      </li>
+
+      <!-- Accounts -->
+      <li class="menu-item {% if 'accounts' in menu %}active{% endif %}">
+        <a href="/dashboard/accounts" class="menu-link">
+          <i class="menu-icon tf-icons bx bx-user"></i>
+          <div data-i18n="Accounts">Accounts</div>
         </a>
       </li>
 
