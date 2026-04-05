@@ -6,27 +6,24 @@ def login():
     if request.method == 'POST':
         email = request.form.get("email")
         password = request.form.get("password")
-    try:
-        res = supabase.auth.sign_in_with_password({
-            "email": email,
-            "password": password
-        })
+        try:
+            res = supabase.auth.sign_in_with_password({
+                "email": email,
+                "password": password
+            })
 
-        if res.user:
-            # Save session
-            session["user"] = res.user.id
-            session["email"] = res.user.email
+            if res.user:
+                # Save session
+                session["user"] = res.user.id
+                session["email"] = res.user.email
+                flash("Login successful!", "success")
 
-            flash("login credentials", "success")
-            print("tama")
+                return redirect(url_for("dashboard_page"))
+            else:
+                flash("Invalid login credentials", "error")
 
-            return redirect(url_for("dashboard_page"))
-        else:
-            print("mali")
-            flash("Invalid login credentials", "danger")
-
-    except Exception as e:
-        flash(f"Error: {str(e)}", "danger")
+        except Exception as e:
+            flash(f"Error: {str(e)}", "error")
 
     return render_template('views/login.html')
 

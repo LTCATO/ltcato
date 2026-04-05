@@ -18,4 +18,3 @@ def register_routes(app):
     @app.route('/dashboard')
     def dashboard_page():
         return dashboardIndex()
-
