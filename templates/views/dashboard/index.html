@@ -21,7 +21,7 @@
           <i class="bx bx-bot fs-5"></i> Ask Lara AI
         </button>
         <button class="btn btn-outline-secondary rounded-circle p-2 d-flex align-items-center justify-content-center bg-white shadow-sm border-0" style="width: 42px; height: 42px;">
-          <i class="bx bx-bell fs-5 text-muted"></i>
+          <i class="bx bx-bell fs-5"></i>
         </button>
       </div>
     </div>
@@ -100,7 +100,7 @@
           <div class="card-header d-flex justify-content-between align-items-center">
             <div>
               <h5 class="card-title mb-1 fw-bold">Province-Wide Arrival Trends</h5>
-              <small class="text-muted">Tourist arrivals across all Laguna municipalities</small>
+              <small>Tourist arrivals across all Laguna municipalities</small>
             </div>
             <div class="btn-group shadow-sm" role="group">
               <button type="button" class="btn btn-sm btn-dashboard-action btn-primary active border-0">Monthly</button>
@@ -147,12 +147,13 @@
 {% block script %}
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // Colors matching the Red/White LTCATO Theme
+    // Colors matching Red/White LTCATO Theme
     const primaryColor = '#9b2c2c'; // Dark Red
     const secondaryColor = '#dc2626'; // Lighter Red
     const warningColor = '#f59e0b'; // Amber/Yellow
     const gridColor = '#f3f4f6';
-    const labelColor = '#6b7280';
+    const labelColor = '#ffffff'; // White text for better readability
+    const legendColor = '#f5f5f4'; // Light white for legends
 
     // 1. Line Chart: Province-Wide Arrival Trends
     const trendsOptions = {
@@ -197,7 +198,7 @@
         yaxis: { lines: { show: true } },
         padding: { top: 0, right: 0, bottom: 0, left: 10 }
       },
-      legend: { position: 'top', horizontalAlign: 'right', markers: { radius: 12 } }
+      legend: { position: 'top', horizontalAlign: 'right', markers: { radius: 12 }, labels: { colors: legendColor } }
     };
     new ApexCharts(document.querySelector("#arrivalTrendsChart"), trendsOptions).render();
 
@@ -284,7 +285,8 @@
       legend: { 
         position: 'bottom', 
         markers: { radius: 12 },
-        itemMargin: { horizontal: 10, vertical: 5 }
+        itemMargin: { horizontal: 10, vertical: 5 },
+        labels: { colors: legendColor }
       }
     };
     new ApexCharts(document.querySelector("#sentimentChart"), sentimentOptions).render();
