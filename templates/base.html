@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="icon" href="{{ url_for('static', filename='images/logo1.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='images/ltcato-logo.png') }}" type="image/x-icon">
     <title>{% block title %}{% endblock %} | LTCATO</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="format-detection" content="telephone=no">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="author" content="">
-    <meta name="keywords" content="">
-    <meta name="description" content="">
+    <meta name="author" content="LTCATO">
+    <meta name="description" content="Laguna Tourism Culture Arts and Trade Office Interactive Map">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
     <!-- bootstrap cdn -->
@@ -19,6 +18,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons for modern UI icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <!-- custom styles -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
@@ -26,9 +28,9 @@
 
     {% block style %} {% endblock %}
   </head>
-  <body>
-     <!-- Common navigation for all pages -->
-     {% include 'include/navbar.html' %}
+  <body class="bg-light">
+     <!-- Common navigation for public guest pages -->
+     {% include 'include/navbar.html' ignore missing %}
 
      <!-- Main content block where child templates will insert content -->
      <main>
@@ -45,7 +47,7 @@
          {% block content %}{% endblock %}
      </main>
  
-     {% include 'include/footer.html' %}
+     {% include 'include/footer.html' ignore missing %}
 
     <!-- Include SweetAlert2 Version 11 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

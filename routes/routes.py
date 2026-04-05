@@ -1,5 +1,5 @@
 from controller.HomeController import home
-from controller.LoginController import login, register
+from controller.LoginController import login, register, logout
 from controller.DashboardController import dashboardIndex
 
 def register_routes(app):
@@ -18,3 +18,7 @@ def register_routes(app):
     @app.route('/dashboard')
     def dashboard_page():
         return dashboardIndex()
+
+    @app.route('/logout')
+    def logout_page():
+        return logout()

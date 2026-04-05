@@ -1,0 +1,132 @@
+/* Dashboard Specific Styles */
+
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.dashboard-title {
+  color: var(--foreground);
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: -0.025em;
+}
+
+.dashboard-subtitle {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+/* Card Styles */
+.mockup-card {
+  background-color: var(--card);
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mockup-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+.mockup-card .card-header {
+  background-color: transparent;
+  border-bottom: 1px solid rgba(0,0,0,0.03);
+  padding: 1.25rem 1.5rem;
+}
+
+.mockup-card .card-body {
+  padding: 1.5rem;
+}
+
+/* Stat Cards (Horizontal Layout like image) */
+.stat-card-inner {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.icon-box {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  flex-shrink: 0;
+}
+
+.icon-box i {
+  font-size: 1.75rem;
+}
+
+.icon-box.bg-primary-light {
+  background-color: rgba(155, 44, 44, 0.1); /* --primary with opacity */
+  color: var(--primary);
+}
+
+.icon-box.bg-info-light {
+  background-color: rgba(2, 132, 199, 0.1); 
+  color: #0284c7;
+}
+
+.icon-box.bg-warning-light {
+  background-color: rgba(217, 119, 6, 0.1);
+  color: #d97706;
+}
+
+.stat-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-title {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--foreground);
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+}
+
+.stat-indicator {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Action Buttons */
+.btn-dashboard-action {
+  border-radius: 0.5rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s;
+}
+
+.btn-ai-assistant {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.btn-ai-assistant:hover {
+  background-color: #7f1d1d;
+  border-color: #7f1d1d;
+  color: white;
+}
+
+/* Charts Customization */
+.apexcharts-tooltip {
+  border-radius: 0.5rem !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+  border: none !important;
+}
