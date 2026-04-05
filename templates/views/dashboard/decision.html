@@ -1,0 +1,650 @@
+{% extends "dashboard-base.html" %}
+
+{% block title %}Decision Support{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <!-- Page Header -->
+  <div class="page-header-section">
+    <div class="header-content">
+      <div class="page-info">
+        <h1 class="page-title">Decision Support System</h1>
+        <p class="page-description">AI-powered insights and recommendations based on reports, feedback, and analytics</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-add-account" onclick="generateNewRecommendation()">
+          <i class="bx bx-bot"></i>
+          Generate AI Insights
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Insights Overview -->
+  <div class="ai-insights-section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <i class="bx bx-bot"></i>
+        AI-Powered Insights
+      </h2>
+    </div>
+
+    <div class="insights-grid">
+      <!-- Primary Recommendation Card -->
+      <div class="insight-card primary">
+        <div class="insight-header">
+          <div class="insight-icon ai">
+            <i class="bx bx-brain"></i>
+          </div>
+          <div class="insight-meta">
+            <span class="insight-type">Primary Recommendation</span>
+            <span class="insight-time">Updated 2 hours ago</span>
+          </div>
+        </div>
+        <div class="insight-content">
+          <h3 class="insight-title">Focus on Quezon City Tourism Growth</h3>
+          <p class="insight-description">Based on recent visitor data and feedback analysis, Quezon City shows 45% higher engagement compared to other municipalities. Recommend allocating additional marketing resources to this area.</p>
+          <div class="insight-metrics">
+            <div class="metric">
+              <span class="metric-value">+45%</span>
+              <span class="metric-label">Engagement</span>
+            </div>
+            <div class="metric">
+              <span class="metric-value">92%</span>
+              <span class="metric-label">Confidence</span>
+            </div>
+          </div>
+        </div>
+        <div class="insight-actions">
+          <button class="btn-insight" onclick="viewRecommendation(1)">
+            <i class="bx bx-show"></i>
+            View Details
+          </button>
+          <button class="btn-insight secondary" onclick="applyRecommendation(1)">
+            <i class="bx bx-check"></i>
+            Apply
+          </button>
+        </div>
+      </div>
+
+      <!-- Tourist Spot Analysis Card -->
+      <div class="insight-card">
+        <div class="insight-header">
+          <div class="insight-icon location">
+            <i class="bx bx-map-pin"></i>
+          </div>
+          <div class="insight-meta">
+            <span class="insight-type">Location Analysis</span>
+            <span class="insight-time">Updated 5 hours ago</span>
+          </div>
+        </div>
+        <div class="insight-content">
+          <h3 class="insight-title">Rizal Park Needs Infrastructure Updates</h3>
+          <p class="insight-description">Visitor feedback indicates high satisfaction but concerns about facility maintenance. Recommend prioritizing infrastructure improvements in Q2.</p>
+          <div class="insight-metrics">
+            <div class="metric">
+              <span class="metric-value">4.6</span>
+              <span class="metric-label">Avg Rating</span>
+            </div>
+            <div class="metric">
+              <span class="metric-value">238</span>
+              <span class="metric-label">Feedback Count</span>
+            </div>
+          </div>
+        </div>
+        <div class="insight-actions">
+          <button class="btn-insight" onclick="viewRecommendation(2)">
+            <i class="bx bx-show"></i>
+            View Details
+          </button>
+          <button class="btn-insight secondary" onclick="applyRecommendation(2)">
+            <i class="bx bx-check"></i>
+            Apply
+          </button>
+        </div>
+      </div>
+
+      <!-- Municipality Comparison Card -->
+      <div class="insight-card">
+        <div class="insight-header">
+          <div class="insight-icon comparison">
+            <i class="bx bx-bar-chart-alt-2"></i>
+          </div>
+          <div class="insight-meta">
+            <span class="insight-type">Comparative Analysis</span>
+            <span class="insight-time">Updated 1 day ago</span>
+          </div>
+        </div>
+        <div class="insight-content">
+          <h3 class="insight-title">Manila vs. Makati Performance Gap</h3>
+          <p class="insight-description">Manila shows higher visitor retention but lower satisfaction. Recommend implementing Makati's engagement strategies in Manila.</p>
+          <div class="insight-metrics">
+            <div class="metric">
+              <span class="metric-value">78%</span>
+              <span class="metric-label">Retention</span>
+            </div>
+            <div class="metric">
+              <span class="metric-value">3.2</span>
+              <span class="metric-label">Satisfaction</span>
+            </div>
+          </div>
+        </div>
+        <div class="insight-actions">
+          <button class="btn-insight" onclick="viewRecommendation(3)">
+            <i class="bx bx-show"></i>
+            View Details
+          </button>
+          <button class="btn-insight secondary" onclick="applyRecommendation(3)">
+            <i class="bx bx-check"></i>
+            Apply
+          </button>
+        </div>
+      </div>
+
+      <!-- Seasonal Trends Card -->
+      <div class="insight-card">
+        <div class="insight-header">
+          <div class="insight-icon trends">
+            <i class="bx bx-trending-up"></i>
+          </div>
+          <div class="insight-meta">
+            <span class="insight-type">Trend Analysis</span>
+            <span class="insight-time">Updated 3 hours ago</span>
+          </div>
+        </div>
+        <div class="insight-content">
+          <h3 class="insight-title">Summer Season Preparation Needed</h3>
+          <p class="insight-description">Historical data shows 65% increase in visitors during summer months. Recommend early resource allocation and staff training.</p>
+          <div class="insight-metrics">
+            <div class="metric">
+              <span class="metric-value">+65%</span>
+              <span class="metric-label">Summer Traffic</span>
+            </div>
+            <div class="metric">
+              <span class="metric-value">89%</span>
+              <span class="metric-label">Accuracy</span>
+            </div>
+          </div>
+        </div>
+        <div class="insight-actions">
+          <button class="btn-insight" onclick="viewRecommendation(4)">
+            <i class="bx bx-show"></i>
+            View Details
+          </button>
+          <button class="btn-insight secondary" onclick="applyRecommendation(4)">
+            <i class="bx bx-check"></i>
+            Apply
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Sources Overview -->
+  <div class="data-sources-section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <i class="bx bx-data"></i>
+        Data Sources & Analysis
+      </h2>
+    </div>
+
+    <div class="data-sources-grid">
+      <!-- Reports Card -->
+      <div class="data-source-card">
+        <div class="data-source-header">
+          <div class="data-source-icon reports">
+            <i class="bx bx-file"></i>
+          </div>
+          <h3 class="data-source-title">Visitor Reports</h3>
+        </div>
+        <div class="data-source-stats">
+          <div class="stat">
+            <span class="stat-number">1,247</span>
+            <span class="stat-label">Total Reports</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">89%</span>
+            <span class="stat-label">Data Quality</span>
+          </div>
+        </div>
+        <div class="data-source-actions">
+          <button class="btn-data-source" onclick="viewDataSource('reports')">
+            <i class="bx bx-show"></i>
+            View Reports
+          </button>
+        </div>
+      </div>
+
+      <!-- Feedback Card -->
+      <div class="data-source-card">
+        <div class="data-source-header">
+          <div class="data-source-icon feedback">
+            <i class="bx bx-message-square-detail"></i>
+          </div>
+          <h3 class="data-source-title">Visitor Feedback</h3>
+        </div>
+        <div class="data-source-stats">
+          <div class="stat">
+            <span class="stat-number">3,892</span>
+            <span class="stat-label">Total Feedback</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">4.2</span>
+            <span class="stat-label">Avg Rating</span>
+          </div>
+        </div>
+        <div class="data-source-actions">
+          <button class="btn-data-source" onclick="viewDataSource('feedback')">
+            <i class="bx bx-show"></i>
+            View Feedback
+          </button>
+        </div>
+      </div>
+
+      <!-- Ratings Card -->
+      <div class="data-source-card">
+        <div class="data-source-header">
+          <div class="data-source-icon ratings">
+            <i class="bx bx-star"></i>
+          </div>
+          <h3 class="data-source-title">Location Ratings</h3>
+        </div>
+        <div class="data-source-stats">
+          <div class="stat">
+            <span class="stat-number">856</span>
+            <span class="stat-label">Total Ratings</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">4.1</span>
+            <span class="stat-label">Avg Score</span>
+          </div>
+        </div>
+        <div class="data-source-actions">
+          <button class="btn-data-source" onclick="viewDataSource('ratings')">
+            <i class="bx bx-show"></i>
+            View Ratings
+          </button>
+        </div>
+      </div>
+
+      <!-- Tourist Spots Card -->
+      <div class="data-source-card">
+        <div class="data-source-header">
+          <div class="data-source-icon spots">
+            <i class="bx bx-map"></i>
+          </div>
+          <h3 class="data-source-title">Tourist Spots</h3>
+        </div>
+        <div class="data-source-stats">
+          <div class="stat">
+            <span class="stat-number">47</span>
+            <span class="stat-label">Total Spots</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">92%</span>
+            <span class="stat-label">Coverage</span>
+          </div>
+        </div>
+        <div class="data-source-actions">
+          <button class="btn-data-source" onclick="viewDataSource('spots')">
+            <i class="bx bx-show"></i>
+            View Spots
+          </button>
+        </div>
+      </div>
+
+      <!-- Municipalities Card -->
+      <div class="data-source-card">
+        <div class="data-source-header">
+          <div class="data-source-icon municipalities">
+            <i class="bx bx-building"></i>
+          </div>
+          <h3 class="data-source-title">Municipalities</h3>
+        </div>
+        <div class="data-source-stats">
+          <div class="stat">
+            <span class="stat-number">16</span>
+            <span class="stat-label">Active Cities</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">78%</span>
+            <span class="stat-label">Data Complete</span>
+          </div>
+        </div>
+        <div class="data-source-actions">
+          <button class="btn-data-source" onclick="viewDataSource('municipalities')">
+            <i class="bx bx-show"></i>
+            View Cities
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Model Status -->
+  <div class="ai-status-section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <i class="bx bx-cog"></i>
+        AI Model Status
+      </h2>
+    </div>
+
+    <div class="ai-status-grid">
+      <div class="status-card">
+        <div class="status-header">
+          <div class="status-indicator active"></div>
+          <h3 class="status-title">Data Processing</h3>
+        </div>
+        <div class="status-details">
+          <p class="status-description">AI model is actively processing visitor data and generating insights</p>
+          <div class="status-metrics">
+            <div class="metric">
+              <span class="metric-value">98.5%</span>
+              <span class="metric-label">Accuracy</span>
+            </div>
+            <div class="metric">
+              <span class="metric-value">2.3s</span>
+              <span class="metric-label">Response Time</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="status-card">
+        <div class="status-header">
+          <div class="status-indicator active"></div>
+          <h3 class="status-title">Recommendation Engine</h3>
+        </div>
+        <div class="status-details">
+          <p class="status-description">Generating personalized recommendations based on multi-factor analysis</p>
+          <div class="status-metrics">
+            <div class="metric">
+              <span class="metric-value">Active</span>
+              <span class="metric-label">Status</span>
+            </div>
+            <div class="metric">
+              <span class="metric-value">156</span>
+              <span class="metric-label">Models</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="status-card">
+        <div class="status-header">
+          <div class="status-indicator warning"></div>
+          <h3 class="status-title">Learning Algorithm</h3>
+        </div>
+        <div class="status-details">
+          <p class="status-description">Currently training on new patterns from Q1 2024 data</p>
+          <div class="status-metrics">
+            <div class="metric">
+              <span class="metric-value">Training</span>
+              <span class="metric-label">Status</span>
+            </div>
+            <div class="metric">
+              <span class="metric-value">67%</span>
+              <span class="metric-label">Complete</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recommendation Details Modal -->
+<div class="modal fade" id="recommendationModal" tabindex="-1" aria-labelledby="recommendationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="recommendationModalLabel">AI Recommendation Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="recommendation-details">
+          <div class="recommendation-header">
+            <div class="recommendation-icon">
+              <i class="bx bx-brain"></i>
+            </div>
+            <div class="recommendation-info">
+              <h4 id="modalRecommendationTitle">Focus on Quezon City Tourism Growth</h4>
+              <p id="modalRecommendationType">Primary Recommendation</p>
+            </div>
+          </div>
+          
+          <div class="recommendation-content">
+            <div class="recommendation-summary">
+              <h5>Summary</h5>
+              <p id="modalRecommendationSummary">Based on recent visitor data and feedback analysis, Quezon City shows 45% higher engagement compared to other municipalities. Recommend allocating additional marketing resources to this area.</p>
+            </div>
+            
+            <div class="recommendation-metrics">
+              <h5>Key Metrics</h5>
+              <div class="metrics-grid">
+                <div class="metric-item">
+                  <span class="metric-label">Engagement Increase:</span>
+                  <span class="metric-value positive">+45%</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">Confidence Level:</span>
+                  <span class="metric-value high">92%</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">Data Sources:</span>
+                  <span class="metric-value">Reports, Feedback, Ratings</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">Impact Score:</span>
+                  <span class="metric-value high">8.7/10</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="recommendation-actions-steps">
+              <h5>Recommended Actions</h5>
+              <ol id="modalRecommendationActions">
+                <li>Increase marketing budget allocation for Quezon City by 30%</li>
+                <li>Launch targeted social media campaigns for high-engagement areas</li>
+                <li>Implement visitor feedback collection system in key locations</li>
+                <li>Coordinate with local tourism office for promotional events</li>
+                <li>Monitor engagement metrics weekly for 3 months</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="applyRecommendationFromModal()">Apply Recommendation</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+$(document).ready(function() {
+  // Initialize any interactive elements
+  initializeDecisionSupport();
+});
+
+function initializeDecisionSupport() {
+  // Add any initialization logic here
+  console.log('Decision Support System initialized');
+}
+
+// Generate New AI Recommendation
+function generateNewRecommendation() {
+  showToast('Generating AI Insights', 'Analyzing data sources and generating new recommendations...', 'info');
+  
+  setTimeout(() => {
+    showToast('AI Insights Generated!', 'New recommendations have been generated based on latest data analysis.', 'success');
+  }, 3000);
+}
+
+// View Recommendation Details
+function viewRecommendation(id) {
+  // Sample recommendation data
+  const recommendations = {
+    1: {
+      title: 'Focus on Pagsanjan Falls Tourism Growth',
+      type: 'Primary Recommendation',
+      summary: 'Based on recent visitor data and feedback analysis, Pagsanjan Falls shows 45% higher engagement compared to other Laguna destinations. Recommend allocating additional marketing resources to this area.',
+      metrics: [
+        { label: 'Engagement Increase:', value: '+45%', class: 'positive' },
+        { label: 'Confidence Level:', value: '92%', class: 'high' },
+        { label: 'Data Sources:', value: 'Reports, Feedback, Ratings' },
+        { label: 'Impact Score:', value: '8.7/10', class: 'high' }
+      ],
+      actions: [
+        'Increase marketing budget allocation for Pagsanjan Falls by 30%',
+        'Launch targeted social media campaigns for waterfall tourism',
+        'Implement visitor feedback collection system at main attractions',
+        'Coordinate with Laguna tourism office for promotional events',
+        'Monitor engagement metrics weekly for 3 months'
+      ]
+    },
+    2: {
+      title: 'Caliraya Lake Infrastructure Updates',
+      type: 'Location Analysis',
+      summary: 'Visitor feedback indicates high satisfaction but concerns about facility maintenance at Caliraya Lake. Recommend prioritizing infrastructure improvements in Q2.',
+      metrics: [
+        { label: 'Average Rating:', value: '4.6', class: 'medium' },
+        { label: 'Feedback Count:', value: '238' },
+        { label: 'Data Sources:', value: 'Feedback, Reports' },
+        { label: 'Priority Level:', value: 'High', class: 'high' }
+      ],
+      actions: [
+        'Conduct facility maintenance assessment at Caliraya Lake',
+        'Allocate infrastructure improvement budget for water sports facilities',
+        'Implement preventive maintenance schedule for boat rentals',
+        'Upgrade visitor amenities and recreational areas',
+        'Monitor satisfaction scores monthly'
+      ]
+    },
+    3: {
+      title: 'Los Baños vs. Calamba Performance Gap',
+      type: 'Comparative Analysis',
+      summary: 'Los Baños shows higher visitor retention but lower satisfaction. Recommend implementing Calamba\'s engagement strategies in Los Baños.',
+      metrics: [
+        { label: 'Retention Rate:', value: '78%', class: 'high' },
+        { label: 'Satisfaction Score:', value: '3.2', class: 'low' },
+        { label: 'Data Sources:', value: 'Reports, Ratings, Feedback' },
+        { label: 'Improvement Potential:', value: '45%', class: 'positive' }
+      ],
+      actions: [
+        'Analyze Calamba engagement strategies for hot spring tourism',
+        'Implement similar retention programs in Los Baños for academic tourism',
+        'Train staff on best practices for university visitors',
+        'Launch satisfaction improvement initiatives for research tourism',
+        'Compare quarterly performance metrics between Laguna cities'
+      ]
+    },
+    4: {
+      title: 'Summer Season Preparation for Laguna',
+      type: 'Trend Analysis',
+      summary: 'Historical data shows 65% increase in visitors during summer months at Laguna destinations. Recommend early resource allocation and staff training.',
+      metrics: [
+        { label: 'Traffic Increase:', value: '+65%', class: 'positive' },
+        { label: 'Accuracy:', value: '89%', class: 'high' },
+        { label: 'Data Sources:', value: 'Historical Reports, Weather Data' },
+        { label: 'Preparation Time:', value: '2 months', class: 'warning' }
+      ],
+      actions: [
+        'Increase seasonal staffing levels at major Laguna attractions by 40%',
+        'Pre-allocate marketing budget for summer campaigns promoting lake tourism',
+        'Conduct staff training programs for peak season management',
+        'Prepare emergency response plans for water activities',
+        'Coordinate with local weather services for summer forecasts'
+      ]
+    }
+  };
+
+  const rec = recommendations[id] || recommendations[1];
+  
+  // Populate modal with data
+  $('#modalRecommendationTitle').text(rec.title);
+  $('#modalRecommendationType').text(rec.type);
+  $('#modalRecommendationSummary').text(rec.summary);
+  
+  // Populate metrics
+  const metricsHtml = rec.metrics.map(metric => 
+    `<div class="metric-item">
+      <span class="metric-label">${metric.label}</span>
+      <span class="metric-value ${metric.class || ''}">${metric.value}</span>
+    </div>`
+  ).join('');
+  $('.metrics-grid').html(metricsHtml);
+  
+  // Populate actions
+  const actionsHtml = rec.actions.map(action => `<li>${action}</li>`).join('');
+  $('#modalRecommendationActions').html(actionsHtml);
+  
+  // Show modal
+  $('#recommendationModal').modal('show');
+}
+
+// Apply Recommendation
+function applyRecommendation(id) {
+  showToast('Applying Recommendation', 'AI recommendation is being applied to your strategy...', 'info');
+  
+  setTimeout(() => {
+    showToast('Recommendation Applied!', 'AI recommendation has been successfully applied to your strategy.', 'success');
+  }, 1500);
+}
+
+// Apply Recommendation from Modal
+function applyRecommendationFromModal() {
+  $('#recommendationModal').modal('hide');
+  applyRecommendation(1);
+}
+
+// View Data Source
+function viewDataSource(type) {
+  showToast('Data Source Details', `Viewing detailed information for ${type} data source.`, 'info');
+}
+
+// Toast Notification Function
+function showToast(title, message, type = 'info') {
+  // Create toast container if it doesn't exist
+  if (!$('#toast-container').length) {
+    $('body').append('<div id="toast-container" class="toast-container"></div>');
+  }
+  
+  // Create toast element
+  const toastId = 'toast-' + Date.now();
+  const toastHtml = `
+    <div id="${toastId}" class="toast toast-${type}" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto">${title}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        ${message}
+      </div>
+    </div>
+  `;
+  
+  // Add toast to container
+  $('#toast-container').append(toastHtml);
+  
+  // Initialize and show toast
+  const toastElement = document.getElementById(toastId);
+  const toast = new bootstrap.Toast(toastElement, {
+    autohide: true,
+    delay: type === 'info' ? 3000 : 4000
+  });
+  
+  toast.show();
+  
+  // Remove toast element after it's hidden
+  toastElement.addEventListener('hidden.bs.toast', () => {
+    toastElement.remove();
+  });
+}
+</script>
+{% endblock %}
