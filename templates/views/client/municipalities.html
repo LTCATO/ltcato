@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+
+{% block title %}Municipalities | LTCATO{% endblock %}
+
+{% block style %}
+<style>
+    .page-header {
+        background-color: var(--background, #faf7f5);
+        padding: 4rem 0 3rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    /* Shopping Card Style */
+    .municipality-card {
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .municipality-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+    }
+
+    .card-img-wrapper {
+        position: relative;
+        height: 220px;
+        overflow: hidden;
+    }
+
+    .card-img-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .municipality-card:hover .card-img-wrapper img {
+        transform: scale(1.05);
+    }
+
+    .spot-count-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(255, 255, 255, 0.95);
+        color: var(--primary);
+        padding: 0.4rem 0.8rem;
+        border-radius: 99px;
+        font-weight: 700;
+        font-size: 0.8rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        z-index: 2;
+    }
+
+    .card-content {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .municipality-title {
+        color: var(--primary);
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .municipality-desc {
+        color: #64748b;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        flex-grow: 1;
+    }
+
+    .card-footer-custom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid #f1f5f9;
+        padding-top: 1rem;
+        margin-top: auto;
+    }
+
+    .explore-btn {
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: gap 0.2s;
+    }
+
+    .municipality-card:hover .explore-btn {
+        gap: 0.75rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header text-center">
+    <div class="container">
+        <h1 class="display-5 fw-bold mb-3" style="color: var(--primary);">Explore Laguna's Municipalities</h1>
+        <p class="text-muted fs-5 mx-auto" style="max-width: 600px;">
+            Discover the rich culture, natural wonders, and vibrant trade of each unique town and city across the province.
+        </p>
+        
+        <!-- Search Bar -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-6">
+                <div class="input-group shadow-sm" style="border-radius: 99px; overflow: hidden;">
+                    <span class="input-group-text bg-white border-0 ps-4 text-muted"><i class="ph ph-magnifying-glass fs-5"></i></span>
+                    <input type="text" class="form-control border-0 py-3" placeholder="Search for a city or town..." style="box-shadow: none;">
+                    <button class="btn text-white px-4 fw-bold" style="background-color: var(--primary);">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Grid Section -->
+<div class="container py-5 my-3">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        
+        <!-- Card 1: Calamba -->
+        <div class="col">
+            <a href="/municipalities/calamba" class="municipality-card">
+                <div class="card-img-wrapper">
+                    <div class="spot-count-badge"><i class="ph ph-map-pin-line me-1"></i> 12 Spots</div>
+                    <img src="https://images.unsplash.com/photo-1548625361-ec8464673327?auto=format&fit=crop&w=600&q=80" alt="Calamba City">
+                </div>
+                <div class="card-content">
+                    <h3 class="municipality-title">Calamba City</h3>
+                    <p class="municipality-desc">Known as the Resort Capital of the Philippines and the historic birthplace of Dr. Jose Rizal.</p>
+                    <div class="card-footer-custom">
+                        <span class="text-muted small"><i class="ph ph-buildings me-1"></i> Component City</span>
+                        <span class="explore-btn">Explore <i class="ph ph-arrow-right"></i></span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Card 2: Los Baños -->
+        <div class="col">
+            <a href="/municipalities/los-banos" class="municipality-card">
+                <div class="card-img-wrapper">
+                    <div class="spot-count-badge"><i class="ph ph-map-pin-line me-1"></i> 8 Spots</div>
+                    <img src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=600&q=80" alt="Los Baños">
+                </div>
+                <div class="card-content">
+                    <h3 class="municipality-title">Los Baños</h3>
+                    <p class="municipality-desc">The Special Science and Nature City, home to the majestic Mount Makiling and therapeutic hot springs.</p>
+                    <div class="card-footer-custom">
+                        <span class="text-muted small"><i class="ph ph-tree me-1"></i> 1st Class Municipality</span>
+                        <span class="explore-btn">Explore <i class="ph ph-arrow-right"></i></span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Card 3: Pagsanjan -->
+        <div class="col">
+            <a href="/municipalities/pagsanjan" class="municipality-card">
+                <div class="card-img-wrapper">
+                    <div class="spot-count-badge"><i class="ph ph-map-pin-line me-1"></i> 5 Spots</div>
+                    <img src="https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=600&q=80" alt="Pagsanjan">
+                </div>
+                <div class="card-content">
+                    <h3 class="municipality-title">Pagsanjan</h3>
+                    <p class="municipality-desc">The Tourist Capital of Laguna, world-renowned for shooting the rapids to the spectacular Pagsanjan Falls.</p>
+                    <div class="card-footer-custom">
+                        <span class="text-muted small"><i class="ph ph-drop me-1"></i> Tourist Hub</span>
+                        <span class="explore-btn">Explore <i class="ph ph-arrow-right"></i></span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
