@@ -1,7 +1,13 @@
-from flask import render_template
+from flask import render_template, request
 
 def home():
+    # Check if the domain has 'admin' in it
+    if 'admin-ltcato' in request.host:
+        return render_template('views/admin_landing.html')
+    
+    # Otherwise, serve the normal user landing page
     return render_template('views/client/home.html')
+
 
 def explore_map():
     return render_template('views/client/explore_map.html')
