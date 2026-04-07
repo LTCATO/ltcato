@@ -1,41 +1,14 @@
 from controller.HomeController import home, explore_map, destination_details, municipalities, municipality_details, tourist_spots, lara_ai
 from controller.LoginController import login, register, logout
-from controller.DashboardController import dashboardIndex, accounts
+from controller.DashboardController import dashboardIndex, accounts, create_account, update_account, delete_account
 from controller.ArrivalsController import arrivals
 from controller.DecisionController import decision
 
 def register_routes(app):
+# CLIENT-FACING ROUTES
     @app.route("/")
     def home_page():
         return home()
-
-    @app.route("/login", methods=["GET", "POST"])
-    def login_page():
-        return login()
-
-    @app.route("/register")
-    def register_page():
-        return register()
-    
-    @app.route('/dashboard')
-    def dashboard_page():
-        return dashboardIndex()
-    
-    @app.route('/dashboard/accounts')
-    def accounts_page():
-        return accounts()
-    
-    @app.route('/dashboard/arrivals')
-    def arrivals_page():
-        return arrivals()
-    
-    @app.route('/dashboard/decision')
-    def decision_page():
-        return decision()
-
-    @app.route('/logout')
-    def logout_page():
-        return logout()
 
     @app.route('/explore-map')
     def explore_map_page():
@@ -60,3 +33,46 @@ def register_routes(app):
     @app.route('/lara-ai')
     def lara_ai_page():
         return lara_ai()
+
+# SUPERADMIN DASHBOARD ROUTES
+    
+    @app.route('/dashboard')
+    def dashboard_page():
+        return dashboardIndex()
+    
+    @app.route('/dashboard/accounts')
+    def accounts_page():
+        return accounts()
+    
+    @app.route('/dashboard/arrivals')
+    def arrivals_page():
+        return arrivals()
+    
+    @app.route('/dashboard/decision')
+    def decision_page():
+        return decision()
+
+# AUTH ROUTES
+    @app.route("/login", methods=["GET", "POST"])
+    def login_page():
+        return login()
+
+    @app.route("/register")
+    def register_page():
+        return register()
+    
+    @app.route('/accounts/create', methods=['POST'])
+    def create_account_page():
+        return create_account()
+
+    @app.route('/accounts/update/<string:user_id>', methods=['PUT'])
+    def update_account_page(user_id):
+        return update_account(user_id)
+
+    @app.route('/accounts/delete/<string:user_id>', methods=['DELETE'])
+    def delete_account_page(user_id):
+        return delete_account(user_id)
+
+    @app.route('/logout')
+    def logout_page():
+        return logout()
