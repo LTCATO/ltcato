@@ -2534,6 +2534,7 @@ body {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(127, 29, 29, 0.1);
   background: var(--card);
+  color: var(--foreground);
 }
 
 .form-select {
@@ -2552,6 +2553,7 @@ body {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(127, 29, 29, 0.1);
   background: var(--card);
+  color: var(--foreground);
 }
 
 /* Modal Buttons */

@@ -3,7 +3,7 @@ from supabase_client import supabase
 
 def login():
     # If already logged in, redirect to dashboard
-    if 'user' in session:
+    if 'user' in session and session.get('role_name') == 'super_admin':
         return redirect(url_for("dashboard_page"))
 
     if request.method == 'POST':
@@ -40,7 +40,10 @@ def login():
                     session["last_name"] = profile.get('last_name')
 
                     flash(f"Welcome back, {session.get('first_name', 'Admin')}!", "success")
-                    return redirect(url_for("dashboard_page"))
+                    if role_name == 'super_admin':
+                        return redirect(url_for("dashboard_page"))
+                    elif role_name == 'municipality_admin':
+                        return redirect(url_for("login_page"))    
                 else:
                     # No profile associated with this account
                     supabase.auth.sign_out()
