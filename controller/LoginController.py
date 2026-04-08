@@ -4,7 +4,7 @@ from supabase_client import supabase
 def login():
     if 'admin-ltcato' not in request.host:
         flash("Please log in with your administrator account to access the admin portal.", "info")
-        return home_page()  # Redirect to the public landing page instead of showing the login form
+        return redirect(url_for("home_page"))  # Redirect to the public landing page instead of showing the login form
     
     # If already logged in, redirect to dashboard
     if 'user' in session and session.get('role_name') == 'super_admin':
