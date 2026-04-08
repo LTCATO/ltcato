@@ -4,482 +4,311 @@
 
 {% block style %}
 <style>
-    /* Main Layout */
-    .main-layout {
-        min-height: calc(100vh - 76px);
-        background: #f9f9f9;
-        padding: 20px 40px;
+    .page-header {
+        background-color: var(--background, #faf7f5);
+        padding: 4rem 0 3rem;
+        border-bottom: 1px solid #e2e8f0;
     }
 
-    /* Search Header */
-    .search-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-        gap: 16px;
-    }
-
-    .search-input {
-        flex: 1;
-        max-width: 640px;
-        position: relative;
-    }
-
-    .search-input input {
-        width: 100%;
-        padding: 8px 40px 8px 16px;
-        border: 1px solid #ccc;
-        border-radius: 40px;
-        font-size: 16px;
-        outline: none;
-    }
-
-    .search-input input:focus {
-        border-color: #1c62b9;
-        box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
-    }
-
-    .search-btn {
-        position: absolute;
-        right: 0;
-        top: 0;
-        height: 100%;
-        border: none;
-        background: none;
-        padding: 0 16px;
-        cursor: pointer;
-        color: #606060;
-    }
-
-    /* Filter Pills */
-    .filter-pills {
-        display: flex;
-        gap: 12px;
-        margin-bottom: 20px;
-        overflow-x: auto;
-        padding-bottom: 8px;
-    }
-
-    .filter-pill {
-        padding: 8px 12px;
-        background: #f2f2f2;
-        border: 1px solid #f2f2f2;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 500;
-        color: #030303;
-        cursor: pointer;
-        white-space: nowrap;
+    /* Category Filter Pills */
+    .filter-btn {
+        border: 1px solid #e2e8f0;
+        background-color: white;
+        color: #64748b;
+        padding: 0.5rem 1.25rem;
+        border-radius: 99px;
+        font-weight: 600;
+        font-size: 0.9rem;
         transition: all 0.2s;
     }
 
-    .filter-pill:hover {
-        background: #e5e5e5;
+    .filter-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
     }
 
-    .filter-pill.active {
-        background: #030303;
+    .filter-btn.active {
+        background-color: var(--primary);
         color: white;
+        border-color: var(--primary);
+        box-shadow: 0 4px 10px rgba(155, 44, 44, 0.2);
     }
 
-    /* Video Grid */
-    .video-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 20px 16px;
-    }
-
-    /* Video Card */
-    .video-card {
+    /* Spot Cards */
+    .spot-card {
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
         display: flex;
         flex-direction: column;
         text-decoration: none;
         color: inherit;
-        cursor: pointer;
     }
 
-    .video-card:hover {
-        text-decoration: none;
+    .spot-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
         color: inherit;
     }
 
-    .video-thumbnail {
+    .card-img-wrapper {
         position: relative;
-        width: 100%;
-        padding-bottom: 56.25%;
-        background: #000;
-        border-radius: 12px;
+        height: 200px;
         overflow: hidden;
     }
 
-    .video-thumbnail img {
-        position: absolute;
-        top: 0;
-        left: 0;
+    .card-img-wrapper img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: opacity 0.2s;
+        transition: transform 0.5s ease;
     }
 
-    .video-card:hover .video-thumbnail img {
-        opacity: 0.9;
+    .spot-card:hover .card-img-wrapper img {
+        transform: scale(1.05);
     }
 
-    .video-duration {
+    /* Floating Badges */
+    .category-badge {
         position: absolute;
-        bottom: 4px;
-        right: 4px;
-        background: rgba(0, 0, 0, 0.8);
+        top: 1rem;
+        left: 1rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 0.5rem;
+        font-weight: 700;
+        font-size: 0.75rem;
         color: white;
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: 500;
-    }
-
-    .video-details {
-        display: flex;
-        padding-top: 12px;
-    }
-
-    .video-channel-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        margin-right: 12px;
-        background: #f2f2f2;
+        z-index: 2;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         display: flex;
         align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        color: #606060;
-        flex-shrink: 0;
+        gap: 0.35rem;
     }
 
-    .video-info {
-        flex: 1;
-        min-width: 0;
+    .badge-nature {
+        background-color: #10b981;
     }
 
-    .video-title {
-        font-size: 16px;
-        font-weight: 500;
-        color: #030303;
-        line-height: 1.4;
-        margin-bottom: 4px;
+    .badge-resort {
+        background-color: #f59e0b;
+    }
+
+    .badge-pilgrimage {
+        background-color: #8b5cf6;
+    }
+
+    .badge-heritage {
+        background-color: #64748b;
+    }
+
+    .rating-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(255, 255, 255, 0.95);
+        color: #fbbf24;
+        padding: 0.35rem 0.6rem;
+        border-radius: 0.5rem;
+        font-weight: 700;
+        font-size: 0.8rem;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .rating-badge span {
+        color: #1e293b;
+    }
+
+    .card-content {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .spot-location {
+        color: var(--primary);
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .spot-title {
+        color: #1e293b;
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .spot-desc {
+        color: #64748b;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 1.25rem;
+        flex-grow: 1;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
-
-    .video-channel {
-        font-size: 14px;
-        color: #606060;
-        margin-bottom: 4px;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
-
-    .video-channel i {
-        font-size: 12px;
-    }
-
-    .video-meta {
-        font-size: 14px;
-        color: #606060;
-    }
-
-    .video-rating {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        color: #fbbf24;
-    }
-
-    /* Category Badge */
-    .category-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        padding: 2px 8px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: 500;
-        margin-bottom: 4px;
-    }
-
-    .badge-nature {
-        background: #e8f5e8;
-        color: #10b981;
-    }
-
-    .badge-resort {
-        background: #fef3c7;
-        color: #f59e0b;
-    }
-
-    .badge-pilgrimage {
-        background: #f3e8ff;
-        color: #8b5cf6;
-    }
-
-    .badge-heritage {
-        background: #f1f5f9;
-        color: #64748b;
-    }
-
-    /* Responsive */
-    @media (max-width: 1024px) {
-        .main-layout {
-            padding: 20px 24px;
-        }
-        
-        .video-grid {
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        }
-    }
-
-    @media (max-width: 768px) {
-        .main-layout {
-            padding: 16px;
-        }
-        
-        .video-grid {
-            grid-template-columns: 1fr;
-        }
-    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="main-layout">
-    <!-- Search Header -->
-    <div class="search-header">
-        <div class="search-input">
-            <input type="text" placeholder="Search destinations..." id="searchInput">
-            <button class="search-btn">
-                <i class="ph ph-magnifying-glass"></i>
-            </button>
+<!-- Page Header & Filters -->
+<div class="page-header text-center">
+    <div class="container">
+        <h1 class="display-5 fw-bold mb-3" style="color: var(--primary);">Discover Destinations</h1>
+        <p class="text-muted fs-5 mx-auto mb-4" style="max-width: 600px;">
+            Find the perfect getaway. From relaxing hot springs to majestic waterfalls and historical shrines.
+        </p>
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-6">
+                <div class="input-group shadow-sm" style="border-radius: 99px; overflow: hidden;">
+                    <span class="input-group-text bg-white border-0 ps-4 text-muted"><i
+                            class="ph ph-magnifying-glass fs-5"></i></span>
+                    <input type="text" class="form-control border-0 py-3" placeholder="Search for a city or town..."
+                        style="box-shadow: none;">
+                    <button class="btn text-white px-4 fw-bold"
+                        style="background-color: var(--primary);">Search</button>
+                </div>
+            </div>
+        </div>
+        <!-- Interactive Category Filters -->
+        <div class="d-flex flex-wrap justify-content-center gap-2 mt-4" id="categoryFilters">
+            <button class="filter-btn active" data-filter="all">All Spots</button>
+            <button class="filter-btn" data-filter="resort"><i class="ph ph-swimming-pool me-1"></i> Resorts</button>
+            <button class="filter-btn" data-filter="nature"><i class="ph ph-tree me-1"></i> Nature</button>
+            <button class="filter-btn" data-filter="pilgrimage"><i class="ph ph-hands-praying me-1"></i>
+                Pilgrimage</button>
+            <button class="filter-btn" data-filter="heritage"><i class="ph ph-bank me-1"></i> Heritage</button>
         </div>
     </div>
+</div>
 
-    <!-- Filter Pills -->
-    <div class="filter-pills" id="filterPills">
-        <button class="filter-pill active" data-filter="all">All</button>
-        <button class="filter-pill" data-filter="resort">Resorts</button>
-        <button class="filter-pill" data-filter="nature">Nature</button>
-        <button class="filter-pill" data-filter="pilgrimage">Pilgrimage</button>
-        <button class="filter-pill" data-filter="heritage">Heritage</button>
-    </div>
+<!-- Main Grid Section -->
+<div class="container py-5 my-3">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="spotsGrid">
 
-    <!-- Video Grid -->
-    <div class="video-grid" id="spotsGrid">
         <!-- Spot 1: Resort -->
-        <div class="video-item" data-category="resort">
-            <a href="/destination/s1" class="video-card">
-                <div class="video-thumbnail">
-                    <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=600&q=80" alt="Wonderland Hot Spring">
-                    <div class="video-duration">4.5</div>
+        <div class="col spot-item" data-category="resort">
+            <a href="/destination/s1" class="spot-card">
+                <div class="card-img-wrapper">
+                    <div class="category-badge badge-resort"><i class="ph ph-swimming-pool"></i> Resort</div>
+                    <div class="rating-badge"><i class="ph-fill ph-star"></i> <span>4.5</span></div>
+                    <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=600&q=80"
+                        alt="Wonderland Hot Spring">
                 </div>
-                <div class="video-details">
-                    <div class="video-channel-avatar">
-                        <i class="ph ph-swimming-pool"></i>
-                    </div>
-                    <div class="video-info">
-                        <div class="category-badge badge-resort">
-                            <i class="ph ph-swimming-pool"></i>
-                            Resort
-                        </div>
-                        <div class="video-title">Wonderland Hot Spring - Relaxing Natural Pools in Calamba</div>
-                        <div class="video-channel">
-                            <i class="ph ph-map-pin-line"></i>
-                            Calamba City
-                        </div>
-                        <div class="video-meta">
-                            <span class="video-rating">
-                                <i class="ph-fill ph-star"></i>
-                                4.5 rating
-                            </span>
-                            <span>·</span>
-                            <span>2.3k views</span>
-                        </div>
-                    </div>
+                <div class="card-content">
+                    <span class="spot-location"><i class="ph ph-map-pin-line"></i> Calamba City</span>
+                    <h3 class="spot-title">Wonderland Hot Spring</h3>
+                    <p class="spot-desc">Relaxing natural hot spring resort featuring multiple therapeutic pools and
+                        private cottages.</p>
                 </div>
             </a>
         </div>
 
         <!-- Spot 2: Nature -->
-        <div class="video-item" data-category="nature">
-            <a href="/destination/s5" class="video-card">
-                <div class="video-thumbnail">
-                    <img src="https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=600&q=80" alt="Pagsanjan Falls">
-                    <div class="video-duration">4.8</div>
+        <div class="col spot-item" data-category="nature">
+            <a href="/destination/s5" class="spot-card">
+                <div class="card-img-wrapper">
+                    <div class="category-badge badge-nature"><i class="ph ph-tree"></i> Nature</div>
+                    <div class="rating-badge"><i class="ph-fill ph-star"></i> <span>4.8</span></div>
+                    <img src="https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=600&q=80"
+                        alt="Pagsanjan Falls">
                 </div>
-                <div class="video-details">
-                    <div class="video-channel-avatar">
-                        <i class="ph ph-tree"></i>
-                    </div>
-                    <div class="video-info">
-                        <div class="category-badge badge-nature">
-                            <i class="ph ph-tree"></i>
-                            Nature
-                        </div>
-                        <div class="video-title">Pagsanjan Falls - Thrilling Canoe Adventure to Majestic Waterfall</div>
-                        <div class="video-channel">
-                            <i class="ph ph-map-pin-line"></i>
-                            Pagsanjan
-                        </div>
-                        <div class="video-meta">
-                            <span class="video-rating">
-                                <i class="ph-fill ph-star"></i>
-                                4.8 rating
-                            </span>
-                            <span>·</span>
-                            <span>5.1k views</span>
-                        </div>
-                    </div>
+                <div class="card-content">
+                    <span class="spot-location"><i class="ph ph-map-pin-line"></i> Pagsanjan</span>
+                    <h3 class="spot-title">Pagsanjan Falls</h3>
+                    <p class="spot-desc">One of the most famous waterfalls in the Philippines, accessible via a
+                        thrilling canoe ride.</p>
                 </div>
             </a>
         </div>
 
         <!-- Spot 3: Pilgrimage -->
-        <div class="video-item" data-category="pilgrimage">
-            <a href="/destination/s2" class="video-card">
-                <div class="video-thumbnail">
-                    <img src="https://images.unsplash.com/photo-1548625361-ec8464673327?auto=format&fit=crop&w=600&q=80" alt="St. John the Baptist Parish">
-                    <div class="video-duration">4.6</div>
+        <div class="col spot-item" data-category="pilgrimage">
+            <a href="/destination/s2" class="spot-card">
+                <div class="card-img-wrapper">
+                    <div class="category-badge badge-pilgrimage"><i class="ph ph-hands-praying"></i> Pilgrimage</div>
+                    <div class="rating-badge"><i class="ph-fill ph-star"></i> <span>4.6</span></div>
+                    <img src="https://images.unsplash.com/photo-1548625361-ec8464673327?auto=format&fit=crop&w=600&q=80"
+                        alt="St. John the Baptist Parish">
                 </div>
-                <div class="video-details">
-                    <div class="video-channel-avatar">
-                        <i class="ph ph-hands-praying"></i>
-                    </div>
-                    <div class="video-info">
-                        <div class="category-badge badge-pilgrimage">
-                            <i class="ph ph-hands-praying"></i>
-                            Pilgrimage
-                        </div>
-                        <div class="video-title">St. John the Baptist Parish - Historical Church Where Rizal Was Baptized</div>
-                        <div class="video-channel">
-                            <i class="ph ph-map-pin-line"></i>
-                            Calamba City
-                        </div>
-                        <div class="video-meta">
-                            <span class="video-rating">
-                                <i class="ph-fill ph-star"></i>
-                                4.6 rating
-                            </span>
-                            <span>·</span>
-                            <span>1.8k views</span>
-                        </div>
-                    </div>
+                <div class="card-content">
+                    <span class="spot-location"><i class="ph ph-map-pin-line"></i> Calamba City</span>
+                    <h3 class="spot-title">St. John the Baptist Parish</h3>
+                    <p class="spot-desc">A beautiful historical church where the Philippine national hero Jose Rizal was
+                        baptized.</p>
                 </div>
             </a>
         </div>
 
         <!-- Spot 4: Nature -->
-        <div class="video-item" data-category="nature">
-            <a href="/destination/s3" class="video-card">
-                <div class="video-thumbnail">
-                    <img src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=600&q=80" alt="Mt. Makiling">
-                    <div class="video-duration">4.7</div>
+        <div class="col spot-item" data-category="nature">
+            <a href="/destination/s3" class="spot-card">
+                <div class="card-img-wrapper">
+                    <div class="category-badge badge-nature"><i class="ph ph-tree"></i> Nature</div>
+                    <div class="rating-badge"><i class="ph-fill ph-star"></i> <span>4.7</span></div>
+                    <img src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=600&q=80"
+                        alt="Mt. Makiling">
                 </div>
-                <div class="video-details">
-                    <div class="video-channel-avatar">
-                        <i class="ph ph-tree"></i>
-                    </div>
-                    <div class="video-info">
-                        <div class="category-badge badge-nature">
-                            <i class="ph ph-tree"></i>
-                            Nature
-                        </div>
-                        <div class="video-title">Mt. Makiling Forest Reserve - Hiking Trails and Rich Biodiversity</div>
-                        <div class="video-channel">
-                            <i class="ph ph-map-pin-line"></i>
-                            Los Baños
-                        </div>
-                        <div class="video-meta">
-                            <span class="video-rating">
-                                <i class="ph-fill ph-star"></i>
-                                4.7 rating
-                            </span>
-                            <span>·</span>
-                            <span>3.2k views</span>
-                        </div>
-                    </div>
+                <div class="card-content">
+                    <span class="spot-location"><i class="ph ph-map-pin-line"></i> Los Baños</span>
+                    <h3 class="spot-title">Mt. Makiling Forest Reserve</h3>
+                    <p class="spot-desc">A dormant volcano famous for its rich biodiversity, hiking trails, and
+                        legendary folklore.</p>
                 </div>
             </a>
         </div>
 
         <!-- Spot 5: Heritage -->
-        <div class="video-item" data-category="heritage">
-            <a href="/destination/s6" class="video-card">
-                <div class="video-thumbnail">
-                    <img src="https://images.unsplash.com/photo-1505305976870-c0be1cd39939?auto=format&fit=crop&w=600&q=80" alt="Rizal Shrine">
-                    <div class="video-duration">4.9</div>
+        <div class="col spot-item" data-category="heritage">
+            <a href="/destination/s6" class="spot-card">
+                <div class="card-img-wrapper">
+                    <div class="category-badge badge-heritage"><i class="ph ph-bank"></i> Heritage</div>
+                    <div class="rating-badge"><i class="ph-fill ph-star"></i> <span>4.9</span></div>
+                    <img src="https://images.unsplash.com/photo-1505305976870-c0be1cd39939?auto=format&fit=crop&w=600&q=80"
+                        alt="Rizal Shrine">
                 </div>
-                <div class="video-details">
-                    <div class="video-channel-avatar">
-                        <i class="ph ph-bank"></i>
-                    </div>
-                    <div class="video-info">
-                        <div class="category-badge badge-heritage">
-                            <i class="ph ph-bank"></i>
-                            Heritage
-                        </div>
-                        <div class="video-title">Rizal Shrine - Birthplace of Philippine National Hero Dr. Jose Rizal</div>
-                        <div class="video-channel">
-                            <i class="ph ph-map-pin-line"></i>
-                            Calamba City
-                        </div>
-                        <div class="video-meta">
-                            <span class="video-rating">
-                                <i class="ph-fill ph-star"></i>
-                                4.9 rating
-                            </span>
-                            <span>·</span>
-                            <span>4.5k views</span>
-                        </div>
-                    </div>
+                <div class="card-content">
+                    <span class="spot-location"><i class="ph ph-map-pin-line"></i> Calamba City</span>
+                    <h3 class="spot-title">Rizal Shrine</h3>
+                    <p class="spot-desc">A reproduction of the original two-story, Spanish-colonial style house where
+                        Dr. Jose Rizal was born.</p>
                 </div>
             </a>
         </div>
 
         <!-- Spot 6: Resort -->
-        <div class="video-item" data-category="resort">
-            <a href="/destination/s7" class="video-card">
-                <div class="video-thumbnail">
-                    <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80" alt="Hidden Valley Springs">
-                    <div class="video-duration">4.4</div>
+        <div class="col spot-item" data-category="resort">
+            <a href="/destination/s7" class="spot-card">
+                <div class="card-img-wrapper">
+                    <div class="category-badge badge-resort"><i class="ph ph-swimming-pool"></i> Resort</div>
+                    <div class="rating-badge"><i class="ph-fill ph-star"></i> <span>4.4</span></div>
+                    <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80"
+                        alt="Hidden Valley Springs">
                 </div>
-                <div class="video-details">
-                    <div class="video-channel-avatar">
-                        <i class="ph ph-swimming-pool"></i>
-                    </div>
-                    <div class="video-info">
-                        <div class="category-badge badge-resort">
-                            <i class="ph ph-swimming-pool"></i>
-                            Resort
-                        </div>
-                        <div class="video-title">Hidden Valley Springs - Secluded Tropical Paradise in Calauan</div>
-                        <div class="video-channel">
-                            <i class="ph ph-map-pin-line"></i>
-                            Calauan
-                        </div>
-                        <div class="video-meta">
-                            <span class="video-rating">
-                                <i class="ph-fill ph-star"></i>
-                                4.4 rating
-                            </span>
-                            <span>·</span>
-                            <span>2.1k views</span>
-                        </div>
-                    </div>
+                <div class="card-content">
+                    <span class="spot-location"><i class="ph ph-map-pin-line"></i> Calauan</span>
+                    <h3 class="spot-title">Hidden Valley Springs</h3>
+                    <p class="spot-desc">A secluded tropical rainforest resort featuring natural thermal pools enclosed
+                        by majestic trees.</p>
                 </div>
             </a>
         </div>
+
     </div>
 </div>
 {% endblock %}
@@ -487,52 +316,28 @@
 {% block script %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Filter functionality
-        const filterItems = document.querySelectorAll('.filter-pill');
-        const videoItems = document.querySelectorAll('.video-item');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const spotItems = document.querySelectorAll('.spot-item');
 
-        function setActiveFilter(filterValue) {
-            // Remove active class from all filter items
-            filterItems.forEach(item => {
-                item.classList.remove('active');
-                if (item.getAttribute('data-filter') === filterValue) {
-                    item.classList.add('active');
-                }
-            });
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all
+                filterBtns.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked
+                btn.classList.add('active');
 
-            // Filter videos
-            videoItems.forEach(item => {
-                if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
-                    item.style.display = 'block';
-                    item.style.animation = 'fadeIn 0.5s ease forwards';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
+                const filterValue = btn.getAttribute('data-filter');
 
-        filterItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                const filterValue = item.getAttribute('data-filter');
-                setActiveFilter(filterValue);
-            });
-        });
-
-        // Search functionality
-        const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            
-            videoItems.forEach(item => {
-                const title = item.querySelector('.video-title').textContent.toLowerCase();
-                const location = item.querySelector('.video-channel').textContent.toLowerCase();
-                
-                if (title.includes(searchTerm) || location.includes(searchTerm)) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
+                // Filter logic
+                spotItems.forEach(item => {
+                    if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                        item.style.display = 'block';
+                        // Add a slight fade-in animation
+                        item.style.animation = 'fadeIn 0.5s ease forwards';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
             });
         });
     });
@@ -544,6 +349,7 @@
             opacity: 0;
             transform: translateY(10px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);

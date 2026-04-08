@@ -1,6 +1,222 @@
 {% extends 'base.html' %} 
 {% block title %}Home | LTCATO{% endblock %}
 
+{% block style %}
+<style>
+/* Hero Section Styles */
+.hero-section {
+  position: relative;
+  background: linear-gradient(135deg, rgba(155, 44, 44, 0.85) 0%, rgba(0, 0, 0, 0.8) 100%), url('https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+  color: white;
+  padding: 120px 0 100px;
+  overflow: hidden;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.5px;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1.25rem;
+  line-height: 1.2;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 3rem;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+/* Floating Search Bar */
+.hero-search-card {
+  background: white;
+  padding: 0.5rem;
+  border-radius: 99px;
+  display: flex;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  max-width: 650px;
+  margin: 0 auto 3rem;
+}
+
+.hero-search-input {
+  border: none;
+  background: transparent;
+  padding: 1rem 1.5rem;
+  width: 100%;
+  color: #1e293b;
+  font-weight: 500;
+}
+
+.hero-search-input:focus {
+  outline: none;
+}
+
+.hero-search-btn {
+  background: var(--primary, #9b2c2c);
+  color: white;
+  border: none;
+  border-radius: 99px;
+  padding: 0 2rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.hero-search-btn:hover {
+  background: #7f1d1d;
+  transform: scale(1.02);
+}
+
+/* SaaS Feature Highlight Section */
+.features-section {
+  padding: 5rem 0;
+  background: #fff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.feature-box {
+  text-align: center;
+  padding: 2rem;
+  transition: transform 0.3s ease;
+}
+
+.feature-box:hover {
+  transform: translateY(-5px);
+}
+
+.feature-icon-wrapper {
+  width: 70px;
+  height: 70px;
+  background: rgba(155, 44, 44, 0.05);
+  color: var(--primary);
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  margin: 0 auto 1.5rem;
+}
+
+/* Split Showcase Section (Meet Lara AI) */
+.showcase-section {
+  padding: 6rem 0;
+  background: var(--background, #faf7f5);
+}
+
+.showcase-img {
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  width: 100%;
+}
+
+/* Featured Destinations Grid */
+.featured-section {
+  padding: 6rem 0;
+  background: white;
+}
+
+.featured-card {
+  background: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+  height: 100%;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.featured-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+  color: inherit;
+}
+
+.card-img-container {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+}
+
+.featured-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.featured-card:hover .featured-image {
+  transform: scale(1.05);
+}
+
+.card-badges {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+/* Stats Section */
+.stats-section {
+  background: var(--primary);
+  padding: 4rem 0;
+  color: white;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.stat-number {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+/* CTA Section */
+.cta-section {
+  padding: 6rem 0;
+  text-align: center;
+  background: #fff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-title { font-size: 2.5rem; }
+  .hero-section { padding: 80px 0 60px; }
+  .hero-search-card { flex-direction: column; padding: 1rem; border-radius: 1rem; }
+  .hero-search-btn { padding: 1rem; border-radius: 0.5rem; margin-top: 0.5rem; }
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <!-- Immersive Hero Section -->
 <section class="hero-section">
@@ -135,7 +351,7 @@
                 </div>
             </div>
             <p class="text-muted small mb-3"><i class="ph ph-map-pin me-1"></i> Pagsanjan, Laguna</p>
-            <p class="text-muted small mb-0 line-clamp">Experience the thrill of shooting the rapids to this magnificent waterfall, one of Laguna's most famous natural wonders.</p>
+            <p class="text-muted small mb-0" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Experience the thrill of shooting the rapids to this magnificent waterfall, one of Laguna's most famous natural wonders.</p>
           </div>
         </a>
       </div>
@@ -157,7 +373,7 @@
                 </div>
             </div>
             <p class="text-muted small mb-3"><i class="ph ph-map-pin me-1"></i> Calamba City, Laguna</p>
-            <p class="text-muted small mb-0 line-clamp">Relax and rejuvenate in natural therapeutic hot springs that have been visited by tourists for decades.</p>
+            <p class="text-muted small mb-0" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Relax and rejuvenate in natural therapeutic hot springs that have been visited by tourists for decades.</p>
           </div>
         </a>
       </div>
@@ -179,7 +395,7 @@
                 </div>
             </div>
             <p class="text-muted small mb-3"><i class="ph ph-map-pin me-1"></i> Calamba City, Laguna</p>
-            <p class="text-muted small mb-0 line-clamp">A beautiful reproduction of the original Spanish-colonial style house where the national hero Dr. Jose Rizal was born.</p>
+            <p class="text-muted small mb-0" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">A beautiful reproduction of the original Spanish-colonial style house where the national hero Dr. Jose Rizal was born.</p>
           </div>
         </a>
       </div>

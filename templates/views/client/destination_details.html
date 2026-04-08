@@ -3,436 +3,325 @@
 {% block title %}Wonderland Hot Spring | LTCATO{% endblock %}
 
 {% block style %}
+<style>
+    /* Hero Section */
+    .destination-hero {
+        position: relative;
+        height: 50vh;
+        min-height: 400px;
+        background-image: url('https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1920&q=80');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: flex-end;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 100%);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        padding-bottom: 3rem;
+        width: 100%;
+    }
+
+    /* Content Layout */
+    .content-section {
+        padding: 4rem 0;
+        background-color: var(--background, #faf7f5);
+    }
+
+    .detail-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        border: 1px solid rgba(0,0,0,0.05);
+        position: sticky;
+        top: 100px;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .detail-icon {
+        width: 40px;
+        height: 40px;
+        background-color: rgba(155, 44, 44, 0.1);
+        color: var(--primary, #9b2c2c);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    /* Feedback Section */
+    .feedback-section {
+        margin-top: 4rem;
+        padding-top: 3rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .feedback-card {
+        background: white;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid #e2e8f0;
+    }
+
+    .star-rating i {
+        color: #fbbf24;
+        font-size: 1.1rem;
+    }
+
+    .star-rating i.empty {
+        color: #e2e8f0;
+    }
+
+    /* Form Styles */
+    .custom-form-control {
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        background-color: #f8fafc;
+    }
+    
+    .custom-form-control:focus {
+        background-color: white;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(155, 44, 44, 0.1);
+    }
+
+    /* Rating Input Widget */
+    .rating-input {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+    
+    .rating-input input {
+        display: none;
+    }
+    
+    .rating-input label {
+        cursor: pointer;
+        font-size: 2rem;
+        color: #e2e8f0;
+        transition: color 0.2s;
+        padding-right: 0.25rem;
+    }
+    
+    .rating-input input:checked ~ label,
+    .rating-input label:hover,
+    .rating-input label:hover ~ label {
+        color: #fbbf24;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="destination-details">
-  <div class="main-layout">
-    <!-- Left Column - Main Content -->
-    <div class="content-area">
-        <!-- Main Image -->
-        <div class="main-image-container">
-            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1200&q=80" alt="Iceland Landscape" class="main-image">
-        </div>
-        
-        <!-- Title and Location -->
-        <div class="destination-info">
-            <h1 class="destination-title">Hidden Gems of Iceland: Beyond the Golden Circle</h1>
-            <div class="destination-location">
-                <i class="ph ph-map-pin"></i> Reykjavik, Iceland
-            </div>
-            <button class="view-gallery-btn" onclick="openGallery()">
-                <i class="ph ph-images"></i>
-                View Gallery
-            </button>
-        </div>
+<!-- Note: In a real implementation, you would pass a 'spot' object from Flask and use spot.name, spot.image, etc. -->
 
-        <!-- Description Section -->
-        <div class="description-section">
-            <div class="description-header" onclick="toggleDescription()">
-                <h2 class="description-title">Description</h2>
-                <button class="description-toggle" id="descriptionToggle">
-                    <i class="ph ph-caret-down" id="toggleIcon"></i>
-                </button>
-            </div>
-            <div class="description-content" id="descriptionContent">
-                <p class="description-text">
-                    Discover the hidden gems of Iceland that lie beyond the popular Golden Circle route. This extraordinary journey takes you through some of Iceland's most breathtaking landscapes, from dramatic waterfalls and geothermal hot springs to remote highlands and pristine glaciers. Experience the raw beauty of nature in its purest form as you explore volcanic craters, black sand beaches, and the mystical Northern Lights dancing across the Arctic sky.
-                </p>
-                <p class="description-text">
-                    Our expert guides will lead you through ancient lava fields, share fascinating stories about Icelandic folklore, and introduce you to local traditions that have been preserved for centuries. Whether you're seeking adventure, relaxation, or cultural immersion, this off-the-beaten-path experience promises memories that will last a lifetime.
-                </p>
-                <div class="description-highlights">
-                    <h4>What's Included:</h4>
-                    <ul class="highlights-list">
-                        <li><i class="ph ph-check-circle"></i> Professional local guide</li>
-                        <li><i class="ph ph-check-circle"></i> Small group experience (max 12 people)</li>
-                        <li><i class="ph ph-check-circle"></i> Transportation in modified 4x4 vehicle</li>
-                        <li><i class="ph ph-check-circle"></i> Traditional Icelandic lunch</li>
-                        <li><i class="ph ph-check-circle"></i> Photography assistance</li>
-                        <li><i class="ph ph-check-circle"></i> Thermal gear and safety equipment</li>
-                    </ul>
-                </div>
+<!-- Hero Section -->
+<div class="destination-hero">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+        <div class="row">
+            <div class="col-lg-8 text-white">
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill mb-3 fw-bold shadow-sm">
+                    <i class="ph ph-swimming-pool me-1"></i> Resort
+                </span>
+                <h1 class="display-4 fw-bold mb-2">Wonderland Hot Spring</h1>
+                <p class="fs-5 mb-0 text-white-50"><i class="ph ph-map-pin me-2"></i>Calamba City, Laguna</p>
             </div>
         </div>
+    </div>
+</div>
 
-        <!-- Feedbacks Section -->
-        <div class="feedbacks-section">
-            <div class="feedbacks-header">
-                <h2 class="feedbacks-title">Guest Feedbacks</h2>
-                <div class="feedbacks-summary">
-                    <div class="rating-overview">
-                        <span class="rating-number">4.8</span>
-                        <div class="rating-stars">
-                            <i class="ph-fill ph-star"></i>
-                            <i class="ph-fill ph-star"></i>
-                            <i class="ph-fill ph-star"></i>
-                            <i class="ph-fill ph-star"></i>
-                            <i class="ph-fill ph-star"></i>
-                        </div>
-                        <span class="rating-count">(234 reviews)</span>
-                    </div>
-                </div>
-            </div>
-            <div class="feedbacks-list">
-                <!-- Feedback 1 -->
-                <div class="feedback-card">
-                    <div class="feedback-author">
-                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=40&q=80" alt="Sarah" class="author-avatar">
-                        <div class="author-info">
-                            <h4 class="author-name">Sarah Johnson</h4>
-                            <div class="feedback-rating">
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star"></i>
-                            </div>
-                        </div>
-                        <span class="feedback-date">2 days ago</span>
-                    </div>
-                    <p class="feedback-text">
-                        Absolutely incredible experience! Our guide was knowledgeable and passionate about Iceland's hidden gems. The small group size made it feel personal and we got to see places most tourists never visit. Highly recommend!
-                    </p>
-                </div>
-
-                <!-- Feedback 2 -->
-                <div class="feedback-card">
-                    <div class="feedback-author">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=40&q=80" alt="Michael" class="author-avatar">
-                        <div class="author-info">
-                            <h4 class="author-name">Michael Chen</h4>
-                            <div class="feedback-rating">
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph ph-star"></i>
-                            </div>
-                        </div>
-                        <span class="feedback-date">1 week ago</span>
-                    </div>
-                    <p class="feedback-text">
-                        Great tour with amazing landscapes. The guide knew all the best photo spots and the 4x4 vehicle handled the terrain perfectly. Only downside was the weather was unpredictable, but that's Iceland for you!
-                    </p>
-                </div>
-
-                <!-- Feedback 3 -->
-                <div class="feedback-card">
-                    <div class="feedback-author">
-                        <img src="https://images.unsplash.com/photo-1494790108755-2616b332c6cd?auto=format&fit=crop&w=40&q=80" alt="Emma" class="author-avatar">
-                        <div class="author-info">
-                            <h4 class="author-name">Emma Wilson</h4>
-                            <div class="feedback-rating">
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star"></i>
-                            </div>
-                        </div>
-                        <span class="feedback-date">2 weeks ago</span>
-                    </div>
-                    <p class="feedback-text">
-                        This was the highlight of our Iceland trip! We saw waterfalls, geothermal areas, and even spotted the Northern Lights. The traditional lunch was delicious and our guide's stories about Icelandic mythology were fascinating.
-                    </p>
-                </div>
-
-                <!-- Feedback 4 -->
-                <div class="feedback-card">
-                    <div class="feedback-author">
-                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=40&q=80" alt="David" class="author-avatar">
-                        <div class="author-info">
-                            <h4 class="author-name">David Martinez</h4>
-                            <div class="feedback-rating">
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph ph-star"></i>
-                            </div>
-                        </div>
-                        <span class="feedback-date">3 weeks ago</span>
-                    </div>
-                    <p class="feedback-text">
-                        Well-organized tour with comfortable transportation. The guide was very knowledgeable about geology and history. Would have liked more time at some locations, but overall a fantastic day exploring Iceland's natural wonders.
-                    </p>
-                </div>
-            </div>
-            <button class="load-more-feedbacks">Load More Feedbacks</button>
-        </div>
-    </div> <!-- Added closing div tag for content-area -->
-    <!-- Right Column - Explore More -->
-    <div class="sidebar-right">
-        <div class="sidebar-card">
-            <h3 class="sidebar-title">More on Pagsanjan</h3>
+<!-- Main Content -->
+<section class="content-section">
+    <div class="container">
+        <div class="row g-5">
             
-            <!-- Destination Cards -->
-            <a href="#" class="spot-card">
-                <div class="spot-thumbnail">
-                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=400&q=80" alt="Destination 1">
-                    <div class="spot-category">Adventure</div>
+            <!-- Left Column: Description & Feedback -->
+            <div class="col-lg-8">
+                
+                <!-- About -->
+                <div class="mb-5">
+                    <h3 class="fw-bold mb-4" style="color: var(--primary);">About this Destination</h3>
+                    <p class="fs-6 text-muted lh-lg">
+                        Nestled at the foothills of Mount Makiling, Wonderland Hot Spring offers a therapeutic escape with its naturally heated thermal pools. Known for its rich mineral waters, this resort has been a favorite destination for families and travelers seeking relaxation and wellness in the heart of Calamba City.
+                    </p>
+                    <p class="fs-6 text-muted lh-lg">
+                        The resort features multiple pools varying in temperature, private cottages, and lush garden landscapes. It's the perfect place to unwind after a long week, offering both day tours and overnight accommodations.
+                    </p>
                 </div>
-                <div class="spot-title">Northern Lights Chase</div>
-                <div class="spot-location">
-                    <i class="ph ph-map-pin-line"></i> Tromsø, Norway
-                </div>
-                <div class="spot-meta">
-                    <span>2.1k views</span> · <span>3 days ago</span>
-                </div>
-            </a>
 
-            <a href="#" class="spot-card">
-                <div class="spot-thumbnail">
-                    <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=400&q=80" alt="Destination 2">
-                    <div class="spot-category">Nature</div>
-                </div>
-                <div class="spot-title">Swiss Alps Adventure</div>
-                <div class="spot-location">
-                    <i class="ph ph-map-pin-line"></i> Interlaken, Switzerland
-                </div>
-                <div class="spot-meta">
-                    <span>1.8k views</span> · <span>1 week ago</span>
-                </div>
-            </a>
+                <!-- Feedback Section -->
+                <div class="feedback-section">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold mb-0">Guest Experiences</h4>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fs-5 fw-bold">4.5</span>
+                            <div class="star-rating">
+                                <i class="ph-fill ph-star"></i>
+                                <i class="ph-fill ph-star"></i>
+                                <i class="ph-fill ph-star"></i>
+                                <i class="ph-fill ph-star"></i>
+                                <i class="ph-fill ph-star-half"></i>
+                            </div>
+                            <span class="text-muted small">(24 reviews)</span>
+                        </div>
+                    </div>
 
-            <a href="#" class="spot-card">
-                <div class="spot-thumbnail">
-                    <img src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=400&q=80" alt="Destination 3">
-                    <div class="spot-category">Cultural</div>
-                </div>
-                <div class="spot-title">Ancient Temple Discovery</div>
-                <div class="spot-location">
-                    <i class="ph ph-map-pin-line"></i> Kyoto, Japan
-                </div>
-                <div class="spot-meta">
-                    <span>3.2k views</span> · <span>2 weeks ago</span>
-                </div>
-            </a>
+                    <!-- Existing Feedback List -->
+                    <div class="mb-5">
+                        <!-- Review 1 (Masked Name Example) -->
+                        <div class="feedback-card">
+                            <div class="d-flex justify-content-between mb-2">
+                                <div>
+                                    <h6 class="fw-bold mb-1">De*****k A*****n</h6>
+                                    <div class="star-rating small">
+                                        <i class="ph-fill ph-star"></i>
+                                        <i class="ph-fill ph-star"></i>
+                                        <i class="ph-fill ph-star"></i>
+                                        <i class="ph-fill ph-star"></i>
+                                        <i class="ph-fill ph-star"></i>
+                                    </div>
+                                </div>
+                                <span class="text-muted small">2 days ago</span>
+                            </div>
+                            <p class="text-muted mb-0 small">The water temperature was perfect! Highly recommend renting a private cottage if you are coming with a large group. Very relaxing experience overall.</p>
+                        </div>
 
-            <a href="#" class="spot-card">
-                <div class="spot-thumbnail">
-                    <img src="https://images.unsplash.com/photo-1519904981063-b0cf448d479e?auto=format&fit=crop&w=400&q=80" alt="Destination 4">
-                    <div class="spot-category">Beach</div>
-                </div>
-                <div class="spot-title">Tropical Paradise Escape</div>
-                <div class="spot-location">
-                    <i class="ph ph-map-pin-line"></i> Maldives
-                </div>
-                <div class="spot-meta">
-                    <span>5.1k views</span> · <span>1 month ago</span>
-                </div>
-            </a>
+                        <!-- Review 2 (Anonymous Example) -->
+                        <div class="feedback-card">
+                            <div class="d-flex justify-content-between mb-2">
+                                <div>
+                                    <h6 class="fw-bold mb-1 text-muted">Anonymous Guest</h6>
+                                    <div class="star-rating small">
+                                        <i class="ph-fill ph-star"></i>
+                                        <i class="ph-fill ph-star"></i>
+                                        <i class="ph-fill ph-star"></i>
+                                        <i class="ph-fill ph-star"></i>
+                                        <i class="ph ph-star empty"></i>
+                                    </div>
+                                </div>
+                                <span class="text-muted small">1 week ago</span>
+                            </div>
+                            <p class="text-muted mb-0 small">Good place to unwind, but it gets very crowded on weekends. Try to visit on a weekday morning for the best experience.</p>
+                        </div>
+                    </div>
 
-            <a href="#" class="spot-card">
-                <div class="spot-thumbnail">
-                    <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=400&q=80" alt="Destination 5">
-                    <div class="spot-category">Mountain</div>
-                </div>
-                <div class="spot-title">Peak Summit Challenge</div>
-                <div class="spot-location">
-                    <i class="ph ph-map-pin-line"></i> Patagonia, Chile
-                </div>
-                <div class="spot-meta">
-                    <span>892 views</span> · <span>2 months ago</span>
-                </div>
-            </a>
+                    <!-- Leave Feedback Form -->
+                    <div class="bg-white p-4 rounded-4 shadow-sm border border-light">
+                        <h5 class="fw-bold mb-4">Share Your Experience</h5>
+                        <form action="#" method="POST">
+                            
+                            <!-- Rating -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-muted small mb-1">Overall Rating</label>
+                                <div class="rating-input">
+                                    <input type="radio" id="star5" name="rating" value="5" />
+                                    <label for="star5" title="5 stars"><i class="ph-fill ph-star"></i></label>
+                                    
+                                    <input type="radio" id="star4" name="rating" value="4" />
+                                    <label for="star4" title="4 stars"><i class="ph-fill ph-star"></i></label>
+                                    
+                                    <input type="radio" id="star3" name="rating" value="3" />
+                                    <label for="star3" title="3 stars"><i class="ph-fill ph-star"></i></label>
+                                    
+                                    <input type="radio" id="star2" name="rating" value="2" />
+                                    <label for="star2" title="2 stars"><i class="ph-fill ph-star"></i></label>
+                                    
+                                    <input type="radio" id="star1" name="rating" value="1" required />
+                                    <label for="star1" title="1 star"><i class="ph-fill ph-star"></i></label>
+                                </div>
+                            </div>
 
-            <a href="#" class="spot-card">
-                <div class="spot-thumbnail">
-                    <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&w=400&q=80" alt="Destination 6">
-                    <div class="spot-category">Desert</div>
+                            <!-- Name (Optional) -->
+                            <div class="mb-3">
+                                <label for="guest_name" class="form-label fw-semibold text-muted small">Your Name (Optional)</label>
+                                <input type="text" class="form-control custom-form-control" id="guest_name" name="guest_name" placeholder="Leave blank to remain anonymous">
+                                <div class="form-text mt-1" style="font-size: 0.75rem;">
+                                    <i class="ph ph-shield-check text-success me-1"></i> Your privacy is protected. Names provided are partially masked (e.g., De****k A*****n) before being published.
+                                </div>
+                            </div>
+
+                            <!-- Comments -->
+                            <div class="mb-4">
+                                <label for="comments" class="form-label fw-semibold text-muted small">Your Review</label>
+                                <textarea class="form-control custom-form-control" id="comments" name="comments" rows="4" placeholder="Tell us about your visit..." required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn text-white w-100 py-2 rounded-pill fw-bold" style="background-color: var(--primary);">
+                                Submit Feedback
+                            </button>
+                        </form>
+                    </div>
+
                 </div>
-                <div class="spot-title">Sahara Desert Expedition</div>
-                <div class="spot-location">
-                    <i class="ph ph-map-pin-line"></i> Marrakech, Morocco
+            </div>
+
+            <!-- Right Column: Sticky Sidebar Info -->
+            <div class="col-lg-4">
+                <div class="detail-card">
+                    <h5 class="fw-bold mb-4 border-bottom pb-3">Quick Facts</h5>
+                    
+                    <div class="detail-item">
+                        <div class="detail-icon"><i class="ph ph-map-pin-line"></i></div>
+                        <div>
+                            <span class="d-block text-muted small fw-semibold text-uppercase">Location</span>
+                            <span class="fw-medium text-dark">Calamba City</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-icon"><i class="ph ph-swimming-pool"></i></div>
+                        <div>
+                            <span class="d-block text-muted small fw-semibold text-uppercase">Category</span>
+                            <span class="fw-medium text-dark">Resort / Hot Spring</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-icon"><i class="ph ph-clock"></i></div>
+                        <div>
+                            <span class="d-block text-muted small fw-semibold text-uppercase">Status</span>
+                            <span class="badge bg-success rounded-pill fw-normal mt-1">Open Now</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-top">
+                        <button class="btn btn-outline-dark w-100 mb-2 rounded-pill d-flex align-items-center justify-content-center gap-2">
+                            <i class="ph ph-navigation-arrow"></i> Get Directions
+                        </button>
+                        <button class="btn btn-light w-100 rounded-pill text-muted border d-flex align-items-center justify-content-center gap-2">
+                            <i class="ph ph-share-network"></i> Share
+                        </button>
+                    </div>
                 </div>
-                <div class="spot-meta">
-                    <span>1.5k views</span> · <span>3 months ago</span>
-                </div>
-            </a>
+            </div>
+
         </div>
     </div>
-</div>
-
-<!-- Gallery Modal -->
-<div class="gallery-modal" id="galleryModal">
-    <div class="gallery-overlay" onclick="closeGallery()"></div>
-    <div class="gallery-content">
-        <div class="gallery-header">
-            <h3 class="gallery-title">Photo Gallery</h3>
-            <button class="gallery-close" onclick="closeGallery()">
-                <i class="ph ph-x"></i>
-            </button>
-        </div>
-        <div class="gallery-grid">
-            <div class="gallery-item" onclick="viewImage(0)">
-                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80" alt="Iceland Landscape 1">
-                <div class="gallery-overlay">
-                    <i class="ph ph-eye"></i>
-                </div>
-            </div>
-            <div class="gallery-item" onclick="viewImage(1)">
-                <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=800&q=80" alt="Iceland Landscape 2">
-                <div class="gallery-overlay">
-                    <i class="ph ph-eye"></i>
-                </div>
-            </div>
-            <div class="gallery-item" onclick="viewImage(2)">
-                <img src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=800&q=80" alt="Iceland Landscape 3">
-                <div class="gallery-overlay">
-                    <i class="ph ph-eye"></i>
-                </div>
-            </div>
-            <div class="gallery-item" onclick="viewImage(3)">
-                <img src="https://images.unsplash.com/photo-1519904981063-b0cf448d479e?auto=format&fit=crop&w=800&q=80" alt="Iceland Landscape 4">
-                <div class="gallery-overlay">
-                    <i class="ph ph-eye"></i>
-                </div>
-            </div>
-            <div class="gallery-item" onclick="viewImage(4)">
-                <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=800&q=80" alt="Iceland Landscape 5">
-                <div class="gallery-overlay">
-                    <i class="ph ph-eye"></i>
-                </div>
-            </div>
-            <div class="gallery-item" onclick="viewImage(5)">
-                <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&w=800&q=80" alt="Iceland Landscape 6">
-                <div class="gallery-overlay">
-                    <i class="ph ph-eye"></i>
-                </div>
-            </div>
-            <div class="gallery-item" onclick="viewImage(6)">
-                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80" alt="Iceland Landscape 7">
-                <div class="gallery-overlay">
-                    <i class="ph ph-eye"></i>
-                </div>
-            </div>
-            <div class="gallery-item" onclick="viewImage(7)">
-                <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=800&q=80" alt="Iceland Landscape 8">
-                <div class="gallery-overlay">
-                    <i class="ph ph-eye"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Lightbox Modal -->
-<div class="lightbox-modal" id="lightboxModal">
-    <div class="lightbox-overlay" onclick="closeLightbox()"></div>
-    <div class="lightbox-content">
-        <button class="lightbox-close" onclick="closeLightbox()">
-            <i class="ph ph-x"></i>
-        </button>
-        <button class="lightbox-prev" onclick="prevImage()">
-            <i class="ph ph-caret-left"></i>
-        </button>
-        <img id="lightboxImage" src="" alt="Gallery Image">
-        <button class="lightbox-next" onclick="nextImage()">
-            <i class="ph ph-caret-right"></i>
-        </button>
-    </div>
-</div>
+</section>
 {% endblock %}
 
 {% block script %}
 <script>
-function toggleDescription() {
-    const content = document.getElementById('descriptionContent');
-    const icon = document.getElementById('toggleIcon');
-    const toggle = document.getElementById('descriptionToggle');
-    
-    if (content.classList.contains('collapsed')) {
-        // Expand
-        content.classList.remove('collapsed');
-        icon.className = 'ph ph-caret-down';
-        toggle.setAttribute('aria-expanded', 'true');
-    } else {
-        // Collapse
-        content.classList.add('collapsed');
-        icon.className = 'ph ph-caret-right';
-        toggle.setAttribute('aria-expanded', 'false');
-    }
-}
-
-// Initialize description as collapsed
-document.addEventListener('DOMContentLoaded', function() {
-    const content = document.getElementById('descriptionContent');
-    const icon = document.getElementById('toggleIcon');
-    const toggle = document.getElementById('descriptionToggle');
-    
-    // Set initial state to collapsed
-    content.classList.add('collapsed');
-    icon.className = 'ph ph-caret-right';
-    toggle.setAttribute('aria-expanded', 'false');
-});
-
-// Gallery functionality
-let currentImageIndex = 0;
-const galleryImages = [
-    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1200&q=80'
-];
-
-function openGallery() {
-    const modal = document.getElementById('galleryModal');
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeGallery() {
-    const modal = document.getElementById('galleryModal');
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
-}
-
-function viewImage(index) {
-    currentImageIndex = index;
-    const lightboxModal = document.getElementById('lightboxModal');
-    const lightboxImage = document.getElementById('lightboxImage');
-    
-    lightboxImage.src = galleryImages[index];
-    lightboxModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeLightbox() {
-    const lightboxModal = document.getElementById('lightboxModal');
-    lightboxModal.classList.remove('active');
-    document.body.style.overflow = '';
-}
-
-function nextImage() {
-    currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
-    const lightboxImage = document.getElementById('lightboxImage');
-    lightboxImage.src = galleryImages[currentImageIndex];
-}
-
-function prevImage() {
-    currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
-    const lightboxImage = document.getElementById('lightboxImage');
-    lightboxImage.src = galleryImages[currentImageIndex];
-}
-
-// Close modals on escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeGallery();
-        closeLightbox();
-    }
-    if (e.key === 'ArrowRight') {
-        nextImage();
-    }
-    if (e.key === 'ArrowLeft') {
-        prevImage();
-    }
-});
+    // In the future, you can add AJAX submission for the feedback form here
+    // so the page doesn't have to reload.
 </script>
 {% endblock %}
