@@ -35,6 +35,9 @@
 
 <body class="bg-light">
   <!-- Common navigation for public guest pages -->
+    {% if 'admin-ltcato' not in request.host: %}
+       {% include 'include/navbar.html' ignore missing %}
+  {% endif %}
 
   <!-- Main content block where child templates will insert content -->
   <main>
@@ -52,7 +55,7 @@
   </main>
 
   {% if not hide_footer %}
-    {% include 'include/footer.html' ignore missing %}
+  {% include 'include/footer.html' ignore missing %}
   {% endif %}
 
   <!-- Include SweetAlert2 Version 11 -->
