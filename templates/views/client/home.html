@@ -1,245 +1,46 @@
 {% extends 'base.html' %} 
 {% block title %}Home | LTCATO{% endblock %}
 
-{% block style %}
-<style>
-/* Hero Section Styles */
-.hero-section {
-  position: relative;
-  background: linear-gradient(135deg, rgba(155, 44, 44, 0.85) 0%, rgba(0, 0, 0, 0.8) 100%), url('https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
-  color: white;
-  padding: 120px 0 100px;
-  overflow: hidden;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.hero-badge {
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  padding: 0.5rem 1rem;
-  border-radius: 50px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  letter-spacing: 0.5px;
-}
-
-.hero-title {
-  font-size: 3.5rem;
-  font-weight: 800;
-  margin-bottom: 1.25rem;
-  line-height: 1.2;
-  text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-}
-
-.hero-subtitle {
-  font-size: 1.25rem;
-  margin-bottom: 3rem;
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.6;
-}
-
-/* Floating Search Bar */
-.hero-search-card {
-  background: white;
-  padding: 0.5rem;
-  border-radius: 99px;
-  display: flex;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-  max-width: 650px;
-  margin: 0 auto 3rem;
-}
-
-.hero-search-input {
-  border: none;
-  background: transparent;
-  padding: 1rem 1.5rem;
-  width: 100%;
-  color: #1e293b;
-  font-weight: 500;
-}
-
-.hero-search-input:focus {
-  outline: none;
-}
-
-.hero-search-btn {
-  background: var(--primary, #9b2c2c);
-  color: white;
-  border: none;
-  border-radius: 99px;
-  padding: 0 2rem;
-  font-weight: 600;
-  transition: all 0.2s;
-}
-
-.hero-search-btn:hover {
-  background: #7f1d1d;
-  transform: scale(1.02);
-}
-
-/* SaaS Feature Highlight Section */
-.features-section {
-  padding: 5rem 0;
-  background: #fff;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.feature-box {
-  text-align: center;
-  padding: 2rem;
-  transition: transform 0.3s ease;
-}
-
-.feature-box:hover {
-  transform: translateY(-5px);
-}
-
-.feature-icon-wrapper {
-  width: 70px;
-  height: 70px;
-  background: rgba(155, 44, 44, 0.05);
-  color: var(--primary);
-  border-radius: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-  margin: 0 auto 1.5rem;
-}
-
-/* Split Showcase Section (Meet Lara AI) */
-.showcase-section {
-  padding: 6rem 0;
-  background: var(--background, #faf7f5);
-}
-
-.showcase-img {
-  border-radius: 1.5rem;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-  width: 100%;
-}
-
-/* Featured Destinations Grid */
-.featured-section {
-  padding: 6rem 0;
-  background: white;
-}
-
-.featured-card {
-  background: white;
-  border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-  border: 1px solid #e2e8f0;
-  transition: all 0.3s ease;
-  height: 100%;
-  display: block;
-  text-decoration: none;
-  color: inherit;
-}
-
-.featured-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.08);
-  color: inherit;
-}
-
-.card-img-container {
-  position: relative;
-  height: 240px;
-  overflow: hidden;
-}
-
-.featured-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.featured-card:hover .featured-image {
-  transform: scale(1.05);
-}
-
-.card-badges {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  display: flex;
-  gap: 0.5rem;
-}
-
-.card-content {
-  padding: 1.5rem;
-}
-
-/* Stats Section */
-.stats-section {
-  background: var(--primary);
-  padding: 4rem 0;
-  color: white;
-}
-
-.stat-item {
-  text-align: center;
-  padding: 1.5rem;
-}
-
-.stat-number {
-  font-size: 3rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-}
-
-/* CTA Section */
-.cta-section {
-  padding: 6rem 0;
-  text-align: center;
-  background: #fff;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .hero-title { font-size: 2.5rem; }
-  .hero-section { padding: 80px 0 60px; }
-  .hero-search-card { flex-direction: column; padding: 1rem; border-radius: 1rem; }
-  .hero-search-btn { padding: 1rem; border-radius: 0.5rem; margin-top: 0.5rem; }
-}
-</style>
-{% endblock %}
 
 {% block content %}
 <!-- Immersive Hero Section -->
-<section class="hero-section">
-  <div class="container text-center">
+<section class="hero-section" style="background: linear-gradient(135deg, rgba(155, 44, 44, 0.9) 0%, rgba(0, 0, 0, 0.85) 100%), url('/static/images/kapitolyo.jpg') center/cover no-repeat fixed;">
+  <div class="container text-start">
     <div class="hero-content">
-      <span class="hero-badge">Powered by Lara</span>
-      <h1 class="hero-title">Experience Laguna Like Never Before.</h1>
+      <span class="hero-badge">Powered by Lara AI</span>
+      <h1 class="hero-title">Experience Laguna Like <span style="color: var(--primary);">Never Before.</span></h1>
       <p class="hero-subtitle">Discover the Philippines' hidden gems through our smart, interactive tourism platform. From historic shrines to majestic waterfalls, your next adventure starts here.</p>
       
       <!-- Integrated Search -->
       <form action="/tourist-spots" method="GET" class="hero-search-card">
         <input type="text" class="hero-search-input" placeholder="Search destinations, municipalities, or categories..." name="q">
-        <button type="submit" class="hero-search-btn"><i class="ph ph-magnifying-glass me-2"></i> Explore</button>
+        <button type="submit" class="hero-search-btn"><i class="ph ph-magnifying-glass me-2"></i></button>
       </form>
 
       <!-- Action Buttons -->
-      <div class="d-flex justify-content-center gap-3 flex-wrap">
+      <div class="d-flex justify-content-start gap-3 flex-wrap">
         <a href="/explore-map" class="btn btn-light btn-lg rounded-pill px-4 fw-bold text-dark d-flex align-items-center gap-2">
             <i class="ph ph-map-trifold text-primary fs-4"></i> Open Interactive Map
         </a>
         <a href="#lara-ai" class="btn btn-outline-light btn-lg rounded-pill px-4 fw-bold d-flex align-items-center gap-2">
             <i class="ph ph-chat-circle-text fs-4"></i> Talk to Lara AI
         </a>
+      </div>
+
+      <!-- Trust Indicators -->
+      <div class="trust-indicators">
+        <div class="trust-item">
+          <span class="trust-number">150+</span>
+          <span class="trust-label">Verified Spots</span>
+        </div>
+        <div class="trust-item">
+          <span class="trust-number">12k+</span>
+          <span class="trust-label">Guest Reviews</span>
+        </div>
+        <div class="trust-item">
+          <span class="trust-number">24/7</span>
+          <span class="trust-label">AI-Powered Guide</span>
+        </div>
       </div>
     </div>
   </div>
@@ -280,42 +81,288 @@
     <div class="row align-items-center g-5">
       <div class="col-lg-6">
         <div class="pe-lg-5">
-          <span class="text-danger fw-bold tracking-wide text-uppercase small mb-2 d-block">Your Personal Guide</span>
-          <h2 class="display-5 fw-bold mb-4" style="color: var(--primary);">Meet Lara AI.</h2>
-          <p class="fs-5 text-muted mb-4 lh-lg">
-            Planning a trip can be overwhelming. That's why we built Lara—your intelligent Laguna tourism assistant. 
+          <div class="ai-badge mb-3">
+            <i class="ph ph-sparkle me-2"></i> Powered by Advanced AI
+          </div>
+          <h2 class="display-4 fw-bold mb-4" style="color: var(--primary);">Meet Lara AI.</h2>
+          <p class="fs-5 text-muted mb-5 lh-lg">
+            Your intelligent Laguna tourism companion that creates personalized experiences, discovers hidden gems, and guides you through every step of your journey.
           </p>
-          <ul class="list-unstyled mb-5">
-            <li class="d-flex align-items-start mb-3">
-              <i class="ph-fill ph-check-circle text-success fs-4 me-3 mt-1"></i>
-              <div>
-                <strong class="d-block text-dark">Instant Itineraries</strong>
-                <span class="text-muted small">Tell Lara you have 2 days in Calamba, and get a full schedule.</span>
+          
+          <div class="ai-features">
+            <div class="feature-item mb-4">
+              <div class="feature-icon">
+                <i class="ph ph-map-pin-line"></i>
               </div>
-            </li>
-            <li class="d-flex align-items-start mb-3">
-              <i class="ph-fill ph-check-circle text-success fs-4 me-3 mt-1"></i>
-              <div>
-                <strong class="d-block text-dark">Local Secrets</strong>
-                <span class="text-muted small">Discover less-crowded spots based on intelligent data analysis.</span>
+              <div class="feature-content">
+                <h5 class="fw-bold mb-2">Personalized Journeys</h5>
+                <p class="text-muted mb-0">Experience unique and immersive experiences that reflect your passions and create unforgettable memories.</p>
               </div>
-            </li>
-          </ul>
-          <button class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm">Chat with Lara Now</button>
+            </div>
+            
+            <div class="feature-item mb-4">
+              <div class="feature-icon">
+                <i class="ph ph-chat-circle-dots"></i>
+              </div>
+              <div class="feature-content">
+                <h5 class="fw-bold mb-2">Real-time Conversations</h5>
+                <p class="text-muted mb-0">Chat naturally about destinations, get recommendations, and ask questions instantly.</p>
+              </div>
+            </div>
+            
+            <div class="feature-item mb-4">
+              <div class="feature-icon">
+                <i class="ph ph-eye"></i>
+              </div>
+              <div class="feature-content">
+                <h5 class="fw-bold mb-2">Local Insights</h5>
+                <p class="text-muted mb-0">Discover secret spots and authentic experiences only locals know about.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="d-flex gap-3 flex-wrap">
+            <button class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm">
+              <i class="ph ph-chat-circle-text me-2"></i> Start Chatting
+            </button>
+            <button class="btn btn-outline-primary btn-lg rounded-pill px-4">
+              <i class="ph ph-play-circle me-2"></i> Watch Demo
+            </button>
+          </div>
         </div>
       </div>
       <div class="col-lg-6">
-        <!-- AI Mockup Image -->
-        <div class="position-relative">
-            <img src="https://images.unsplash.com/photo-1596526131083-e8c638c9c6c7?auto=format&fit=crop&w=800&q=80" alt="Tourist checking phone" class="showcase-img">
-            <!-- Floating Chat Bubble Mockup -->
-            <div class="position-absolute bg-white p-3 rounded-4 shadow-lg border" style="bottom: -20px; left: -20px; max-width: 300px;">
-                <div class="d-flex align-items-center gap-2 mb-2 border-bottom pb-2">
-                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;"><i class="ph ph-sparkle"></i></div>
-                    <span class="fw-bold text-dark small">Lara AI</span>
+        <!-- Mockup Container with Overlap -->
+        <div class="mockup-overlap-container">
+          <!-- Computer Mockup with Lara AI -->
+          <div class="laptop-mockup-container laptop-position">
+            <div class="laptop-frame">
+              <div class="laptop-screen">
+                <div class="laptop-header">
+                  <div class="laptop-logo">
+                    <div class="logo-circle">
+                      <i class="ph ph-sparkle"></i>
+                    </div>
+                    <span class="app-name">Lara AI</span>
+                  </div>
+                  <div class="laptop-controls">
+                    <div class="control-dot"></div>
+                    <div class="control-dot"></div>
+                    <div class="control-dot"></div>
+                  </div>
                 </div>
-                <p class="small text-muted mb-0">"I highly recommend visiting the Hidden Valley Springs today! It's less crowded and perfect for relaxation."</p>
+                
+                <!-- Desktop Chat Interface -->
+                <div class="desktop-chat-container">
+                  <div class="chat-sidebar">
+                    <div class="sidebar-header">
+                      <h4>Active Conversations</h4>
+                    </div>
+                    <div class="conversation-list">
+                      <div class="conversation-item active">
+                        <div class="conv-avatar">
+                          <i class="ph ph-user"></i>
+                        </div>
+                        <div class="conv-info">
+                          <div class="conv-name">You</div>
+                          <div class="conv-time">2 min ago</div>
+                        </div>
+                      </div>
+                      <div class="conversation-item">
+                        <div class="conv-avatar">
+                          <i class="ph ph-users"></i>
+                        </div>
+                        <div class="conv-info">
+                          <div class="conv-name">Family Trip Planning</div>
+                          <div class="conv-time">1 hour ago</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="chat-main">
+                    <div class="chat-messages">
+                      <div class="message ai-message">
+                        <div class="message-avatar">
+                          <i class="ph ph-sparkle"></i>
+                        </div>
+                        <div class="message-content">
+                          <p class="mb-2">Hello! I'm Lara, your AI travel guide for Laguna. 🌟</p>
+                          <p class="mb-2">What kind of adventure are you looking for today?</p>
+                          <div class="quick-actions">
+                            <span class="quick-action">Nature & Waterfalls</span>
+                            <span class="quick-action">Historical Sites</span>
+                            <span class="quick-action">Food & Dining</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="message user-message">
+                        <div class="message-content">
+                          <p>I'd love to see some beautiful waterfalls and nature spots!</p>
+                        </div>
+                      </div>
+                      
+                      <div class="message ai-message">
+                        <div class="message-avatar">
+                          <i class="ph ph-sparkle"></i>
+                        </div>
+                        <div class="message-content">
+                          <p>Perfect! I recommend visiting Pagsanjan Falls for an exhilarating adventure, or Hidden Valley Springs for a more relaxing experience. Both offer stunning natural beauty!</p>
+                          <div class="recommendation-cards">
+                            <div class="rec-card">
+                              <div class="rec-icon">🏞️</div>
+                              <div class="rec-info">
+                                <strong>Pagsanjan Falls</strong>
+                                <small>Adventure & Thrills</small>
+                              </div>
+                            </div>
+                            <div class="rec-card">
+                              <div class="rec-icon">🌊</div>
+                              <div class="rec-info">
+                                <strong>Hidden Valley Springs</strong>
+                                <small>Relaxation & Nature</small>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Input Area -->
+                  <div class="desktop-input-container">
+                    <div class="input-wrapper">
+                      <input type="text" placeholder="Ask Lara anything about Laguna..." class="chat-input">
+                      <button class="send-btn">
+                        <i class="ph ph-paper-plane-right"></i>
+                      </button>
+                    </div>
+                    <div class="input-actions">
+                      <i class="ph ph-microphone"></i>
+                      <i class="ph ph-camera"></i>
+                      <i class="ph ph-image"></i>
+                      <i class="ph ph-paperclip"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
+          
+          <!-- Mobile Device Mockup with Lara AI -->
+          <div class="mobile-mockup-container mobile-position">
+            <div class="mobile-frame">
+              <div class="mobile-screen">
+                <!-- Status Bar -->
+                <div class="status-bar">
+                  <span class="time">9:41</span>
+                  <div class="status-icons">
+                    <i class="ph ph-signal"></i>
+                    <i class="ph ph-wifi"></i>
+                    <i class="ph ph-battery-full"></i>
+                  </div>
+                </div>
+                
+                <!-- App Header -->
+                <div class="app-header">
+                  <div class="app-logo">
+                    <div class="logo-circle">
+                      <i class="ph ph-sparkle"></i>
+                    </div>
+                    <span class="app-name">Lara AI</span>
+                  </div>
+                  <div class="app-menu">
+                    <i class="ph ph-dots-three-vertical"></i>
+                  </div>
+                </div>
+                
+                <!-- Chat Interface -->
+                <div class="chat-container">
+                  <div class="chat-messages">
+                    <div class="message ai-message">
+                      <div class="message-avatar">
+                        <i class="ph ph-sparkle"></i>
+                      </div>
+                      <div class="message-content">
+                        <p class="mb-2">Hello! I'm Lara, your AI travel guide for Laguna. 🌟</p>
+                        <p class="mb-2">What kind of adventure are you looking for today?</p>
+                        <div class="quick-actions">
+                          <span class="quick-action">Nature & Waterfalls</span>
+                          <span class="quick-action">Historical Sites</span>
+                          <span class="quick-action">Food & Dining</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="message user-message">
+                      <div class="message-content">
+                        <p>I'd love to see some beautiful waterfalls and nature spots!</p>
+                      </div>
+                    </div>
+                    
+                    <div class="message ai-message typing">
+                      <div class="message-avatar">
+                        <i class="ph ph-sparkle"></i>
+                      </div>
+                      <div class="message-content">
+                        <div class="typing-indicator">
+                          <span></span>
+                          <span></span>
+                          <span></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Input Area -->
+                  <div class="chat-input-container">
+                    <div class="input-wrapper">
+                      <input type="text" placeholder="Ask Lara anything about Laguna..." class="chat-input">
+                      <button class="send-btn">
+                        <i class="ph ph-paper-plane-right"></i>
+                      </button>
+                    </div>
+                    <div class="input-actions">
+                      <i class="ph ph-microphone"></i>
+                      <i class="ph ph-camera"></i>
+                      <i class="ph ph-image"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Floating Chat Bubbles -->
+          <div class="floating-chat-bubbles">
+            <div class="chat-bubble bubble-1">
+              <div class="bubble-avatar">
+                <i class="ph ph-sparkle"></i>
+              </div>
+              <div class="bubble-content">
+                <p>Discover hidden gems!</p>
+              </div>
+            </div>
+            
+            <div class="chat-bubble bubble-2">
+              <div class="bubble-avatar">
+                <i class="ph ph-map-pin"></i>
+              </div>
+              <div class="bubble-content">
+                <p>Plan your perfect trip</p>
+              </div>
+            </div>
+            
+            <div class="chat-bubble bubble-3">
+              <div class="bubble-avatar">
+                <i class="ph ph-heart"></i>
+              </div>
+              <div class="bubble-content">
+                <p>Create memories</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -346,9 +393,6 @@
           <div class="card-content">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <h4 class="fw-bold text-dark mb-0">Pagsanjan Falls</h4>
-                <div class="d-flex align-items-center text-warning fw-bold small bg-light px-2 py-1 rounded">
-                    <i class="ph-fill ph-star me-1"></i> 4.8
-                </div>
             </div>
             <p class="text-muted small mb-3"><i class="ph ph-map-pin me-1"></i> Pagsanjan, Laguna</p>
             <p class="text-muted small mb-0" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Experience the thrill of shooting the rapids to this magnificent waterfall, one of Laguna's most famous natural wonders.</p>
@@ -368,9 +412,6 @@
           <div class="card-content">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <h4 class="fw-bold text-dark mb-0">Wonderland Hot Spring</h4>
-                <div class="d-flex align-items-center text-warning fw-bold small bg-light px-2 py-1 rounded">
-                    <i class="ph-fill ph-star me-1"></i> 4.5
-                </div>
             </div>
             <p class="text-muted small mb-3"><i class="ph ph-map-pin me-1"></i> Calamba City, Laguna</p>
             <p class="text-muted small mb-0" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Relax and rejuvenate in natural therapeutic hot springs that have been visited by tourists for decades.</p>
@@ -390,9 +431,6 @@
           <div class="card-content">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <h4 class="fw-bold text-dark mb-0">Rizal Shrine</h4>
-                <div class="d-flex align-items-center text-warning fw-bold small bg-light px-2 py-1 rounded">
-                    <i class="ph-fill ph-star me-1"></i> 4.9
-                </div>
             </div>
             <p class="text-muted small mb-3"><i class="ph ph-map-pin me-1"></i> Calamba City, Laguna</p>
             <p class="text-muted small mb-0" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">A beautiful reproduction of the original Spanish-colonial style house where the national hero Dr. Jose Rizal was born.</p>
