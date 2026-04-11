@@ -1,4 +1,4 @@
-from controller.HomeController import home, explore_map, destination_details, municipalities, municipality_details, tourist_spots, lara_ai
+from controller.HomeController import home, explore_map, destination_details, municipalities, municipality_details, tourist_spots, lara_ai, test_uploader
 from controller.LoginController import login, register, logout
 from controller.DashboardController import dashboardIndex, accounts, create_account, update_account, delete_account
 from controller.ArrivalsController import arrivals
@@ -33,6 +33,10 @@ def register_routes(app):
     @app.route('/lara-ai')
     def lara_ai_page():
         return lara_ai()
+
+    @app.route('/test-uploader', methods=["GET", "POST"])
+    def test_uploader_page():
+        return test_uploader()
 
 # SUPERADMIN DASHBOARD ROUTES
     

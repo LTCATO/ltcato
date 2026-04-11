@@ -2,13 +2,13 @@ from flask import render_template, request, redirect, url_for, flash, session
 from supabase_client import supabase
 
 def login():
-    if 'admin-ltcato' not in request.host:
-        flash("Please log in with your administrator account to access the admin portal.", "info")
-        return redirect(url_for("home_page"))  # Redirect to the public landing page instead of showing the login form
+    # if 'admin-ltcato' not in request.host:
+    #     flash("Please log in with your administrator account to access the admin portal.", "info")
+    #     return redirect(url_for("home_page"))  # Redirect to the public landing page instead of showing the login form
     
-    # If already logged in, redirect to dashboard
-    if 'user' in session and session.get('role_name') == 'super_admin':
-        return redirect(url_for("dashboard_page"))
+    # # If already logged in, redirect to dashboard
+    # if 'user' in session and session.get('role_name') == 'super_admin':
+    #     return redirect(url_for("dashboard_page"))
 
     if request.method == 'POST':
         email = request.form.get("email")

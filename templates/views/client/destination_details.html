@@ -1,12 +1,20 @@
 {% extends 'base.html' %}
 
-{% block title %}Wonderland Hot Spring | LTCATO{% endblock %}
+{% block title %}{{ spot.name | default('Destination Details') }} | LTCATO{% endblock %}
 
 {% block style %}
+<style>
+    /* Dynamically set the hero background image from the database */
+    .destination-hero {
+        background-image: url('{{ spot.main_image_url | default("https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1920&q=80") }}');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-
 <!-- Enhanced Hero Section -->
 <div class="destination-hero">
     <div class="hero-overlay"></div>
@@ -16,30 +24,26 @@
             <div class="col-lg-10 text-white">
                 <div class="hero-badges mb-3">
                     <span class="badge bg-warning text-dark px-3 py-2 rounded-pill mb-2 fw-bold shadow-sm">
-                        <i class="ph ph-swimming-pool me-1"></i> Resort
+                        <i class="ph ph-swimming-pool me-1"></i> {{ spot.category | default('Tourist Spot') }}
                     </span>
                     <span class="badge bg-success text-white px-3 py-2 rounded-pill mb-2 fw-bold shadow-sm">
                         <i class="ph ph-check-circle me-1"></i> Open Now
                     </span>
                 </div>
-                <h1 class="display-3 fw-bold mb-3 hero-title">Wonderland Hot Spring</h1>
+                <h1 class="display-3 fw-bold mb-3 hero-title">{{ spot.name }}</h1>
                 <p class="fs-4 mb-4 text-white-50 hero-subtitle">
-                    <i class="ph ph-map-pin me-2"></i>Calamba City, Laguna
+                    <i class="ph ph-map-pin me-2"></i>{{ spot.address | default('Laguna, Philippines') }}
                 </p>
                 <div class="hero-stats d-flex gap-4 flex-wrap">
                     <div class="stat-item">
-                        <div class="stat-number">4.5</div>
+                        <div class="stat-number">{{ spot.rating | default('0.0') }}</div>
                         <div class="stat-label">
                             <i class="ph-fill ph-star"></i> Rating
                         </div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">24</div>
+                        <div class="stat-number">{{ spot.reviews_count | default('0') }}</div>
                         <div class="stat-label">Reviews</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">15+</div>
-                        <div class="stat-label">Years</div>
                     </div>
                 </div>
             </div>
@@ -48,7 +52,7 @@
 </div>
 
 <!-- Basic Info Section -->
-<section class="basic-info-section py-4 bg-white">
+<section class="basic-info-section py-4 bg-white ">
     <div class="container">
         <div class="row g-4">
             <div class="col-md-6 col-lg-2">
@@ -57,7 +61,7 @@
                         <i class="ph ph-map-pin-line"></i>
                     </div>
                     <h6 class="info-title">Location</h6>
-                    <p class="info-text">Calamba City</p>
+                    <p class="info-text">{{ spot.address.split(',')[0] if spot.address else 'N/A' }}</p>
                 </div>
             </div>
             <div class="col-md-6 col-lg-2">
@@ -66,7 +70,7 @@
                         <i class="ph ph-clock"></i>
                     </div>
                     <h6 class="info-title">Opening Hours</h6>
-                    <p class="info-text">6:00 AM - 10:00 PM</p>
+                    <p class="info-text">{{ spot.opening_hours | default('Not specified') }}</p>
                 </div>
             </div>
             <div class="col-md-6 col-lg-2">
@@ -75,7 +79,7 @@
                         <i class="ph ph-sun"></i>
                     </div>
                     <h6 class="info-title">Best Time</h6>
-                    <p class="info-text">Weekdays</p>
+                    <p class="info-text">{{ spot.best_time_to_visit | default('Anytime') }}</p>
                 </div>
             </div>
             <div class="col-md-6 col-lg-2">
@@ -84,7 +88,7 @@
                         <i class="ph ph-tag"></i>
                     </div>
                     <h6 class="info-title">Category</h6>
-                    <p class="info-text">Resort</p>
+                    <p class="info-text">{{ spot.category | default('General') }}</p>
                 </div>
             </div>
             <div class="col-md-6 col-lg-2">
@@ -94,7 +98,7 @@
                     </div>
                     <h6 class="info-title">Map</h6>
                     <p class="info-text">
-                        <a href="/explore_map" class="btn btn-sm btn-outline-primary rounded-pill">View Map</a>
+                        <a href="/explore_map?lat={{ spot.latitude }}&lng={{ spot.longitude }}" class="btn btn-sm btn-outline-primary rounded-pill">View Map</a>
                     </p>
                 </div>
             </div>
@@ -117,9 +121,9 @@
                         <div class="section-badge mb-3">
                             <i class="ph ph-sparkle me-2"></i>Why You'll Love It
                         </div>
-                        <h2 class="hook-title mb-3">Escape to Nature's Perfect Oasis</h2>
+                        <h2 class="hook-title mb-3">{{ spot.hook_title | default('Discover Something Amazing') }}</h2>
                         <p class="hook-text fs-5 text-muted">
-                            Imagine sinking into crystal-clear, mineral-rich waters that naturally warm your body while tropical breezes kiss your skin. This isn't just a resort—it's your personal sanctuary where stress melts away and memories are born.
+                            {{ spot.hook_text | default('Experience the beauty and culture of Laguna.') }}
                         </p>
                     </div>
 
@@ -129,38 +133,8 @@
                             <i class="ph ph-info me-2"></i>What It Is
                         </h3>
                         <p class="section-content">
-                            Wonderland Hot Spring is a premier natural thermal resort nestled at the foothills of Mount Makiling in Calamba City. Featuring multiple temperature-controlled pools fed by natural hot springs, this 15+ year established destination offers both day tours and overnight accommodations with lush garden landscapes and private cottages.
+                            {{ spot.description | default('Description not available yet.') }}
                         </p>
-                    </div>
-
-                    <!-- Experience Section -->
-                    <div class="experience-section mb-4">
-                        <h3 class="section-title mb-3">
-                            <i class="ph ph-heart me-2"></i>What You'll Feel
-                        </h3>
-                        <div class="experience-grid">
-                            <div class="experience-item">
-                                <div class="experience-icon">
-                                    <i class="ph ph-drop"></i>
-                                </div>
-                                <h5>Therapeutic Warmth</h5>
-                                <p>Natural mineral waters soothe tired muscles and improve circulation</p>
-                            </div>
-                            <div class="experience-item">
-                                <div class="experience-icon">
-                                    <i class="ph ph-leaf"></i>
-                                </div>
-                                <h5>Natural Serenity</h5>
-                                <p>Lush surroundings create a peaceful escape from city life</p>
-                            </div>
-                            <div class="experience-item">
-                                <div class="experience-icon">
-                                    <i class="ph ph-smiley"></i>
-                                </div>
-                                <h5>Pure Relaxation</h5>
-                                <p>Stress-free environment perfect for unwinding and recharging</p>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Highlights Section -->
@@ -169,26 +143,16 @@
                             <i class="ph ph-star me-2"></i>What Makes It Special
                         </h3>
                         <div class="highlights-list">
-                            <div class="highlight-item">
-                                <i class="ph ph-check-circle text-success"></i>
-                                <span><strong>Natural Hot Springs:</strong> Rich in minerals, naturally heated by volcanic activity</span>
-                            </div>
-                            <div class="highlight-item">
-                                <i class="ph ph-check-circle text-success"></i>
-                                <span><strong>Multiple Pool Options:</strong> Various temperatures for different preferences</span>
-                            </div>
-                            <div class="highlight-item">
-                                <i class="ph ph-check-circle text-success"></i>
-                                <span><strong>Private Cottages:</strong> Exclusive spaces for families and groups</span>
-                            </div>
-                            <div class="highlight-item">
-                                <i class="ph ph-check-circle text-success"></i>
-                                <span><strong>Lush Gardens:</strong> Beautiful tropical landscaping throughout the resort</span>
-                            </div>
-                            <div class="highlight-item">
-                                <i class="ph ph-check-circle text-success"></i>
-                                <span><strong>Proven Track Record:</strong> 15+ years of satisfied visitors</span>
-                            </div>
+                            {% if spot.highlights and spot.highlights|length > 0 %}
+                                {% for highlight in spot.highlights %}
+                                <div class="highlight-item">
+                                    <i class="ph ph-check-circle text-success"></i>
+                                    <span>{{ highlight }}</span>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="highlight-item text-muted">Highlights not specified.</div>
+                            {% endif %}
                         </div>
                     </div>
 
@@ -198,34 +162,18 @@
                             <i class="ph ph-users me-2"></i>Perfect For
                         </h3>
                         <div class="audience-grid">
-                            <div class="audience-card">
-                                <div class="audience-icon">
-                                    <i class="ph ph-users-three"></i>
+                            {% if spot.target_audience and spot.target_audience|length > 0 %}
+                                {% for audience in spot.target_audience %}
+                                <div class="audience-card p-3 border rounded mb-2">
+                                    <div class="audience-icon mb-2 text-primary">
+                                        <i class="ph ph-users-three fs-4"></i>
+                                    </div>
+                                    <h5 class="m-0">{{ audience }}</h5>
                                 </div>
-                                <h5>Families</h5>
-                                <p>Safe, family-friendly environment with activities for all ages</p>
-                            </div>
-                            <div class="audience-card">
-                                <div class="audience-icon">
-                                    <i class="ph ph-heart-straight"></i>
-                                </div>
-                                <h5>Couples</h5>
-                                <p>Romantic setting perfect for quality time together</p>
-                            </div>
-                            <div class="audience-card">
-                                <div class="audience-icon">
-                                    <i class="ph ph-briefcase"></i>
-                                </div>
-                                <h5>Professionals</h5>
-                                <p>Ideal weekend getaway to de-stress and recharge</p>
-                            </div>
-                            <div class="audience-card">
-                                <div class="audience-icon">
-                                    <i class="ph ph-users-four"></i>
-                                </div>
-                                <h5>Friend Groups</h5>
-                                <p>Great for bonding and creating lasting memories</p>
-                            </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted">Everyone!</p>
+                            {% endif %}
                         </div>
                     </div>
 
@@ -239,35 +187,25 @@
                                 <div class="detail-label">
                                     <i class="ph ph-clock"></i> Operating Hours
                                 </div>
-                                <div class="detail-value">Daily: 6:00 AM - 10:00 PM</div>
+                                <div class="detail-value">{{ spot.opening_hours | default('Contact for hours') }}</div>
                             </div>
                             <div class="detail-row">
                                 <div class="detail-label">
                                     <i class="ph ph-currency-php"></i> Entrance Fees
                                 </div>
-                                <div class="detail-value">
-                                    Adults: ₱300<br>
-                                    Kids (3-12): ₱150<br>
-                                    Senior/PWD: ₱200
-                                </div>
+                                <div class="detail-value">{{ spot.entrance_fees | default('Free or varies') }}</div>
                             </div>
                             <div class="detail-row">
                                 <div class="detail-label">
                                     <i class="ph ph-bag-simple"></i> What to Bring
                                 </div>
-                                <div class="detail-value">Swimwear, towel, extra clothes, sunblock</div>
+                                <div class="detail-value">{{ spot.what_to_bring | default('Comfortable clothes') }}</div>
                             </div>
                             <div class="detail-row">
                                 <div class="detail-label">
                                     <i class="ph ph-parking-square"></i> Parking
                                 </div>
-                                <div class="detail-value">Free parking available (100+ slots)</div>
-                            </div>
-                            <div class="detail-row">
-                                <div class="detail-label">
-                                    <i class="ph ph-utensils"></i> Food Options
-                                </div>
-                                <div class="detail-value">Restaurant on-site, outside food allowed</div>
+                                <div class="detail-value">{{ spot.parking_info | default('No information provided') }}</div>
                             </div>
                         </div>
                     </div>
@@ -280,261 +218,18 @@
                     </h3>
                     <div class="gallery-grid">
                         <div class="gallery-item main-image">
-                            <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=800&q=80" alt="Main Pool Area">
-                            <div class="gallery-overlay">
-                                <i class="ph ph-arrow-up-right"></i>
-                            </div>
+                            <img src="{{ spot.main_image_url }}" alt="Main Area">
+                            <div class="gallery-overlay"><i class="ph ph-arrow-up-right"></i></div>
                         </div>
-                        <div class="gallery-item">
-                            <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=400&q=80" alt="Private Cottage">
-                            <div class="gallery-overlay">
-                                <i class="ph ph-arrow-up-right"></i>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&w=400&q=80" alt="Garden Area">
-                            <div class="gallery-overlay">
-                                <i class="ph ph-arrow-up-right"></i>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <img src="https://images.unsplash.com/photo-1582720382369-5d9d4a8e7b7b?auto=format&fit=crop&w=400&q=80" alt="Pool View">
-                            <div class="gallery-overlay">
-                                <i class="ph ph-arrow-up-right"></i>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?auto=format&fit=crop&w=400&q=80" alt="Facility">
-                            <div class="gallery-overlay">
-                                <i class="ph ph-arrow-up-right"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- How to Get There Section -->
-                <div class="directions-section mb-5">
-                    <h3 class="section-title mb-4">
-                        <i class="ph ph-navigation-arrow me-2"></i>How to Get There
-                    </h3>
-                    
-                    <div class="directions-tabs">
-                        <ul class="nav nav-tabs" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" data-bs-toggle="tab" href="#commute">
-                                    <i class="ph ph-bus me-2"></i>Commute
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#driving">
-                                    <i class="ph ph-car me-2"></i>Driving
-                                </a>
-                            </li>
-                        </ul>
                         
-                        <div class="tab-content">
-                            <div class="tab-pane fade show active" id="commute">
-                                <div class="commute-guide">
-                                    <h5 class="mb-3">Public Transportation Guide</h5>
-                                    <div class="route-steps">
-                                        <div class="route-step">
-                                            <div class="step-number">1</div>
-                                            <div class="step-content">
-                                                <h6>From Manila</h6>
-                                                <p>Take a bus to Calamba City (Buendia, Cubao, or Pasay terminals)</p>
-                                            </div>
-                                        </div>
-                                        <div class="route-step">
-                                            <div class="step-number">2</div>
-                                            <div class="step-content">
-                                                <h6>At Calamba Terminal</h6>
-                                                <p>Look for jeepneys or tricycles going to Bucal/Pansol area</p>
-                                            </div>
-                                        </div>
-                                        <div class="route-step">
-                                            <div class="step-number">3</div>
-                                            <div class="step-content">
-                                                <h6>Final Destination</h6>
-                                                <p>Ask driver to drop you off at Wonderland Hot Spring</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="travel-info">
-                                        <div class="info-box">
-                                            <i class="ph ph-clock"></i>
-                                            <div>
-                                                <strong>Travel Time:</strong> 2-3 hours from Manila
-                                            </div>
-                                        </div>
-                                        <div class="info-box">
-                                            <i class="ph ph-currency-php"></i>
-                                            <div>
-                                                <strong>Estimated Cost:</strong> ₱150-200 per person
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                        {% if spot.gallery_images %}
+                            {% for img_url in spot.gallery_images %}
+                            <div class="gallery-item">
+                                <img src="{{ img_url }}" alt="Gallery Image">
+                                <div class="gallery-overlay"><i class="ph ph-arrow-up-right"></i></div>
                             </div>
-                            
-                            <div class="tab-pane fade" id="driving">
-                                <div class="driving-guide">
-                                    <h5 class="mb-3">Driving Directions</h5>
-                                    <div class="route-steps">
-                                        <div class="route-step">
-                                            <div class="step-number">1</div>
-                                            <div class="step-content">
-                                                <h6>Take SLEX (South Luzon Expressway)</h6>
-                                                <p>Head south from Manila toward Laguna</p>
-                                            </div>
-                                        </div>
-                                        <div class="route-step">
-                                            <div class="step-number">2</div>
-                                            <div class="step-content">
-                                                <h6>Exit at Calamba</h6>
-                                                <p>Take the Calamba Exit (Exit 47)</p>
-                                            </div>
-                                        </div>
-                                        <div class="route-step">
-                                            <div class="step-number">3</div>
-                                            <div class="step-content">
-                                                <h6>Follow National Highway</h6>
-                                                <p>Turn right and continue toward Bucal/Pansol area</p>
-                                            </div>
-                                        </div>
-                                        <div class="route-step">
-                                            <div class="step-number">4</div>
-                                            <div class="step-content">
-                                                <h6>Look for Signage</h6>
-                                                <p>Wonderland Hot Spring will be on your right side</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="travel-info">
-                                        <div class="info-box">
-                                            <i class="ph ph-clock"></i>
-                                            <div>
-                                                <strong>Driving Time:</strong> 1.5-2 hours from Manila
-                                            </div>
-                                        </div>
-                                        <div class="info-box">
-                                            <i class="ph ph-gas-pump"></i>
-                                            <div>
-                                                <strong>Toll Fee:</strong> ₱150-200
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Enhanced Feedback Section -->
-                <div class="feedback-section">
-                    <div class="section-header mb-4">
-                        <h3 class="section-title mb-0">Guest Experiences</h3>
-                        <div class="rating-summary">
-                            <div class="rating-score">4.5</div>
-                            <div class="rating-stars">
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star"></i>
-                                <i class="ph-fill ph-star-half"></i>
-                            </div>
-                            <span class="rating-count">(24 reviews)</span>
-                        </div>
-                    </div>
-
-                    <!-- Existing Feedback List -->
-                    <div class="reviews-list mb-5">
-                        <!-- Review 1 -->
-                        <div class="feedback-card">
-                            <div class="review-header">
-                                <div class="reviewer-info">
-                                    <h6 class="reviewer-name">De*****k A*****n</h6>
-                                    <div class="review-rating">
-                                        <i class="ph-fill ph-star"></i>
-                                        <i class="ph-fill ph-star"></i>
-                                        <i class="ph-fill ph-star"></i>
-                                        <i class="ph-fill ph-star"></i>
-                                        <i class="ph-fill ph-star"></i>
-                                    </div>
-                                </div>
-                                <span class="review-date">2 days ago</span>
-                            </div>
-                            <p class="review-text">The water temperature was perfect! Highly recommend renting a private cottage if you are coming with a large group. Very relaxing experience overall.</p>
-                        </div>
-
-                        <!-- Review 2 -->
-                        <div class="feedback-card">
-                            <div class="review-header">
-                                <div class="reviewer-info">
-                                    <h6 class="reviewer-name text-muted">Anonymous Guest</h6>
-                                    <div class="review-rating">
-                                        <i class="ph-fill ph-star"></i>
-                                        <i class="ph-fill ph-star"></i>
-                                        <i class="ph-fill ph-star"></i>
-                                        <i class="ph-fill ph-star"></i>
-                                        <i class="ph ph-star empty"></i>
-                                    </div>
-                                </div>
-                                <span class="review-date">1 week ago</span>
-                            </div>
-                            <p class="review-text">Good place to unwind, but it gets very crowded on weekends. Try to visit on a weekday morning for the best experience.</p>
-                        </div>
-                    </div>
-
-                    <!-- Leave Feedback Form -->
-                    <div class="feedback-form-container">
-                        <h4 class="form-title mb-4">Share Your Experience</h4>
-                        <form action="#" method="POST">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <!-- Rating -->
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">Overall Rating</label>
-                                        <div class="rating-input">
-                                            <input type="radio" id="star5" name="rating" value="5" />
-                                            <label for="star5" title="5 stars"><i class="ph-fill ph-star"></i></label>
-                                            
-                                            <input type="radio" id="star4" name="rating" value="4" />
-                                            <label for="star4" title="4 stars"><i class="ph-fill ph-star"></i></label>
-                                            
-                                            <input type="radio" id="star3" name="rating" value="3" />
-                                            <label for="star3" title="3 stars"><i class="ph-fill ph-star"></i></label>
-                                            
-                                            <input type="radio" id="star2" name="rating" value="2" />
-                                            <label for="star2" title="2 stars"><i class="ph-fill ph-star"></i></label>
-                                            
-                                            <input type="radio" id="star1" name="rating" value="1" required />
-                                            <label for="star1" title="1 star"><i class="ph-fill ph-star"></i></label>
-                                        </div>
-                                    </div>
-
-                                    <!-- Name (Optional) -->
-                                    <div class="mb-3">
-                                        <label for="guest_name" class="form-label fw-semibold">Your Name (Optional)</label>
-                                        <input type="text" class="form-control custom-form-control" id="guest_name" name="guest_name" placeholder="Leave blank to remain anonymous">
-                                        <div class="form-text">
-                                            <i class="ph ph-shield-check text-success me-1"></i> Your privacy is protected. Names provided are partially masked before being published.
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-6">
-                                    <!-- Comments -->
-                                    <div class="mb-3">
-                                        <label for="comments" class="form-label fw-semibold">Your Review</label>
-                                        <textarea class="form-control custom-form-control" id="comments" name="comments" rows="4" placeholder="Tell us about your visit..." required></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary btn-lg w-100">
-                                <i class="ph ph-paper-plane-right me-2"></i>Submit Feedback
-                            </button>
-                        </form>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -543,77 +238,34 @@
             <div class="col-lg-4">
                 <div class="sidebar-sticky">
                     <!-- Quick Actions Card -->
-                    <div class="action-card mb-4">
-                        <h5 class="card-title">Quick Actions</h5>
+                    <div class="action-card mb-4 border p-4 rounded shadow-sm bg-white">
+                        <h5 class="card-title mb-3">Quick Actions</h5>
                         <div class="action-buttons">
-                            <a href="/explore-map" class="btn btn-primary btn-lg w-100 mb-3">
+                            <a href="/explore_map" class="btn btn-primary btn-lg w-100 mb-3">
                                 <i class="ph ph-map-trifold me-2"></i>View on Map
                             </a>
-                            <button class="btn btn-outline-primary w-100 mb-3">
+                            <button class="btn btn-outline-primary w-100 mb-3" onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied!');">
                                 <i class="ph ph-share-network me-2"></i>Share
                             </button>
                         </div>
                     </div>
 
                     <!-- Quick Facts Card -->
-                    <div class="info-sidebar-card mb-4">
-                        <h5 class="card-title">Quick Facts</h5>
+                    <div class="info-sidebar-card mb-4 border p-4 rounded shadow-sm bg-white">
+                        <h5 class="card-title mb-3">Quick Facts</h5>
                         <div class="facts-list">
-                            <div class="fact-item">
-                                <div class="fact-icon">
-                                    <i class="ph ph-map-pin-line"></i>
-                                </div>
+                            <div class="fact-item d-flex mb-3">
+                                <div class="fact-icon me-3 text-primary"><i class="ph ph-map-pin-line fs-4"></i></div>
                                 <div class="fact-content">
-                                    <span class="fact-label">Location</span>
-                                    <span class="fact-value">Calamba City</span>
+                                    <div class="fact-label text-muted small">Location</div>
+                                    <div class="fact-value fw-bold">{{ spot.address.split(',')[0] if spot.address else 'N/A' }}</div>
                                 </div>
                             </div>
-                            <div class="fact-item">
-                                <div class="fact-icon">
-                                    <i class="ph ph-swimming-pool"></i>
-                                </div>
+                            <div class="fact-item d-flex mb-3">
+                                <div class="fact-icon me-3 text-primary"><i class="ph ph-swimming-pool fs-4"></i></div>
                                 <div class="fact-content">
-                                    <span class="fact-label">Category</span>
-                                    <span class="fact-value">Resort / Hot Spring</span>
-                                </div>
-                            </div>
-                            <div class="fact-item">
-                                <div class="fact-icon">
-                                    <i class="ph ph-clock"></i>
-                                </div>
-                                <div class="fact-content">
-                                    <span class="fact-label">Status</span>
-                                    <span class="badge bg-success rounded-pill">Open Now</span>
-                                </div>
-                            </div>
-                            <div class="fact-item">
-                                <div class="fact-icon">
-                                    <i class="ph ph-currency-php"></i>
-                                </div>
-                                <div class="fact-content">
-                                    <span class="fact-label">Price Range</span>
-                                    <span class="fact-value">₱150-300</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Nearby Attractions Card -->
-                    <div class="nearby-card">
-                        <h5 class="card-title">Nearby Attractions</h5>
-                        <div class="nearby-list">
-                            <div class="nearby-item">
-                                <img src="https://images.unsplash.com/photo-1548625361-ec8464673327?auto=format&fit=crop&w=100&q=80" alt="St. John the Baptist Parish">
-                                <div class="nearby-content">
-                                    <h6>St. John the Baptist Parish</h6>
-                                    <p class="small text-muted mb-0">Historical Church • 2.5 km</p>
-                                </div>
-                            </div>
-                            <div class="nearby-item">
-                                <img src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&w=100&q=80" alt="Rizal Shrine">
-                                <div class="nearby-content">
-                                    <h6>Rizal Shrine</h6>
-                                    <p class="small text-muted mb-0">Museum • 3.1 km</p>
+                                    <div class="fact-label text-muted small">Category</div>
+                                    <div class="fact-value fw-bold">{{ spot.category | default('Tourist Spot') }}</div>
                                 </div>
                             </div>
                         </div>
@@ -637,10 +289,16 @@
                 const img = this.querySelector('img');
                 const modal = document.createElement('div');
                 modal.className = 'gallery-modal';
+                // Simple inline styling for the injected modal for the mockup test
+                modal.style.position = 'fixed';
+                modal.style.top = '0'; modal.style.left = '0'; modal.style.width = '100%'; modal.style.height = '100%';
+                modal.style.backgroundColor = 'rgba(0,0,0,0.9)'; modal.style.zIndex = '9999';
+                modal.style.display = 'flex'; modal.style.justifyContent = 'center'; modal.style.alignItems = 'center';
+                
                 modal.innerHTML = `
-                    <div class="modal-content">
-                        <img src="${img.src}" alt="${img.alt}">
-                        <button class="modal-close">&times;</button>
+                    <div style="position: relative; max-width: 90%; max-height: 90%;">
+                        <img src="${img.src}" alt="${img.alt}" style="max-width: 100%; max-height: 90vh; object-fit: contain;">
+                        <button class="modal-close" style="position: absolute; top: -40px; right: 0; background: none; border: none; color: white; font-size: 30px; cursor: pointer;">&times;</button>
                     </div>
                 `;
                 document.body.appendChild(modal);
