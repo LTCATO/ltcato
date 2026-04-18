@@ -1,0 +1,959 @@
+{% extends 'dashboard-base.html' %}
+
+{% block title %}Tourist Spots Management{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<style>
+/* Additional fixes for spots page */
+.table-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 250px;
+}
+
+.search-box i {
+  position: absolute;
+  left: 1rem;
+  color: var(--muted-foreground);
+  font-size: 1rem;
+  z-index: 1;
+}
+
+.search-box input {
+  padding: 0.625rem 1rem 0.625rem 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(127, 29, 29, 0.1);
+}
+
+.filter-select {
+  padding: 0.625rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  min-width: 150px;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(127, 29, 29, 0.1);
+}
+
+/* Quick actions styling */
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.quick-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--foreground);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.quick-action-btn:hover {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(127, 29, 29, 0.15);
+}
+
+.quick-action-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius);
+  background: rgba(127, 29, 29, 0.1);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.quick-action-btn:hover .quick-action-icon {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--primary-foreground);
+}
+
+/* Activity feed styling */
+.activity-feed {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.activity-feed::-webkit-scrollbar {
+  width: 6px;
+}
+
+.activity-feed::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 3px;
+}
+
+.activity-feed::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 3px;
+}
+
+.activity-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.activity-item:hover {
+  background: var(--accent);
+  margin: 0 -1rem;
+  padding: 1rem;
+  border-radius: var(--radius);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.activity-icon.user {
+  background: rgba(127, 29, 29, 0.1);
+  color: var(--primary);
+}
+
+.activity-icon.user:hover {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  transform: scale(1.1);
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-title {
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 0.25rem;
+}
+
+.activity-time {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.status-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge.active {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.status-badge.pending {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.status-badge.inactive {
+  background: rgba(107, 114, 128, 0.1);
+  color: #6b7280;
+  border-color: rgba(107, 114, 128, 0.2);
+}
+
+/* Responsive fixes */
+@media (max-width: 768px) {
+  .table-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .search-box {
+    width: 100%;
+  }
+  
+  .filter-select {
+    width: 100%;
+  }
+  
+  .quick-actions {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    
+    <!-- Top Header Row -->
+    <div class="d-flex justify-content-between align-items-center dashboard-header">
+      <div>
+        <h4 class="dashboard-title mb-1">Tourist Spots Management</h4>
+        <span class="dashboard-subtitle">Manage and monitor tourist destinations in {{ municipality.name if municipality else 'your municipality' }}</span>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-dashboard-action btn-primary d-flex align-items-center gap-2 shadow-sm" onclick="openAddSpotModal()">
+          <i class="bx bx-plus fs-5"></i> Add Tourist Spot
+        </button>
+        <button class="btn btn-outline-secondary rounded-circle p-2 d-flex align-items-center justify-content-center bg-white shadow-sm border-0" style="width: 42px; height: 42px;">
+          <i class="bx bx-filter fs-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Cards Row -->
+    <div class="row g-4 mb-4">
+      <!-- Total Spots -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card mockup-card h-100">
+          <div class="card-body stat-card-inner">
+            <div class="icon-box bg-primary-light">
+              <i class="bx bx-map-pin"></i>
+            </div>
+            <div class="stat-details">
+              <p class="stat-title">Total Spots</p>
+              <h3 class="stat-value">28</h3>
+              <span class="stat-indicator text-info"><i class="bx bx-info-circle"></i> All registered spots</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Active Spots -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card mockup-card h-100">
+          <div class="card-body stat-card-inner">
+            <div class="icon-box bg-success-light">
+              <i class="bx bx-check-circle"></i>
+            </div>
+            <div class="stat-details">
+              <p class="stat-title">Active Spots</p>
+              <h3 class="stat-value">24</h3>
+              <span class="stat-indicator text-success"><i class="bx bx-up-arrow-alt"></i> Live and accessible</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Spots -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card mockup-card h-100">
+          <div class="card-body stat-card-inner">
+            <div class="icon-box bg-warning-light">
+              <i class="bx bx-time-five"></i>
+            </div>
+            <div class="stat-details">
+              <p class="stat-title">Pending</p>
+              <h3 class="stat-value">4</h3>
+              <span class="stat-indicator text-warning"><i class="bx bx-error-circle"></i> Need review</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Average Rating -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card mockup-card h-100">
+          <div class="card-body stat-card-inner">
+            <div class="icon-box bg-info-light">
+              <i class="bx bx-star"></i>
+            </div>
+            <div class="stat-details">
+              <p class="stat-title">Avg Rating</p>
+              <h3 class="stat-value">4.6</h3>
+              <span class="stat-indicator text-info"><i class="bx bx-message-square-detail"></i> 342 reviews</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tourist Spots Table -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card mockup-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="card-title mb-1 fw-bold">All Tourist Spots</h5>
+              <small>Complete list of tourist destinations in your municipality</small>
+            </div>
+            <div class="table-controls">
+              <div class="search-box">
+                <i class="bx bx-search"></i>
+                <input type="text" id="spotSearch" placeholder="Search spots...">
+              </div>
+              <select class="filter-select" id="statusFilter">
+                <option value="">All Status</option>
+                <option value="approved">Active</option>
+                <option value="pending">Pending</option>
+                <option value="rejected">Rejected</option>
+              </select>
+              <select class="filter-select" id="categoryFilter">
+                <option value="">All Categories</option>
+                <option value="beach">Beach</option>
+                <option value="mountain">Mountain</option>
+                <option value="historical">Historical</option>
+                <option value="religious">Religious</option>
+                <option value="park">Park</option>
+                <option value="waterfall">Waterfall</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-body pt-0">
+            <div class="table-responsive">
+              <table class="table table-hover" id="touristSpotsTable">
+                <thead>
+                  <tr>
+                    <th>Tourist Spot</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Rating</th>
+                    <th>Address</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="https://picsum.photos/seed/beach1/50/50.jpg" alt="White Sand Beach" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" class="me-3">
+                        <div>
+                          <div class="fw-medium">White Sand Beach</div>
+                          <small class="text-muted">Pristine white sand beach</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge bg-light text-dark">Beach</span>
+                    </td>
+                    <td>
+                      <span class="status-badge active"><i class="bx bx-check-circle"></i> Active</span>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div class="me-2">
+                          <i class="bx bx-star text-warning"></i>
+                          <i class="bx bx-star text-warning"></i>
+                          <i class="bx bx-star text-warning"></i>
+                          <i class="bx bx-star text-warning"></i>
+                          <i class="bx bx-star text-warning"></i>
+                        </div>
+                        <span class="fw-medium">4.8</span>
+                        <small class="text-muted ms-1">(156)</small>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <i class="bx bx-map text-muted me-2"></i>
+                        <div>
+                          <div class="small">Coastal Road, Barangay San Juan</div>
+                          <small class="text-muted">13.4567, 123.4567</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="createdAt">2024-01-15</td>
+                    <td>
+                      <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                          <i class="bx bx-dots-horizontal-rounded"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="#" onclick="viewSpotDetails('1')"><i class="bx bx-show me-2"></i> View Details</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="editSpot('1')"><i class="bx bx-edit me-2"></i> Edit</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="manageGallery('1')"><i class="bx bx-images me-2"></i> Gallery</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="#" onclick="deleteSpot('1')"><i class="bx bx-trash me-2"></i> Delete</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="https://picsum.photos/seed/mountain1/50/50.jpg" alt="Mount Vista" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" class="me-3">
+                        <div>
+                          <div class="fw-medium">Mount Vista</div>
+                          <small class="text-muted">Scenic mountain hiking trail</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge bg-light text-dark">Mountain</span>
+                    </td>
+                    <td>
+                      <span class="status-badge active"><i class="bx bx-check-circle"></i> Active</span>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div class="me-2">
+                          <i class="bx bx-star text-warning"></i>
+                          <i class="bx bx-star text-warning"></i>
+                          <i class="bx bx-star text-warning"></i>
+                          <i class="bx bx-star text-warning"></i>
+                          <i class="bx bx-star text-muted"></i>
+                        </div>
+                        <span class="fw-medium">4.5</span>
+                        <small class="text-muted ms-1">(89)</small>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <i class="bx bx-map text-muted me-2"></i>
+                        <div>
+                          <div class="small">Highland Trail, Barangay Heights</div>
+                          <small class="text-muted">13.7890, 123.2345</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="createdAt">2024-02-20</td>
+                    <td>
+                      <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                          <i class="bx bx-dots-horizontal-rounded"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="#" onclick="viewSpotDetails('2')"><i class="bx bx-show me-2"></i> View Details</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="editSpot('2')"><i class="bx bx-edit me-2"></i> Edit</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="manageGallery('2')"><i class="bx bx-images me-2"></i> Gallery</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="#" onclick="deleteSpot('2')"><i class="bx bx-trash me-2"></i> Delete</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="https://picsum.photos/seed/church1/50/50.jpg" alt="Heritage Church" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" class="me-3">
+                        <div>
+                          <div class="fw-medium">Heritage Church</div>
+                          <small class="text-muted">Historical colonial architecture</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge bg-light text-dark">Historical</span>
+                    </td>
+                    <td>
+                      <span class="status-badge pending"><i class="bx bx-time-five"></i> Pending</span>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div class="me-2">
+                          <i class="bx bx-star text-warning"></i>
+                          <i class="bx bx-star text-warning"></i>
+                          <i class="bx bx-star text-warning"></i>
+                          <i class="bx bx-star text-warning"></i>
+                          <i class="bx bx-star text-muted"></i>
+                        </div>
+                        <span class="fw-medium">4.2</span>
+                        <small class="text-muted ms-1">(45)</small>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <i class="bx bx-map text-muted me-2"></i>
+                        <div>
+                          <div class="small">Plaza Center, Barangay Poblacion</div>
+                          <small class="text-muted">13.5678, 123.8901</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="createdAt">2024-03-10</td>
+                    <td>
+                      <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                          <i class="bx bx-dots-horizontal-rounded"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="#" onclick="viewSpotDetails('3')"><i class="bx bx-show me-2"></i> View Details</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="editSpot('3')"><i class="bx bx-edit me-2"></i> Edit</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="manageGallery('3')"><i class="bx bx-images me-2"></i> Gallery</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-success" href="#" onclick="approveSpot('3')"><i class="bx bx-check-circle me-2"></i> Approve</a></li>
+                          <li><a class="dropdown-item text-danger" href="#" onclick="deleteSpot('3')"><i class="bx bx-trash me-2"></i> Delete</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="https://picsum.photos/seed/park1/50/50.jpg" alt="Central Park" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" class="me-3">
+                        <div>
+                          <div class="fw-medium">Central Park</div>
+                          <small class="text-muted">Recreational green space</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge bg-light text-dark">Park</span>
+                    </td>
+                    <td>
+                      <span class="status-badge active"><i class="bx bx-check-circle"></i> Active</span>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div class="me-2">
+                          <i class="bx bx-star text-warning"></i>
+                          <i class="bx bx-star text-warning"></i>
+                          <i class="bx bx-star text-warning"></i>
+                          <i class="bx bx-star text-warning"></i>
+                          <i class="bx bx-star text-muted"></i>
+                        </div>
+                        <span class="fw-medium">4.3</span>
+                        <small class="text-muted ms-1">(67)</small>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <i class="bx bx-map text-muted me-2"></i>
+                        <div>
+                          <div class="small">Park Avenue, Barangay Green</div>
+                          <small class="text-muted">13.3456, 123.6789</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="createdAt">2024-01-25</td>
+                    <td>
+                      <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                          <i class="bx bx-dots-horizontal-rounded"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="#" onclick="viewSpotDetails('4')"><i class="bx bx-show me-2"></i> View Details</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="editSpot('4')"><i class="bx bx-edit me-2"></i> Edit</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="manageGallery('4')"><i class="bx bx-images me-2"></i> Gallery</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="#" onclick="deleteSpot('4')"><i class="bx bx-trash me-2"></i> Delete</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions Section -->
+    <div class="row g-4 mb-4">
+      <div class="col-12">
+        <div class="card mockup-card">
+          <div class="card-header">
+            <h5 class="card-title mb-0 fw-bold">Quick Actions</h5>
+          </div>
+          <div class="card-body">
+            <div class="quick-actions">
+              <a href="#" class="quick-action-btn" onclick="openAddSpotModal()">
+                <div class="quick-action-icon">
+                  <i class="bx bx-plus"></i>
+                </div>
+                <div>
+                  <div class="fw-medium">Add New Spot</div>
+                  <small class="text-muted">Register a new tourist destination</small>
+                </div>
+              </a>
+              <a href="#" class="quick-action-btn" onclick="exportSpotsData()">
+                <div class="quick-action-icon">
+                  <i class="bx bx-download"></i>
+                </div>
+                <div>
+                  <div class="fw-medium">Export Data</div>
+                  <small class="text-muted">Download spots information</small>
+                </div>
+              </a>
+              <a href="#" class="quick-action-btn" onclick="importSpotsData()">
+                <div class="quick-action-icon">
+                  <i class="bx bx-upload"></i>
+                </div>
+                <div>
+                  <div class="fw-medium">Import Spots</div>
+                  <small class="text-muted">Bulk import from CSV</small>
+                </div>
+              </a>
+              <a href="#" class="quick-action-btn" onclick="generateReport()">
+                <div class="quick-action-icon">
+                  <i class="bx bx-file"></i>
+                </div>
+                <div>
+                  <div class="fw-medium">Generate Report</div>
+                  <small class="text-muted">Create analytics report</small>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity Feed -->
+    <div class="row g-4">
+      <div class="col-lg-6 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <h5 class="card-title mb-0 fw-bold">Recent Activity</h5>
+          </div>
+          <div class="card-body pt-0">
+            <div class="activity-feed">
+              <div class="activity-item">
+                <div class="activity-icon user">
+                  <i class="bx bx-map-pin"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">White Sand Beach was Active</div>
+                  <div class="activity-time">Mar 15, 2024 at 10:30 AM</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon user">
+                  <i class="bx bx-map-pin"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">Mount Vista was Active</div>
+                  <div class="activity-time">Mar 14, 2024 at 2:15 PM</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon user">
+                  <i class="bx bx-map-pin"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">Heritage Church was Pending</div>
+                  <div class="activity-time">Mar 13, 2024 at 4:45 PM</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon user">
+                  <i class="bx bx-map-pin"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">Central Park was Active</div>
+                  <div class="activity-time">Mar 12, 2024 at 9:20 AM</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon user">
+                  <i class="bx bx-map-pin"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">New spot added: Hidden Falls</div>
+                  <div class="activity-time">Mar 11, 2024 at 11:00 AM</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <h5 class="card-title mb-0 fw-bold">Category Distribution</h5>
+          </div>
+          <div class="card-body pt-0">
+            <div id="categoryChart" style="min-height: 250px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Initialize DataTable
+    if ($('#touristSpotsTable').length) {
+      const table = $('#touristSpotsTable').DataTable({
+        responsive: true,
+        order: [[0, 'asc']],
+        pageLength: 10,
+        dom: 'lrtip'
+      });
+
+      // Search functionality
+      $('#spotSearch').on('keyup', function() {
+        table.search(this.value).draw();
+      });
+
+      // Status filter
+      $('#statusFilter').on('change', function() {
+        const status = $(this).val();
+        if (status) {
+          table.column(2).search(status).draw();
+        } else {
+          table.column(2).search('').draw();
+        }
+      });
+
+      // Category filter
+      $('#categoryFilter').on('change', function() {
+        const category = $(this).val();
+        if (category) {
+          table.column(1).search(category).draw();
+        } else {
+          table.column(1).search('').draw();
+        }
+      });
+    }
+
+    // Category Chart
+    const categoryLabels = ['Beach', 'Mountain', 'Historical', 'Park', 'Waterfall', 'Other'];
+    const categoryCounts = [8, 6, 4, 5, 3, 2];
+    
+    const categoryData = {
+      labels: categoryLabels,
+      data: categoryCounts
+    };
+
+    if (categoryData.labels.length > 0) {
+      const categoryOptions = {
+        series: [{
+          data: categoryData.data
+        }],
+        chart: {
+          type: 'bar',
+          height: 250,
+          fontFamily: 'Poppins, sans-serif',
+          toolbar: { show: false }
+        },
+        colors: ['#7f1d1d'],
+        plotOptions: {
+          bar: {
+            borderRadius: 6,
+            columnWidth: '50%'
+          }
+        },
+        dataLabels: { enabled: false },
+        xaxis: {
+          categories: categoryData.labels,
+          labels: { style: { colors: '#1a1a1a', fontSize: '12px' } }
+        },
+        yaxis: {
+          labels: { style: { colors: '#1a1a1a', fontSize: '12px' } }
+        },
+        grid: {
+          borderColor: '#f5e8d2',
+          strokeDashArray: 0
+        }
+      };
+      new ApexCharts(document.querySelector("#categoryChart"), categoryOptions).render();
+    }
+  });
+
+  // Action Functions
+  function openAddSpotModal() {
+    Swal.fire({
+      title: 'Add Tourist Spot',
+      html: `
+        <form id="addSpotForm">
+          <div class="mb-3">
+            <label class="form-label">Spot Name</label>
+            <input type="text" class="form-control" id="spotName" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Category</label>
+            <select class="form-control" id="spotCategory">
+              <option value="beach">Beach</option>
+              <option value="mountain">Mountain</option>
+              <option value="historical">Historical</option>
+              <option value="religious">Religious</option>
+              <option value="park">Park</option>
+              <option value="waterfall">Waterfall</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" id="spotDescription" rows="3"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Address</label>
+            <input type="text" class="form-control" id="spotAddress">
+          </div>
+        </form>
+      `,
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'Add Spot',
+      confirmButtonColor: '#7f1d1d',
+      preConfirm: () => {
+        const name = document.getElementById('spotName').value;
+        const category = document.getElementById('spotCategory').value;
+        const description = document.getElementById('spotDescription').value;
+        const address = document.getElementById('spotAddress').value;
+        
+        if (!name) {
+          Swal.showValidationMessage('Please enter a spot name');
+          return false;
+        }
+        
+        return { name, category, description, address };
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // TODO: Implement API call to add spot
+        Swal.fire('Success!', 'Tourist spot added successfully', 'success');
+      }
+    });
+  }
+
+  function viewSpotDetails(spotId) {
+    Swal.fire({
+      title: 'Tourist Spot Details',
+      html: '<p>Detailed view functionality will be implemented here.</p>',
+      icon: 'info',
+      confirmButtonText: 'OK'
+    });
+  }
+
+  function editSpot(spotId) {
+    Swal.fire({
+      title: 'Edit Tourist Spot',
+      html: '<p>Edit functionality will be implemented here.</p>',
+      icon: 'info',
+      confirmButtonText: 'OK'
+    });
+  }
+
+  function manageGallery(spotId) {
+    Swal.fire({
+      title: 'Manage Gallery',
+      html: '<p>Gallery management will be implemented here.</p>',
+      icon: 'info',
+      confirmButtonText: 'OK'
+    });
+  }
+
+  function approveSpot(spotId) {
+    Swal.fire({
+      title: 'Approve Tourist Spot',
+      text: 'Are you sure you want to approve this tourist spot?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Approve',
+      confirmButtonColor: '#16a34a'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // TODO: Implement API call to approve spot
+        Swal.fire('Approved!', 'Tourist spot has been approved', 'success');
+      }
+    });
+  }
+
+  function deleteSpot(spotId) {
+    Swal.fire({
+      title: 'Delete Tourist Spot',
+      text: 'Are you sure you want to delete this tourist spot? This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      confirmButtonColor: '#dc2626'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // TODO: Implement API call to delete spot
+        Swal.fire('Deleted!', 'Tourist spot has been deleted', 'success');
+      }
+    });
+  }
+
+  function exportSpotsData() {
+    Swal.fire({
+      title: 'Export Data',
+      html: '<p>Export functionality will be implemented here.</p>',
+      icon: 'info',
+      confirmButtonText: 'OK'
+    });
+  }
+
+  function importSpotsData() {
+    Swal.fire({
+      title: 'Import Spots',
+      html: '<p>Import functionality will be implemented here.</p>',
+      icon: 'info',
+      confirmButtonText: 'OK'
+    });
+  }
+
+  function generateReport() {
+    Swal.fire({
+      title: 'Generate Report',
+      html: '<p>Report generation will be implemented here.</p>',
+      icon: 'info',
+      confirmButtonText: 'OK'
+    });
+  }
+</script>
+{% endblock %}
