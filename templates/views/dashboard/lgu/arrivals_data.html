@@ -28,124 +28,6 @@
       </div>
     </div>
 
-    <!-- Stats Overview -->
-    <div class="row g-4 mb-4">
-      <!-- Total Arrivals This Month -->
-      <div class="col-lg-3 col-md-6 col-sm-6">
-        <div class="card mockup-card h-100">
-          <div class="card-body stat-card-inner">
-            <div class="icon-box bg-primary-light">
-              <i class="bx bx-group"></i>
-            </div>
-            <div class="stat-details">
-              <p class="stat-title">This Month</p>
-              <h3 class="stat-value">3,847</h3>
-              <span class="stat-indicator"><i class="bx bx-trending-up"></i> +12.3% vs last month</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Year to Date -->
-      <div class="col-lg-3 col-md-6 col-sm-6">
-        <div class="card mockup-card h-100">
-          <div class="card-body stat-card-inner">
-            <div class="icon-box bg-success-light">
-              <i class="bx bx-calendar"></i>
-            </div>
-            <div class="stat-details">
-              <p class="stat-title">Year to Date</p>
-              <h3 class="stat-value">42,156</h3>
-              <span class="stat-indicator"><i class="bx bx-trending-up"></i> +8.7% vs last year</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Average Daily -->
-      <div class="col-lg-3 col-md-6 col-sm-6">
-        <div class="card mockup-card h-100">
-          <div class="card-body stat-card-inner">
-            <div class="icon-box bg-warning-light">
-              <i class="bx bx-bar-chart"></i>
-            </div>
-            <div class="stat-details">
-              <p class="stat-title">Daily Average</p>
-              <h3 class="stat-value">128</h3>
-              <span class="stat-indicator"><i class="bx bx-info-circle"></i> Last 30 days</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Peak Season -->
-      <div class="col-lg-3 col-md-6 col-sm-6">
-        <div class="card mockup-card h-100">
-          <div class="card-body stat-card-inner">
-            <div class="icon-box bg-info-light">
-              <i class="bx bx-sun"></i>
-            </div>
-            <div class="stat-details">
-              <p class="stat-title">Peak Season</p>
-              <h3 class="stat-value">Apr-Jun</h3>
-              <span class="stat-indicator"><i class="bx bx-star"></i> Highest arrivals</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Charts and Data Section -->
-    <div class="row g-4 mb-4">
-      <!-- Monthly Trend Chart -->
-      <div class="col-lg-8 col-md-12">
-        <div class="card mockup-card h-100">
-          <div class="card-header border-0">
-            <div class="d-flex justify-content-between align-items-center">
-              <h5 class="card-title mb-0 fw-bold">Monthly Arrival Trends</h5>
-              <div class="btn-group shadow-sm" role="group">
-                <button type="button" class="btn btn-sm btn-dashboard-action active">6 Months</button>
-                <button type="button" class="btn btn-sm btn-dashboard-action">1 Year</button>
-                <button type="button" class="btn btn-sm btn-dashboard-action">2 Years</button>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="chart-container" style="height: 300px;">
-              <canvas id="arrivalTrendsChart"></canvas>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Visitor Types -->
-      <div class="col-lg-4 col-md-12">
-        <div class="card mockup-card h-100">
-          <div class="card-header border-0">
-            <h5 class="card-title mb-0 fw-bold">Visitor Types</h5>
-          </div>
-          <div class="card-body">
-            <div class="chart-container" style="height: 300px;">
-              <canvas id="visitorTypesChart"></canvas>
-            </div>
-            <div class="mt-3">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-muted-foreground small">Local Tourists</span>
-                <span class="fw-bold">65%</span>
-              </div>
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-muted-foreground small">Foreign Tourists</span>
-                <span class="fw-bold">25%</span>
-              </div>
-              <div class="d-flex justify-content-between align-items-center">
-                <span class="text-muted-foreground small">Outsiders</span>
-                <span class="fw-bold">10%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- Detailed Arrivals Table -->
     <div class="row">
@@ -160,10 +42,10 @@
                   <input type="text" placeholder="Search arrivals..." class="form-control">
                 </div>
                 <select class="filter-select">
-                  <option>All Municipalities</option>
-                  <option>San Juan</option>
-                  <option>San Pedro</option>
-                  <option>San Pablo</option>
+                  <option>All Spots</option>
+                  <option>Beach Resort</option>
+                  <option>Mountain View</option>
+                  <option>Historical Site</option>
                 </select>
                 <select class="filter-select">
                   <option>All Types</option>
@@ -180,7 +62,7 @@
                 <thead>
                   <tr>
                     <th>Date</th>
-                    <th>Municipality</th>
+                    <th>Tourist Spot</th>
                     <th>Local</th>
                     <th>Foreign</th>
                     <th>Outsider</th>
@@ -199,11 +81,11 @@
                       </div>
                     </td>
                     <td>
-                      <div class="municipality-info">
-                        <div class="municipality-avatar">SJ</div>
-                        <div class="municipality-details">
-                          <div class="municipality-name">San Juan</div>
-                          <div class="municipality-code">MUN-001</div>
+                      <div class="spot-info">
+                        <div class="spot-avatar">BR</div>
+                        <div class="spot-details">
+                          <div class="spot-name">Beach Resort</div>
+                          <div class="spot-type">Recreational</div>
                         </div>
                       </div>
                     </td>
@@ -242,11 +124,11 @@
                       </div>
                     </td>
                     <td>
-                      <div class="municipality-info">
-                        <div class="municipality-avatar">SP</div>
-                        <div class="municipality-details">
-                          <div class="municipality-name">San Pedro</div>
-                          <div class="municipality-code">MUN-002</div>
+                      <div class="spot-info">
+                        <div class="spot-avatar">MV</div>
+                        <div class="spot-details">
+                          <div class="spot-name">Mountain View</div>
+                          <div class="spot-type">Scenic</div>
                         </div>
                       </div>
                     </td>
@@ -285,11 +167,11 @@
                       </div>
                     </td>
                     <td>
-                      <div class="municipality-info">
-                        <div class="municipality-avatar">SA</div>
-                        <div class="municipality-details">
-                          <div class="municipality-name">San Pablo</div>
-                          <div class="municipality-code">MUN-003</div>
+                      <div class="spot-info">
+                        <div class="spot-avatar">HS</div>
+                        <div class="spot-details">
+                          <div class="spot-name">Historical Site</div>
+                          <div class="spot-type">Heritage</div>
                         </div>
                       </div>
                     </td>
@@ -328,11 +210,11 @@
                       </div>
                     </td>
                     <td>
-                      <div class="municipality-info">
-                        <div class="municipality-avatar">SJ</div>
-                        <div class="municipality-details">
-                          <div class="municipality-name">San Juan</div>
-                          <div class="municipality-code">MUN-001</div>
+                      <div class="spot-info">
+                        <div class="spot-avatar">BR</div>
+                        <div class="spot-details">
+                          <div class="spot-name">Beach Resort</div>
+                          <div class="spot-type">Recreational</div>
                         </div>
                       </div>
                     </td>
@@ -371,11 +253,11 @@
                       </div>
                     </td>
                     <td>
-                      <div class="municipality-info">
-                        <div class="municipality-avatar">SP</div>
-                        <div class="municipality-details">
-                          <div class="municipality-name">San Pedro</div>
-                          <div class="municipality-code">MUN-002</div>
+                      <div class="spot-info">
+                        <div class="spot-avatar">MV</div>
+                        <div class="spot-details">
+                          <div class="spot-name">Mountain View</div>
+                          <div class="spot-type">Scenic</div>
                         </div>
                       </div>
                     </td>
@@ -427,9 +309,9 @@
       <div class="modal-body">
         <div class="row">
           <div class="col-md-6">
-            <div class="municipality-avatar mx-auto mb-3">SJ</div>
-            <h5 class="text-center mb-1">San Juan</h5>
-            <p class="text-muted-foreground text-center">MUN-001</p>
+            <div class="spot-avatar mx-auto mb-3">BR</div>
+            <h5 class="text-center mb-1">Beach Resort</h5>
+            <p class="text-center">Recreational</p>
           </div>
           <div class="col-md-6">
             <p><strong>Date:</strong> March 15, 2024</p>
@@ -443,26 +325,26 @@
           <div class="col-md-4">
             <div class="text-center">
               <h4 class="text-primary">245</h4>
-              <p class="text-muted-foreground mb-0">Local Tourists</p>
+              <p class="mb-0">Local Tourists</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="text-center">
               <h4 class="text-primary">89</h4>
-              <p class="text-muted-foreground mb-0">Foreign Tourists</p>
+              <p class="mb-0">Foreign Tourists</p>
             </div>
           </div>
           <div class="col-md-4">
             <div class="text-center">
               <h4 class="text-primary">34</h4>
-              <p class="text-muted-foreground mb-0">Outsiders</p>
+              <p class="mb-0">Outsiders</p>
             </div>
           </div>
         </div>
         <hr>
         <div class="text-center">
           <h3 class="text-primary">368</h3>
-          <p class="text-muted-foreground mb-0">Total Arrivals</p>
+          <p class="mb-0">Total Arrivals</p>
         </div>
       </div>
       <div class="modal-footer">
@@ -498,12 +380,12 @@
             </div>
           </div>
           <div class="mb-3">
-            <label class="form-label">Municipality</label>
+            <label class="form-label">Tourist Spot</label>
             <select class="form-control" required>
-              <option value="">Select Municipality</option>
-              <option value="san-juan">San Juan</option>
-              <option value="san-pedro">San Pedro</option>
-              <option value="san-pablo">San Pablo</option>
+              <option value="">Select Tourist Spot</option>
+              <option value="beach-resort">Beach Resort</option>
+              <option value="mountain-view">Mountain View</option>
+              <option value="historical-site">Historical Site</option>
             </select>
           </div>
           <div class="row">
@@ -566,129 +448,51 @@
       });
     }
 
-    // Initialize Charts
-    initializeCharts();
+    function openAddArrivalModal() {
+      $('#addArrivalModal').modal('show');
+    }
+
+    function viewArrivalDetails(id) {
+      $('#viewArrivalModal').modal('show');
+    }
+
+    function editArrival(id) {
+      $('#viewArrivalModal').modal('hide');
+      $('#addArrivalModal').modal('show');
+    }
+
+    function saveArrival() {
+      // Placeholder for save functionality
+      Swal.fire({
+        title: 'Success!',
+        text: 'Arrival data has been saved successfully.',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+      $('#addArrivalModal').modal('hide');
+    }
+
+    function exportData() {
+      // Placeholder for export functionality
+      Swal.fire({
+        title: 'Export Data',
+        html: '<p>Select export format:</p>',
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Export as Excel',
+        cancelButtonText: 'Export as CSV',
+        showDenyButton: true,
+        denyButtonText: 'Export as PDF'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire('Exported!', 'Data exported as Excel file.', 'success');
+        } else if (result.isDenied) {
+          Swal.fire('Exported!', 'Data exported as PDF file.', 'success');
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          Swal.fire('Exported!', 'Data exported as CSV file.', 'success');
+        }
+      });
+    }
   });
-
-  function initializeCharts() {
-    // Monthly Trends Chart
-    const trendsCtx = document.getElementById('arrivalTrendsChart');
-    if (trendsCtx) {
-      new Chart(trendsCtx, {
-        type: 'line',
-        data: {
-          labels: ['October', 'November', 'December', 'January', 'February', 'March'],
-          datasets: [{
-            label: 'Local',
-            data: [3200, 3450, 4100, 3800, 3600, 3900],
-            borderColor: '#7f1d1d',
-            backgroundColor: 'rgba(127, 29, 29, 0.1)',
-            tension: 0.4
-          }, {
-            label: 'Foreign',
-            data: [1200, 1350, 1600, 1400, 1300, 1450],
-            borderColor: '#3b82f6',
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-            tension: 0.4
-          }, {
-            label: 'Outsider',
-            data: [450, 520, 680, 590, 540, 610],
-            borderColor: '#10b981',
-            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-            tension: 0.4
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'top',
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
-    }
-
-    // Visitor Types Chart
-    const typesCtx = document.getElementById('visitorTypesChart');
-    if (typesCtx) {
-      new Chart(typesCtx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Local', 'Foreign', 'Outsider'],
-          datasets: [{
-            data: [65, 25, 10],
-            backgroundColor: [
-              '#7f1d1d',
-              '#3b82f6',
-              '#10b981'
-            ],
-            borderWidth: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: false
-            }
-          }
-        }
-      });
-    }
-  }
-
-  function openAddArrivalModal() {
-    $('#addArrivalModal').modal('show');
-  }
-
-  function viewArrivalDetails(id) {
-    $('#viewArrivalModal').modal('show');
-  }
-
-  function editArrival(id) {
-    $('#viewArrivalModal').modal('hide');
-    $('#addArrivalModal').modal('show');
-  }
-
-  function saveArrival() {
-    // Placeholder for save functionality
-    Swal.fire({
-      title: 'Success!',
-      text: 'Arrival data has been saved successfully.',
-      icon: 'success',
-      confirmButtonText: 'OK'
-    });
-    $('#addArrivalModal').modal('hide');
-  }
-
-  function exportData() {
-    // Placeholder for export functionality
-    Swal.fire({
-      title: 'Export Data',
-      html: '<p>Select export format:</p>',
-      icon: 'info',
-      showCancelButton: true,
-      confirmButtonText: 'Export as Excel',
-      cancelButtonText: 'Export as CSV',
-      showDenyButton: true,
-      denyButtonText: 'Export as PDF'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire('Exported!', 'Data exported as Excel file.', 'success');
-      } else if (result.isDenied) {
-        Swal.fire('Exported!', 'Data exported as PDF file.', 'success');
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire('Exported!', 'Data exported as CSV file.', 'success');
-      }
-    });
-  }
 </script>
 {% endblock %}

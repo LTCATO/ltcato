@@ -105,9 +105,8 @@ def test_uploader():
             audience_str = request.form.get('target_audience', '')
             target_audience = [t.strip() for t in audience_str.split(',') if t.strip()]
 
-            # Handle municipality ID safely
-            m_id = request.form.get('municipality_id')
-            municipality_id = int(m_id) if m_id and m_id.isdigit() else None
+            # Get municipality ID from logged-in user session
+            municipality_id = session.get('municipality_id')
 
             # 4. Construct payload for Supabase database
             payload = {

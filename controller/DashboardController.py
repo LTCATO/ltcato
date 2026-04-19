@@ -312,4 +312,4 @@ def tourist_spots():
         stats=stats,
         category_labels=category_labels,
         category_data=category_data
-    )
+    )   

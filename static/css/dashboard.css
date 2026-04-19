@@ -386,30 +386,48 @@ body {
   margin: 0;
   color: var(--foreground);
   font-family: var(--font-sans);
+  background: transparent;
+}
+
+.dashboard-table .table thead {
+  background: linear-gradient(135deg, var(--muted), rgba(127, 29, 29, 0.05));
 }
 
 .dashboard-table .table thead th {
-  background: var(--muted);
   color: var(--foreground);
   font-weight: 600;
   font-family: var(--font-sans);
-  border-bottom: 2px solid var(--border);
+  border-bottom: 2px solid var(--primary);
   padding: 1rem;
+  background: transparent;
 }
 
 .dashboard-table .table tbody td {
   padding: 1rem;
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
+  background: transparent;
 }
 
 .dashboard-table .table tbody tr:hover {
-  background: var(--accent);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  box-shadow: 0 2px 8px rgba(127, 29, 29, 0.1);
+}
+
+/* Remove default Bootstrap table styling */
+.table {
+  --bs-table-bg: transparent !important;
+  --bs-table-color: var(--foreground) !important;
+  --bs-table-border-color: var(--border) !important;
+  --bs-table-striped-bg: transparent !important;
+  --bs-table-active-bg: var(--accent) !important;
+  --bs-table-hover-bg: var(--accent) !important;
 }
 
 /* Status Badges */
 .status-badge {
   padding: 0.25rem 0.75rem;
+  border-radius: var(--radius);
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 500;
@@ -1110,15 +1128,15 @@ body {
 /* DataTable Pagination Fix for Arrivals */
 .dataTables_wrapper .dataTables_paginate .paginate_button.current,
 .dataTables_wrapper .dataTables_paginate .paginate_button {
-  color: var(--foreground) !important;
+  color: white !important;
   background-color: var(--primary) !important;
   border-color: var(--primary) !important;
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button {
-  color: var(--foreground) !important;
+  color: white !important;
   background-color: var(--muted) !important;
-  border-color: var(--border) !important;
+  border: 1px solid var(--border) !important;
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
@@ -1171,7 +1189,7 @@ body {
 }
 
 .dataTables_wrapper .dataTables_paginate .ellipsis {
-  color: var(--foreground) !important;
+  color: white !important;
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
@@ -1345,11 +1363,208 @@ body {
   border-radius: var(--radius);
 }
 
-/* Arrivals list styling */
-.arrivals-list {
-  max-height: 400px;
-  overflow-y: auto;
-  padding-right: 0.5rem;
+/* Progress Modal Styles */
+.progress-indicator {
+  background: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 80px;
+  position: relative;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 2px solid var(--border);
+  color: var(--muted-foreground);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.step-label {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.progress-step.active .step-number {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: 0 0 0 4px rgba(127, 29, 29, 0.1);
+}
+
+.progress-step.active .step-label {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.progress-line {
+  height: 2px;
+  background: var(--border);
+  margin: 0 0.5rem;
+  margin-top: 20px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.progress-step.active ~ .progress-line {
+  background: var(--primary);
+}
+
+/* Form Steps */
+.form-step {
+  display: none;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.form-step.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Modal Customization */
+.modal-content {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  background: var(--muted);
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem;
+}
+
+.modal-title {
+  color: var(--foreground);
+  font-weight: 600;
+  font-family: var(--font-sans);
+}
+
+.modal-body {
+  background: var(--card);
+  color: var(--foreground);
+}
+
+.modal-footer {
+  background: var(--muted);
+  border-top: 1px solid var(--border);
+  padding: 1.5rem;
+}
+
+/* Form Controls Styling */
+.form-control {
+  background: var(--input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  background: var(--card);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(127, 29, 29, 0.1);
+  color: var(--foreground);
+}
+
+.form-label {
+  color: var(--foreground);
+  font-weight: 500;
+  font-family: var(--font-sans);
+  margin-bottom: 0.5rem;
+}
+
+/* Button Customization */
+.btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #7f1d1d;
+  border-color: #7f1d1d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(127, 29, 29, 0.15);
+}
+
+.btn-secondary {
+  background: var(--muted);
+  border-color: var(--border);
+  color: var(--foreground);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--accent);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-success {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: white;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+  background: #15803d;
+  border-color: #15803d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.15);
+}
+
+.btn-outline-secondary {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--muted-foreground);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+  background: var(--muted);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Space-y utility class */
+.space-y-4 > * + * {
+  margin-top: 1rem;
 }
 
 .arrivals-list::-webkit-scrollbar {

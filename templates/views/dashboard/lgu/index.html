@@ -1,6 +1,6 @@
 {% extends 'dashboard-base.html' %}
 
-{% block title %}{{ municipality.name if municipality else 'LGU' }} Dashboard{% endblock %}
+{% block title %}Analytics Dashboard{% endblock %}
 
 {% block style %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
@@ -9,25 +9,30 @@
 {% block content %}
 <div class="container-xxl flex-grow-1 container-p-y">
     
-    <!-- Top Header Row -->
+    <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center dashboard-header">
       <div>
-        <h4 class="dashboard-title mb-1">{{ municipality.name if municipality else 'Municipality' }} Dashboard</h4>
-        <span class="dashboard-subtitle">Tourism Management - Current Year</span>
+        <h4 class="dashboard-title mb-1">Analytics Dashboard</h4>
+        <span class="dashboard-subtitle">Comprehensive tourism data insights and trends analysis</span>
       </div>
       <div class="d-flex align-items-center gap-3">
-        <button class="btn btn-dashboard-action d-flex align-items-center gap-2 shadow-sm" onclick="openAddSpotModal()">
-          <i class="bx bx-plus fs-5"></i> Add Tourist Spot
+        <button class="btn btn-dashboard-action d-flex align-items-center gap-2 shadow-sm" onclick="exportAnalytics()">
+          <i class="bx bx-download fs-5"></i> Export Report
         </button>
-        <button class="btn btn-dashboard-action btn-circle-sm d-flex align-items-center justify-content-center shadow-sm">
-          <i class="bx bx-bell fs-5"></i>
+        <button class="btn btn-dashboard-action d-flex align-items-center gap-2 shadow-sm" onclick="refreshData()">
+          <i class="bx bx-refresh fs-5"></i> Refresh
         </button>
+        <div class="btn-group shadow-sm" role="group">
+          <button type="button" class="btn btn-sm btn-dashboard-action active" onclick="setTimeRange('month')">Month</button>
+          <button type="button" class="btn btn-sm btn-dashboard-action" onclick="setTimeRange('quarter')">Quarter</button>
+          <button type="button" class="btn btn-sm btn-dashboard-action" onclick="setTimeRange('year')">Year</button>
+        </div>
       </div>
     </div>
 
-    <!-- Stats Cards Row -->
+    <!-- Key Metrics Overview -->
     <div class="row g-4 mb-4">
-      <!-- Total Arrivals -->
+      <!-- Total Visitors -->
       <div class="col-lg-3 col-md-6 col-sm-6">
         <div class="card mockup-card h-100">
           <div class="card-body stat-card-inner">
@@ -35,25 +40,25 @@
               <i class="bx bx-group"></i>
             </div>
             <div class="stat-details">
-              <p class="stat-title">Total Arrivals</p>
-              <h3 class="stat-value">15,842</h3>
-              <span class="stat-indicator"><i class="bx bx-info-circle"></i> Last 12 months</span>
+              <p class="stat-title">Total Visitors</p>
+              <h3 class="stat-value">45,892</h3>
+              <span class="stat-indicator"><i class="bx bx-trending-up"></i> +15.3% vs last period</span>
             </div>
           </div>
         </div>
       </div>
       
-      <!-- Active Tourist Spots -->
+      <!-- Tourist Spots -->
       <div class="col-lg-3 col-md-6 col-sm-6">
         <div class="card mockup-card h-100">
           <div class="card-body stat-card-inner">
             <div class="icon-box bg-success-light">
-              <i class="bx bx-map-pin"></i>
+              <i class="bx bx-map"></i>
             </div>
             <div class="stat-details">
               <p class="stat-title">Active Spots</p>
-              <h3 class="stat-value">24</h3>
-              <span class="stat-indicator"><i class="bx bx-check-circle"></i> 28 total spots</span>
+              <h3 class="stat-value">127</h3>
+              <span class="stat-indicator"><i class="bx bx-check-circle"></i> All operational</span>
             </div>
           </div>
         </div>
@@ -69,172 +74,156 @@
             <div class="stat-details">
               <p class="stat-title">Avg Rating</p>
               <h3 class="stat-value">4.6</h3>
-              <span class="stat-indicator"><i class="bx bx-message-square-detail"></i> 342 reviews</span>
+              <span class="stat-indicator"><i class="bx bx-info-circle"></i> From 2,847 reviews</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Pending Approvals -->
+      <!-- Peak Activity -->
       <div class="col-lg-3 col-md-6 col-sm-6">
         <div class="card mockup-card h-100">
           <div class="card-body stat-card-inner">
-            <div class="icon-box bg-danger-light">
+            <div class="icon-box bg-info-light">
               <i class="bx bx-time-five"></i>
             </div>
             <div class="stat-details">
-              <p class="stat-title">Pending Spots</p>
-              <h3 class="stat-value">4</h3>
-              <span class="stat-indicator"><i class="bx bx-error-circle"></i> Need review</span>
+              <p class="stat-title">Peak Hours</p>
+              <h3 class="stat-value">10AM-2PM</h3>
+              <span class="stat-indicator"><i class="bx bx-sun"></i> Highest activity</span>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Tourist Spots Management -->
-    <div class="row mb-4">
-      <div class="col-12">
-        <div class="card mockup-card">
-          <div class="card-header d-flex justify-content-between align-items-center">
-            <div>
-              <h5 class="card-title mb-1 fw-bold">Tourist Spots Management</h5>
-              <small>Manage and monitor tourist destinations in {{ municipality.name if municipality else 'your municipality' }}</small>
-            </div>
-            <div class="btn-group shadow-sm" role="group">
-              <button type="button" class="btn btn-sm btn-dashboard-action active">All Spots</button>
-              <button type="button" class="btn btn-sm btn-dashboard-action">Active</button>
-              <button type="button" class="btn btn-sm btn-dashboard-action">Pending</button>
+    <!-- Analytics Charts Section -->
+    <div class="row g-4 mb-4">
+      <!-- Visitor Trends Chart -->
+      <div class="col-lg-8 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="card-title mb-0 fw-bold">Visitor Trends Analysis</h5>
+              <div class="btn-group shadow-sm" role="group">
+                <button type="button" class="btn btn-sm btn-dashboard-action active">Daily</button>
+                <button type="button" class="btn btn-sm btn-dashboard-action">Weekly</button>
+                <button type="button" class="btn btn-sm btn-dashboard-action">Monthly</button>
+              </div>
             </div>
           </div>
-          <div class="card-body pt-0">
-            <div class="table-responsive dashboard-table">
-              <table class="table table-hover" id="touristSpotsTable">
+          <div class="card-body">
+            <div class="chart-container" style="height: 350px;">
+              <canvas id="visitorTrendsChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visitor Demographics -->
+      <div class="col-lg-4 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <h5 class="card-title mb-0 fw-bold">Visitor Demographics</h5>
+          </div>
+          <div class="card-body">
+            <div class="chart-container" style="height: 200px;">
+              <canvas id="demographicsChart"></canvas>
+            </div>
+            <div class="mt-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="small">Local Tourists</span>
+                <span class="fw-bold">68%</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="small">Domestic Tourists</span>
+                <span class="fw-bold">22%</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="small">International Tourists</span>
+                <span class="fw-bold">10%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Popular Destinations & Activity Heatmap -->
+    <div class="row g-4 mb-4">
+      <!-- Top Tourist Spots -->
+      <div class="col-lg-6 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <h5 class="card-title mb-0 fw-bold">Top Tourist Spots</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Status</th>
+                    <th>Spot Name</th>
+                    <th>Visitors</th>
                     <th>Rating</th>
-                    <th>Created</th>
-                    <th>Actions</th>
+                    <th>Trend</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>
-                      <div class="d-flex align-items-center">
-                        <img src="https://picsum.photos/seed/beach1/40/40.jpg" alt="White Sand Beach" class="table-image me-3">
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="spot-avatar bg-primary-light text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.75rem;">WH</div>
                         <div>
-                          <div class="fw-medium">White Sand Beach</div>
-                          <small class="text-muted-foreground">Coastal Road, Barangay San Juan</small>
+                          <div class="fw-bold">Wonderland Hot Spring</div>
+                          <div class="small">Calamba City</div>
                         </div>
                       </div>
                     </td>
-                    <td>
-                      <span class="badge">Beach</span>
-                    </td>
-                    <td>
-                      <span class="badge status-badge active">Active</span>
-                    </td>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <i class="bx bx-star text-warning me-1"></i>
-                        <span>4.8</span>
-                        <small class="text-muted-foreground ms-1">(156)</small>
-                      </div>
-                    </td>
-                    <td class="createdAt">2024-01-15</td>
-                    <td>
-                      <div class="dropdown">
-                        <button class="btn btn-dashboard-action btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                          <i class="bx bx-dots-horizontal-rounded"></i>
-                        </button>
-                        <ul class="dropdown-menu">
-                          <li><a class="dropdown-item" href="#"><i class="bx bx-edit me-2"></i> Edit</a></li>
-                          <li><a class="dropdown-item" href="#"><i class="bx bx-show me-2"></i> View Details</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item text-danger" href="#"><i class="bx bx-trash me-2"></i> Delete</a></li>
-                        </ul>
-                      </div>
-                    </td>
+                    <td><strong>8,432</strong></td>
+                    <td><span class="badge bg-success-light text-success">4.8</span></td>
+                    <td><i class="bx bx-trending-up text-success"></i></td>
                   </tr>
                   <tr>
                     <td>
-                      <div class="d-flex align-items-center">
-                        <img src="https://picsum.photos/seed/mountain1/40/40.jpg" alt="Mount Vista" class="table-image me-3">
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="spot-avatar bg-info-light text-info rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.75rem;">MV</div>
                         <div>
-                          <div class="fw-medium">Mount Vista</div>
-                          <small class="text-muted-foreground">Highland Trail, Barangay Heights</small>
+                          <div class="fw-bold">Mountain View Resort</div>
+                          <div class="small">San Pablo</div>
                         </div>
                       </div>
                     </td>
-                    <td>
-                      <span class="badge">Mountain</span>
-                    </td>
-                    <td>
-                      <span class="badge status-badge active">Active</span>
-                    </td>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <i class="bx bx-star text-warning me-1"></i>
-                        <span>4.5</span>
-                        <small class="text-muted-foreground ms-1">(89)</small>
-                      </div>
-                    </td>
-                    <td class="createdAt">2024-02-20</td>
-                    <td>
-                      <div class="dropdown">
-                        <button class="btn btn-dashboard-action btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                          <i class="bx bx-dots-horizontal-rounded"></i>
-                        </button>
-                        <ul class="dropdown-menu">
-                          <li><a class="dropdown-item" href="#"><i class="bx bx-edit me-2"></i> Edit</a></li>
-                          <li><a class="dropdown-item" href="#"><i class="bx bx-show me-2"></i> View Details</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item text-danger" href="#"><i class="bx bx-trash me-2"></i> Delete</a></li>
-                        </ul>
-                      </div>
-                    </td>
+                    <td><strong>6,789</strong></td>
+                    <td><span class="badge bg-success-light text-success">4.6</span></td>
+                    <td><i class="bx bx-trending-up text-success"></i></td>
                   </tr>
                   <tr>
                     <td>
-                      <div class="d-flex align-items-center">
-                        <img src="https://picsum.photos/seed/church1/40/40.jpg" alt="Heritage Church" class="table-image me-3">
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="spot-avatar bg-warning-light text-warning rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.75rem;">LF</div>
                         <div>
-                          <div class="fw-medium">Heritage Church</div>
-                          <small class="text-muted-foreground">Plaza Center, Barangay Poblacion</small>
+                          <div class="fw-bold">Lakefront Park</div>
+                          <div class="small">San Pedro</div>
                         </div>
                       </div>
                     </td>
+                    <td><strong>5,234</strong></td>
+                    <td><span class="badge bg-warning-light text-warning">4.5</span></td>
+                    <td><i class="bx bx-minus text-warning"></i></td>
+                  </tr>
+                  <tr>
                     <td>
-                      <span class="badge">Historical</span>
-                    </td>
-                    <td>
-                      <span class="badge status-badge pending">Pending</span>
-                    </td>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <i class="bx bx-star text-warning me-1"></i>
-                        <span>4.2</span>
-                        <small class="text-muted-foreground ms-1">(45)</small>
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="spot-avatar bg-success-light text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.75rem;">EG</div>
+                        <div>
+                          <div class="fw-bold">Eco Garden</div>
+                          <div class="small">San Juan</div>
+                        </div>
                       </div>
                     </td>
-                    <td class="createdAt">2024-03-10</td>
-                    <td>
-                      <div class="dropdown">
-                        <button class="btn btn-dashboard-action btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                          <i class="bx bx-dots-horizontal-rounded"></i>
-                        </button>
-                        <ul class="dropdown-menu">
-                          <li><a class="dropdown-item" href="#"><i class="bx bx-edit me-2"></i> Edit</a></li>
-                          <li><a class="dropdown-item" href="#"><i class="bx bx-show me-2"></i> View Details</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item text-success" href="#"><i class="bx bx-check-circle me-2"></i> Approve</a></li>
-                          <li><a class="dropdown-item text-danger" href="#"><i class="bx bx-trash me-2"></i> Delete</a></li>
-                        </ul>
-                      </div>
-                    </td>
+                    <td><strong>4,567</strong></td>
+                    <td><span class="badge bg-success-light text-success">4.7</span></td>
+                    <td><i class="bx bx-trending-up text-success"></i></td>
                   </tr>
                 </tbody>
               </table>
@@ -242,79 +231,89 @@
           </div>
         </div>
       </div>
+
+      <!-- Activity Heatmap -->
+      <div class="col-lg-6 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <h5 class="card-title mb-0 fw-bold">Weekly Activity Heatmap</h5>
+          </div>
+          <div class="card-body">
+            <div class="chart-container" style="height: 300px;">
+              <canvas id="activityHeatmapChart"></canvas>
+            </div>
+            <div class="mt-3 text-center">
+              <small>Peak activity shown in darker shades</small>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Recent Feedback & Arrivals Row -->
+    <!-- Visitor Feedback & Insights -->
     <div class="row g-4">
       <!-- Recent Feedback -->
       <div class="col-lg-6 col-md-12">
         <div class="card mockup-card h-100">
           <div class="card-header border-0">
-            <h5 class="card-title mb-0 fw-bold">Recent Feedback</h5>
+            <h5 class="card-title mb-0 fw-bold">Recent Visitor Feedback</h5>
           </div>
-          <div class="card-body pt-0">
+          <div class="card-body">
             <div class="feedback-list">
-              <div class="d-flex align-items-start mb-3 pb-3 border-bottom">
-                <div class="me-3">
-                  <div class="bg-muted avatar-circle d-flex align-items-center justify-content-center">
-                    <i class="bx bx-user text-muted-foreground"></i>
-                  </div>
+              <div class="d-flex gap-3 mb-3">
+                <div class="flex-shrink-0">
+                  <div class="avatar bg-primary-light text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">JD</div>
                 </div>
                 <div class="flex-grow-1">
                   <div class="d-flex justify-content-between align-items-start mb-1">
-                    <h6 class="mb-0">Maria Santos</h6>
-                    <small class="text-muted-foreground">Mar 15, 2024</small>
+                    <div>
+                      <div class="fw-bold">Juan Dela Cruz</div>
+                      <div class="small">Wonderland Hot Spring</div>
+                    </div>
+                    <div class="text-end">
+                      <div class="small">2 days ago</div>
+                      <div class="text-warning small">*****</div>
+                    </div>
                   </div>
-                  <div class="mb-2">
-                    <i class="bx bx-star text-warning"></i>
-                    <i class="bx bx-star text-warning"></i>
-                    <i class="bx bx-star text-warning"></i>
-                    <i class="bx bx-star text-warning"></i>
-                    <i class="bx bx-star text-warning"></i>
-                  </div>
-                  <p class="small mb-1">Amazing beach! The white sand is pristine and the water is crystal clear. Perfect for family vacations.</p>
+                  <p class="small mb-0">Amazing experience! The hot springs were perfect and the staff was very accommodating.</p>
                 </div>
               </div>
-              <div class="d-flex align-items-start mb-3 pb-3 border-bottom">
-                <div class="me-3">
-                  <div class="bg-muted avatar-circle d-flex align-items-center justify-content-center">
-                    <i class="bx bx-user text-muted-foreground"></i>
-                  </div>
+              
+              <div class="d-flex gap-3 mb-3">
+                <div class="flex-shrink-0">
+                  <div class="avatar bg-success-light text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">MS</div>
                 </div>
                 <div class="flex-grow-1">
                   <div class="d-flex justify-content-between align-items-start mb-1">
-                    <h6 class="mb-0">John Reyes</h6>
-                    <small class="text-muted-foreground">Mar 14, 2024</small>
+                    <div>
+                      <div class="fw-bold">Maria Santos</div>
+                      <div class="small">Mountain View Resort</div>
+                    </div>
+                    <div class="text-end">
+                      <div class="small">3 days ago</div>
+                      <div class="text-warning small">****</div>
+                    </div>
                   </div>
-                  <div class="mb-2">
-                    <i class="bx bx-star text-warning"></i>
-                    <i class="bx bx-star text-warning"></i>
-                    <i class="bx bx-star text-warning"></i>
-                    <i class="bx bx-star text-warning"></i>
-                    <i class="bx bx-star text-muted-foreground"></i>
-                  </div>
-                  <p class="small mb-1">Great hiking experience at Mount Vista! The trail is well-maintained and the view from the top is breathtaking.</p>
+                  <p class="small mb-0">Great place for family outings. Beautiful scenery and well-maintained facilities.</p>
                 </div>
               </div>
-              <div class="d-flex align-items-start mb-3 pb-3 border-bottom">
-                <div class="me-3">
-                  <div class="bg-muted avatar-circle d-flex align-items-center justify-content-center">
-                    <i class="bx bx-user text-muted-foreground"></i>
-                  </div>
+              
+              <div class="d-flex gap-3 mb-3">
+                <div class="flex-shrink-0">
+                  <div class="avatar bg-info-light text-info rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">RC</div>
                 </div>
                 <div class="flex-grow-1">
                   <div class="d-flex justify-content-between align-items-start mb-1">
-                    <h6 class="mb-0">Anna Cruz</h6>
-                    <small class="text-muted-foreground">Mar 13, 2024</small>
+                    <div>
+                      <div class="fw-bold">Roberto Cruz</div>
+                      <div class="small">Lakefront Park</div>
+                    </div>
+                    <div class="text-end">
+                      <div class="small">1 week ago</div>
+                      <div class="text-warning small">*****</div>
+                    </div>
                   </div>
-                  <div class="mb-2">
-                    <i class="bx bx-star text-warning"></i>
-                    <i class="bx bx-star text-warning"></i>
-                    <i class="bx bx-star text-warning"></i>
-                    <i class="bx bx-star text-warning"></i>
-                    <i class="bx bx-star text-muted-foreground"></i>
-                  </div>
-                  <p class="small mb-1">The Heritage Church is beautiful! The architecture is stunning and the historical significance is well-preserved.</p>
+                  <p class="small mb-0">Perfect for morning walks and picnics. Clean and peaceful environment.</p>
                 </div>
               </div>
             </div>
@@ -322,54 +321,43 @@
         </div>
       </div>
 
-      <!-- Recent Arrivals -->
+      <!-- Key Insights -->
       <div class="col-lg-6 col-md-12">
         <div class="card mockup-card h-100">
           <div class="card-header border-0">
-            <h5 class="card-title mb-0 fw-bold">Recent Arrivals Data</h5>
+            <h5 class="card-title mb-0 fw-bold">Key Insights & Recommendations</h5>
           </div>
-          <div class="card-body pt-0">
-            <div class="arrivals-list">
-              <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+          <div class="card-body">
+            <div class="insights-list">
+              <div class="alert alert-info d-flex align-items-start gap-3 mb-3">
+                <i class="bx bx-info-circle fs-5 flex-shrink-0"></i>
                 <div>
-                  <h6 class="mb-1">March 2024</h6>
-                  <div class="d-flex gap-3">
-                    <small class="text-muted-foreground">Local: <strong>1,234</strong></small>
-                    <small class="text-muted-foreground">Foreign: <strong>456</strong></small>
-                    <small class="text-muted-foreground">Outsider: <strong>234</strong></small>
-                  </div>
-                </div>
-                <div class="text-end">
-                  <h5 class="mb-0 text-primary">1,924</h5>
-                  <small class="text-muted-foreground">Total</small>
+                  <strong>Peak Season Alert:</strong>
+                  <p class="mb-0 small">Visitor traffic expected to increase by 35% during April-June. Consider capacity planning.</p>
                 </div>
               </div>
-              <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+              
+              <div class="alert alert-success d-flex align-items-start gap-3 mb-3">
+                <i class="bx bx-trending-up fs-5 flex-shrink-0"></i>
                 <div>
-                  <h6 class="mb-1">February 2024</h6>
-                  <div class="d-flex gap-3">
-                    <small class="text-muted-foreground">Local: <strong>987</strong></small>
-                    <small class="text-muted-foreground">Foreign: <strong>345</strong></small>
-                    <small class="text-muted-foreground">Outsider: <strong>189</strong></small>
-                  </div>
-                </div>
-                <div class="text-end">
-                  <h5 class="mb-0 text-primary">1,521</h5>
-                  <small class="text-muted-foreground">Total</small>
+                  <strong>Growth Opportunity:</strong>
+                  <p class="mb-0 small">International tourist arrivals up 22% this quarter. Focus on multilingual services.</p>
                 </div>
               </div>
-              <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+              
+              <div class="alert alert-warning d-flex align-items-start gap-3 mb-3">
+                <i class="bx bx-time-five fs-5 flex-shrink-0"></i>
                 <div>
-                  <h6 class="mb-1">January 2024</h6>
-                  <div class="d-flex gap-3">
-                    <small class="text-muted-foreground">Local: <strong>1,456</strong></small>
-                    <small class="text-muted-foreground">Foreign: <strong>523</strong></small>
-                    <small class="text-muted-foreground">Outsider: <strong>267</strong></small>
-                  </div>
+                  <strong>Optimization Needed:</strong>
+                  <p class="mb-0 small">Peak hours (10AM-2PM) show 45% higher wait times. Consider staggered scheduling.</p>
                 </div>
-                <div class="text-end">
-                  <h5 class="mb-0 text-primary">2,246</h5>
-                  <small class="text-muted-foreground">Total</small>
+              </div>
+              
+              <div class="alert alert-primary d-flex align-items-start gap-3 mb-0">
+                <i class="bx bx-star fs-5 flex-shrink-0"></i>
+                <div>
+                  <strong>Quality Improvement:</strong>
+                  <p class="mb-0 small">Spots with ratings below 4.0 show 30% lower repeat visits. Focus on service training.</p>
                 </div>
               </div>
             </div>
@@ -382,26 +370,279 @@
 {% endblock %}
 
 {% block script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    // Initialize DataTable if exists
-    if ($('#touristSpotsTable').length) {
-      $('#touristSpotsTable').DataTable({
-        responsive: true,
-        order: [[0, 'asc']],
-        pageLength: 10
-      });
-    }
+    // Initialize all charts
+    initializeCharts();
   });
 
-  function openAddSpotModal() {
-    // Placeholder for add tourist spot modal
-    Swal.fire({
-      title: 'Add Tourist Spot',
-      html: '<p>Tourist spot creation form will be implemented here.</p>',
-      icon: 'info',
-      confirmButtonText: 'OK'
+  function initializeCharts() {
+    // Visitor Trends Chart
+    const trendsCtx = document.getElementById('visitorTrendsChart');
+    if (trendsCtx) {
+      new Chart(trendsCtx, {
+        type: 'line',
+        data: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          datasets: [{
+            label: 'This Week',
+            data: [420, 380, 450, 520, 680, 890, 750],
+            borderColor: '#7f1d1d',
+            backgroundColor: 'rgba(127, 29, 29, 0.1)',
+            tension: 0.4,
+            fill: true
+          }, {
+            label: 'Last Week',
+            data: [380, 350, 400, 480, 620, 750, 680],
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    // Demographics Chart
+    const demographicsCtx = document.getElementById('demographicsChart');
+    if (demographicsCtx) {
+      new Chart(demographicsCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Local', 'Domestic', 'International'],
+          datasets: [{
+            data: [68, 22, 10],
+            backgroundColor: [
+              '#7f1d1d',
+              '#3b82f6',
+              '#10b981'
+            ],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+
+    // Activity Heatmap Chart
+    const heatmapCtx = document.getElementById('activityHeatmapChart');
+    if (heatmapCtx) {
+      new Chart(heatmapCtx, {
+        type: 'bar',
+        data: {
+          labels: ['6AM', '9AM', '12PM', '3PM', '6PM', '9PM'],
+          datasets: [{
+            label: 'Monday',
+            data: [20, 85, 120, 95, 60, 25],
+            backgroundColor: 'rgba(127, 29, 29, 0.3)'
+          }, {
+            label: 'Tuesday',
+            data: [15, 90, 135, 100, 65, 20],
+            backgroundColor: 'rgba(127, 29, 29, 0.4)'
+          }, {
+            label: 'Wednesday',
+            data: [25, 95, 140, 105, 70, 30],
+            backgroundColor: 'rgba(127, 29, 29, 0.5)'
+          }, {
+            label: 'Thursday',
+            data: [20, 100, 145, 110, 75, 35],
+            backgroundColor: 'rgba(127, 29, 29, 0.6)'
+          }, {
+            label: 'Friday',
+            data: [30, 120, 165, 130, 90, 45],
+            backgroundColor: 'rgba(127, 29, 29, 0.7)'
+          }, {
+            label: 'Saturday',
+            data: [40, 150, 185, 155, 110, 60],
+            backgroundColor: 'rgba(127, 29, 29, 0.8)'
+          }, {
+            label: 'Sunday',
+            data: [35, 140, 175, 145, 100, 50],
+            backgroundColor: 'rgba(127, 29, 29, 0.9)'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            x: {
+              stacked: true
+            },
+            y: {
+              stacked: true
+            }
+          }
+        }
+      });
+    }
+
+    // Performance Metrics Chart
+    const performanceCtx = document.getElementById('performanceMetricsChart');
+    if (performanceCtx) {
+      new Chart(performanceCtx, {
+        type: 'radar',
+        data: {
+          labels: ['Visitor Growth', 'Spot Quality', 'Staff Performance', 'Facility Maintenance', 'Community Engagement', 'Environmental Impact'],
+          datasets: [{
+            label: 'Current Performance',
+            data: [85, 92, 78, 88, 75, 90],
+            borderColor: '#7f1d1d',
+            backgroundColor: 'rgba(127, 29, 29, 0.2)'
+          }, {
+            label: 'Target Goals',
+            data: [90, 95, 85, 90, 80, 95],
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            borderDash: [5, 5]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 100
+            }
+          }
+        }
+      });
+    }
+  }
+
+  // Time range functions
+  function setTimeRange(range) {
+    // Update active button
+    document.querySelectorAll('.btn-group .btn-dashboard-action').forEach(btn => {
+      btn.classList.remove('active');
     });
+    event.target.classList.add('active');
+    
+    // Update charts data based on range
+    console.log('Setting time range to:', range);
+    // Placeholder for actual data update logic
+  }
+
+  function exportAnalytics() {
+    // Placeholder for export functionality
+    const modal = document.createElement('div');
+    modal.innerHTML = `
+      <div class="modal fade" id="exportModal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Export Analytics Report</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <p>Select export format:</p>
+              <div class="d-grid gap-2">
+                <button class="btn btn-dashboard-action" onclick="downloadReport('pdf')">
+                  <i class="bx bx-file-pdf"></i> Export as PDF
+                </button>
+                <button class="btn btn-dashboard-action" onclick="downloadReport('excel')">
+                  <i class="bx bx-file-excel"></i> Export as Excel
+                </button>
+                <button class="btn btn-dashboard-action" onclick="downloadReport('csv')">
+                  <i class="bx bx-file-csv"></i> Export as CSV
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
+    exportModal.show();
+    
+    // Clean up modal after hidden
+    document.getElementById('exportModal').addEventListener('hidden.bs.modal', function() {
+      modal.remove();
+    });
+  }
+
+  function downloadReport(format) {
+    console.log('Downloading report in format:', format);
+    // Placeholder for actual download logic
+    bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
+    
+    // Show success message
+    const toast = document.createElement('div');
+    toast.className = 'toast toast-success show';
+    toast.innerHTML = `
+      <div class="toast-header">
+        <strong>Export Successful</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+      </div>
+      <div class="toast-body">
+        Analytics report exported successfully as ${format.toUpperCase()}.
+      </div>
+    `;
+    document.querySelector('.toast-container')?.appendChild(toast) || document.body.appendChild(toast);
+    
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  function refreshData() {
+    console.log('Refreshing analytics data...');
+    // Placeholder for data refresh logic
+    
+    // Show loading state
+    const refreshBtn = event.target.closest('button');
+    const originalIcon = refreshBtn.querySelector('i').className;
+    refreshBtn.querySelector('i').className = 'bx bx-loader-alt bx-spin';
+    refreshBtn.disabled = true;
+    
+    // Simulate data refresh
+    setTimeout(() => {
+      refreshBtn.querySelector('i').className = originalIcon;
+      refreshBtn.disabled = false;
+      
+      // Show success message
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-success show';
+      toast.innerHTML = `
+        <div class="toast-header">
+          <strong>Data Refreshed</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body">
+          Analytics data has been updated successfully.
+        </div>
+      `;
+      document.querySelector('.toast-container')?.appendChild(toast) || document.body.appendChild(toast);
+      
+      setTimeout(() => toast.remove(), 3000);
+    }, 1500);
   }
 </script>
 {% endblock %}
