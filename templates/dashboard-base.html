@@ -27,7 +27,7 @@
 
   <!-- DataTables -->
   <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css">
-  
+
   <!-- Quill Editor -->
   <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
 
@@ -49,13 +49,15 @@
 
       <!-- Content wrapper -->
       <div class="content-wrapper">
-        
+
         <!-- Flash Messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <div class="mb-4">
           {% for category, message in messages %}
-          <div class="alert alert-{% if category == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show shadow-sm" role="alert" style="border-radius: var(--radius);">
+          <div
+            class="alert alert-{% if category == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show shadow-sm"
+            role="alert" style="border-radius: var(--radius);">
             {{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
@@ -93,10 +95,10 @@
 
   <!-- Initialization Script -->
   <script>
-    $(document).ready(function() {
-      // DataTables Init
-      if ($('.table').length) {
-        let table = new DataTable('.table', {
+    $(document).ready(function () {
+      // DataTables Init — skips tables marked with data-no-dt
+      if ($('.table:not([data-no-dt])').length) {
+        let table = new DataTable('.table:not([data-no-dt])', {
           responsive: true,
           dataSrc: '',
           order: typeof $.SystemScript !== 'undefined' ? $.SystemScript.getDefaultOrder('.table', 'created_at', 'desc') : [[0, 'desc']]
@@ -106,24 +108,25 @@
       // Format Dates
       $('.createdAt').each(function () {
         const originalDateTime = $(this).text().trim();
-        if(originalDateTime && typeof $.SystemScript !== 'undefined' && $.SystemScript.dateTimeFormat) {
+        if (originalDateTime && typeof $.SystemScript !== 'undefined' && $.SystemScript.dateTimeFormat) {
           const formattedDate = $.SystemScript.dateTimeFormat(originalDateTime);
           $(this).text(formattedDate);
         }
       });
 
       // Mobile Menu Toggle Function
-      window.toggleMenu = function() {
+      window.toggleMenu = function () {
         $('.layout-menu').toggleClass('show');
       };
 
       // Simple Mobile Menu Toggle (Backup)
-      $('.layout-menu-toggle').on('click', function() {
+      $('.layout-menu-toggle').on('click', function () {
         $('.layout-menu').toggleClass('show');
       });
     });
   </script>
-  
+
   {% block script %} {% endblock %}
 </body>
+
 </html>
