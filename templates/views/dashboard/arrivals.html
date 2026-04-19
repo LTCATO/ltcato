@@ -10,7 +10,7 @@
       <div class="page-info">
         <h1 class="page-title">Arrivals Management</h1>
         <p class="page-description">Manage and monitor arrival submissions from municipalities</p>
-      </div>    
+      </div>
     </div>
   </div>
 
@@ -73,59 +73,61 @@
         </thead>
         <tbody>
           {% if arrivals %}
-            {% for arrival in arrivals %}
-            <tr>
-              <td>
-                <div class="municipality-info">
-                  <div class="municipality-avatar">
-                    <i class="bx bx-building"></i>
-                  </div>
-                  <div class="municipality-details">
-                    <div class="municipality-name">{{ arrival.municipality | default('Unknown') }}</div>
-                    <div class="municipality-code">{{ arrival.municipality_code | default('---') }}</div>
-                  </div>
+          {% for arrival in arrivals %}
+          <tr>
+            <td>
+              <div class="municipality-info">
+                <div class="municipality-avatar">
+                  <i class="bx bx-building"></i>
                 </div>
-              </td>
-              <td>
-                <div class="submitter-info">
-                  <div class="submitter-avatar">
-                    <span>{{ arrival.submitted_by[:2].upper() if arrival.submitted_by else 'NA' }}</span>
-                  </div>
-                  <div class="submitter-details">
-                    <div class="submitter-name">{{ arrival.submitted_by | default('Unknown') }}</div>
-                    <div class="submitter-role">{{ arrival.submitter_role | default('Staff') }}</div>
-                  </div>
+                <div class="municipality-details">
+                  <div class="municipality-name">{{ arrival.municipality | default('Unknown') }}</div>
+                  <div class="municipality-code">{{ arrival.municipality_code | default('---') }}</div>
                 </div>
-              </td>
-              <td>
-                <div class="date-info">
-                  <div class="date-display">{{ arrival.date_submitted | default(arrival.created_at) }}</div>
-                  <div class="time-display">{{ arrival.time_submitted | default('') }}</div>
+              </div>
+            </td>
+            <td>
+              <div class="submitter-info">
+                <div class="submitter-avatar">
+                  <span>{{ arrival.submitted_by[:2].upper() if arrival.submitted_by else 'NA' }}</span>
                 </div>
-              </td>
-              <td>
-                {% set status = arrival.status | default('pending') %}
-                <span class="arrival-status {{ 'active' if status == 'approved' else ('inactive' if status == 'rejected' else 'pending') }}">
-                  <i class="bx {{ 'bx-check-circle' if status == 'approved' else ('bx-x-circle' if status == 'rejected' else 'bx-time-five') }}"></i>
-                  {{ status|title }}
-                </span>
-              </td>
-              <td>
-                <div class="arrival-actions">
-                  <button class="btn-action view" onclick="viewArrival({{ arrival.id }})" title="View Details">
-                    <i class="bx bx-show"></i>
-                  </button>
-                  <button class="btn-action delete" onclick="deleteArrival({{ arrival.id }})" title="Delete Arrival">
-                    <i class="bx bx-trash"></i>
-                  </button>
+                <div class="submitter-details">
+                  <div class="submitter-name">{{ arrival.submitted_by | default('Unknown') }}</div>
+                  <div class="submitter-role">{{ arrival.submitter_role | default('Staff') }}</div>
                 </div>
-              </td>
-            </tr>
-            {% endfor %}
+              </div>
+            </td>
+            <td>
+              <div class="date-info">
+                <div class="date-display">{{ arrival.date_submitted | default(arrival.created_at) }}</div>
+                <div class="time-display">{{ arrival.time_submitted | default('') }}</div>
+              </div>
+            </td>
+            <td>
+              {% set status = arrival.status | default('pending') %}
+              <span
+                class="arrival-status {{ 'active' if status == 'approved' else ('inactive' if status == 'rejected' else 'pending') }}">
+                <i
+                  class="bx {{ 'bx-check-circle' if status == 'approved' else ('bx-x-circle' if status == 'rejected' else 'bx-time-five') }}"></i>
+                {{ status|title }}
+              </span>
+            </td>
+            <td>
+              <div class="arrival-actions">
+                <button class="btn-action view" onclick="viewArrival('{{ arrival.id }}')" title="View Details">
+                  <i class="bx bx-show"></i>
+                </button>
+                <button class="btn-action delete" onclick="deleteArrival('{{ arrival.id }}')" title="Delete Arrival">
+                  <i class="bx bx-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
           {% else %}
-            <tr>
-              <td colspan="5" class="text-center py-4 text-muted">No arrivals found</td>
-            </tr>
+          <tr>
+            <td colspan="5" class="text-center py-4 text-muted">No arrivals found</td>
+          </tr>
           {% endif %}
         </tbody>
       </table>
@@ -233,7 +235,8 @@
         <div class="row mt-3">
           <div class="col-12">
             <p><strong>Additional Notes:</strong></p>
-            <p id="modalNotes">This arrival submission contains updated demographic data and visitor statistics for the current reporting period.</p>
+            <p id="modalNotes">This arrival submission contains updated demographic data and visitor statistics for the
+              current reporting period.</p>
           </div>
         </div>
       </div>
@@ -246,7 +249,8 @@
 </div>
 
 <!-- Delete Arrival Confirmation Modal -->
-<div class="modal fade" id="deleteArrivalModal" tabindex="-1" aria-labelledby="deleteArrivalModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteArrivalModal" tabindex="-1" aria-labelledby="deleteArrivalModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -259,7 +263,8 @@
             <i class="bx bx-error-circle" style="font-size: 3rem; color: #ef4444;"></i>
           </div>
           <h5>Are you sure you want to delete this arrival?</h5>
-          <p class="text-muted">This action cannot be undone. This will permanently delete the arrival submission and all associated data.</p>
+          <p class="text-muted">This action cannot be undone. This will permanently delete the arrival submission and
+            all associated data.</p>
         </div>
       </div>
       <div class="modal-footer">
@@ -273,170 +278,170 @@
 
 {% block script %}
 <script>
-$(document).ready(function() {
-  // Initialize DataTable for Arrivals
-  let arrivalsTable = $('#arrivalsTable').DataTable({
-    responsive: true,
-    pageLength: 10,
-    lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-    language: {
-      search: "Search arrivals...",
-      lengthMenu: "Show _MENU_ arrivals",
-      info: "Showing _START_ to _END_ of _TOTAL_ arrivals",
-      paginate: {
-        first: "First",
-        last: "Last",
-        next: "Next",
-        previous: "Previous"
+  $(document).ready(function () {
+    // Initialize DataTable for Arrivals
+    let arrivalsTable = $('#arrivalsTable').DataTable({
+      responsive: true,
+      pageLength: 10,
+      lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+      language: {
+        search: "Search arrivals...",
+        lengthMenu: "Show _MENU_ arrivals",
+        info: "Showing _START_ to _END_ of _TOTAL_ arrivals",
+        paginate: {
+          first: "First",
+          last: "Last",
+          next: "Next",
+          previous: "Previous"
+        }
       }
-    }
+    });
   });
-});
 
-// Submit Arrival Function
-function submitArrival() {
-  const formData = {
-    municipalityName: $('#municipalityName').val(),
-    municipalityCode: $('#municipalityCode').val(),
-    submittedBy: $('#submittedBy').val(),
-    submitterRole: $('#submitterRole').val(),
-    arrivalDate: $('#arrivalDate').val(),
-    arrivalTime: $('#arrivalTime').val(),
-    arrivalNotes: $('#arrivalNotes').val()
-  };
+  // Submit Arrival Function
+  function submitArrival() {
+    const formData = {
+      municipalityName: $('#municipalityName').val(),
+      municipalityCode: $('#municipalityCode').val(),
+      submittedBy: $('#submittedBy').val(),
+      submitterRole: $('#submitterRole').val(),
+      arrivalDate: $('#arrivalDate').val(),
+      arrivalTime: $('#arrivalTime').val(),
+      arrivalNotes: $('#arrivalNotes').val()
+    };
 
-  // Validate form
-  if (!formData.municipalityName || !formData.municipalityCode || !formData.submittedBy || !formData.submitterRole) {
-    showToast('Validation Error', 'Please fill in all required fields.', 'error');
-    return;
+    // Validate form
+    if (!formData.municipalityName || !formData.municipalityCode || !formData.submittedBy || !formData.submitterRole) {
+      showToast('Validation Error', 'Please fill in all required fields.', 'error');
+      return;
+    }
+
+    // In real app, this would make an API call to save
+    showToast('Arrival Added!', 'New arrival has been added successfully.', 'success');
+
+    // Close modal and reset form
+    $('#addArrivalModal').modal('hide');
+    $('#addArrivalForm')[0].reset();
   }
 
-  // In real app, this would make an API call to save
-  showToast('Arrival Added!', 'New arrival has been added successfully.', 'success');
-  
-  // Close modal and reset form
-  $('#addArrivalModal').modal('hide');
-  $('#addArrivalForm')[0].reset();
-}
+  // View Arrival Function
+  function viewArrival(id) {
+    // Sample data - in real app, this would fetch from server
+    const arrivalData = {
+      1: {
+        municipality: 'Quezon City',
+        code: 'QC-001',
+        submittedBy: 'Juan Dela Cruz',
+        role: 'Municipality Admin',
+        date: 'March 15, 2024',
+        time: '10:30 AM',
+        status: 'pending',
+        arrivalId: '#ARR-001',
+        notes: 'This arrival submission contains updated demographic data and visitor statistics for the current reporting period.'
+      },
+      2: {
+        municipality: 'Manila City',
+        code: 'MNL-002',
+        submittedBy: 'Maria Santos',
+        role: 'Staff Officer',
+        date: 'March 14, 2024',
+        time: '2:45 PM',
+        status: 'active',
+        arrivalId: '#ARR-002',
+        notes: 'Monthly arrival report with complete visitor logs and accommodation data.'
+      },
+      3: {
+        municipality: 'Caloocan City',
+        code: 'CAL-003',
+        submittedBy: 'Roberto Jose',
+        role: 'Data Encoder',
+        date: 'March 13, 2024',
+        time: '9:15 AM',
+        status: 'inactive',
+        arrivalId: '#ARR-003',
+        notes: 'Incomplete submission - missing visitor count verification.'
+      },
+      4: {
+        municipality: 'Pasay City',
+        code: 'PSY-004',
+        submittedBy: 'Linda Gomez',
+        role: 'Municipality Admin',
+        date: 'March 12, 2024',
+        time: '4:20 PM',
+        status: 'active',
+        arrivalId: '#ARR-004',
+        notes: 'Complete arrival submission with all required documentation attached.'
+      }
+    };
 
-// View Arrival Function
-function viewArrival(id) {
-  // Sample data - in real app, this would fetch from server
-  const arrivalData = {
-    1: {
-      municipality: 'Quezon City',
-      code: 'QC-001',
-      submittedBy: 'Juan Dela Cruz',
-      role: 'Municipality Admin',
-      date: 'March 15, 2024',
-      time: '10:30 AM',
-      status: 'pending',
-      arrivalId: '#ARR-001',
-      notes: 'This arrival submission contains updated demographic data and visitor statistics for the current reporting period.'
-    },
-    2: {
-      municipality: 'Manila City',
-      code: 'MNL-002',
-      submittedBy: 'Maria Santos',
-      role: 'Staff Officer',
-      date: 'March 14, 2024',
-      time: '2:45 PM',
-      status: 'active',
-      arrivalId: '#ARR-002',
-      notes: 'Monthly arrival report with complete visitor logs and accommodation data.'
-    },
-    3: {
-      municipality: 'Caloocan City',
-      code: 'CAL-003',
-      submittedBy: 'Roberto Jose',
-      role: 'Data Encoder',
-      date: 'March 13, 2024',
-      time: '9:15 AM',
-      status: 'inactive',
-      arrivalId: '#ARR-003',
-      notes: 'Incomplete submission - missing visitor count verification.'
-    },
-    4: {
-      municipality: 'Pasay City',
-      code: 'PSY-004',
-      submittedBy: 'Linda Gomez',
-      role: 'Municipality Admin',
-      date: 'March 12, 2024',
-      time: '4:20 PM',
-      status: 'active',
-      arrivalId: '#ARR-004',
-      notes: 'Complete arrival submission with all required documentation attached.'
-    }
-  };
+    const data = arrivalData[id] || arrivalData[1];
 
-  const data = arrivalData[id] || arrivalData[1];
-  
-  // Populate modal with data
-  $('#modalMunicipalityName').text(data.municipality);
-  $('#modalMunicipalityCode').text(data.code);
-  $('#modalSubmittedBy').text(data.submittedBy);
-  $('#modalSubmitterRole').text(data.role);
-  $('#modalDateSubmitted').text(data.date);
-  $('#modalTimeSubmitted').text(data.time);
-  $('#modalArrivalId').text(data.arrivalId);
-  $('#modalNotes').text(data.notes);
-  
-  // Set status badge
-  const statusElement = $('#modalStatus');
-  statusElement.removeClass('pending active inactive').addClass(data.status + ' arrival-status');
-  statusElement.html(getStatusIcon(data.status) + ' ' + getStatusText(data.status));
-  
-  // Show modal
-  $('#viewArrivalModal').modal('show');
-}
+    // Populate modal with data
+    $('#modalMunicipalityName').text(data.municipality);
+    $('#modalMunicipalityCode').text(data.code);
+    $('#modalSubmittedBy').text(data.submittedBy);
+    $('#modalSubmitterRole').text(data.role);
+    $('#modalDateSubmitted').text(data.date);
+    $('#modalTimeSubmitted').text(data.time);
+    $('#modalArrivalId').text(data.arrivalId);
+    $('#modalNotes').text(data.notes);
 
-// Delete Arrival Function
-function deleteArrival(id) {
-  // Show confirmation modal
-  $('#deleteArrivalModal').modal('show');
-  
-  // Set delete button click event
-  $('#deleteArrivalConfirm').off('click').on('click', function() {
-    // In real app, this would make an API call to delete
-    console.log('Deleting arrival:', id);
-    
-    // Show success message
-    showToast('Deleted!', 'Arrival submission has been deleted successfully.', 'success');
-    
-    // Close modal
-    $('#deleteArrivalModal').modal('hide');
-  });
-}
+    // Set status badge
+    const statusElement = $('#modalStatus');
+    statusElement.removeClass('pending active inactive').addClass(data.status + ' arrival-status');
+    statusElement.html(getStatusIcon(data.status) + ' ' + getStatusText(data.status));
 
-// Helper functions for status
-function getStatusIcon(status) {
-  const icons = {
-    pending: '<i class="bx bx-time-five"></i>',
-    active: '<i class="bx bx-check-circle"></i>',
-    inactive: '<i class="bx bx-x-circle"></i>'
-  };
-  return icons[status] || icons.pending;
-}
-
-function getStatusText(status) {
-  const texts = {
-    pending: 'Pending Review',
-    active: 'Approved',
-    inactive: 'Rejected'
-  };
-  return texts[status] || texts.pending;
-}
-
-// Toast Notification Function
-function showToast(title, message, type = 'info') {
-  // Create toast container if it doesn't exist
-  if (!$('#toast-container').length) {
-    $('body').append('<div id="toast-container" class="toast-container"></div>');
+    // Show modal
+    $('#viewArrivalModal').modal('show');
   }
-  
-  // Create toast element
-  const toastId = 'toast-' + Date.now();
-  const toastHtml = `
+
+  // Delete Arrival Function
+  function deleteArrival(id) {
+    // Show confirmation modal
+    $('#deleteArrivalModal').modal('show');
+
+    // Set delete button click event
+    $('#deleteArrivalConfirm').off('click').on('click', function () {
+      // In real app, this would make an API call to delete
+      console.log('Deleting arrival:', id);
+
+      // Show success message
+      showToast('Deleted!', 'Arrival submission has been deleted successfully.', 'success');
+
+      // Close modal
+      $('#deleteArrivalModal').modal('hide');
+    });
+  }
+
+  // Helper functions for status
+  function getStatusIcon(status) {
+    const icons = {
+      pending: '<i class="bx bx-time-five"></i>',
+      active: '<i class="bx bx-check-circle"></i>',
+      inactive: '<i class="bx bx-x-circle"></i>'
+    };
+    return icons[status] || icons.pending;
+  }
+
+  function getStatusText(status) {
+    const texts = {
+      pending: 'Pending Review',
+      active: 'Approved',
+      inactive: 'Rejected'
+    };
+    return texts[status] || texts.pending;
+  }
+
+  // Toast Notification Function
+  function showToast(title, message, type = 'info') {
+    // Create toast container if it doesn't exist
+    if (!$('#toast-container').length) {
+      $('body').append('<div id="toast-container" class="toast-container"></div>');
+    }
+
+    // Create toast element
+    const toastId = 'toast-' + Date.now();
+    const toastHtml = `
     <div id="${toastId}" class="toast toast-${type}" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="toast-header">
         <strong class="me-auto">${title}</strong>
@@ -447,23 +452,23 @@ function showToast(title, message, type = 'info') {
       </div>
     </div>
   `;
-  
-  // Add toast to container
-  $('#toast-container').append(toastHtml);
-  
-  // Initialize and show toast
-  const toastElement = document.getElementById(toastId);
-  const toast = new bootstrap.Toast(toastElement, {
-    autohide: true,
-    delay: type === 'info' ? 3000 : 4000
-  });
-  
-  toast.show();
-  
-  // Remove toast element after it's hidden
-  toastElement.addEventListener('hidden.bs.toast', () => {
-    toastElement.remove();
-  });
-}
+
+    // Add toast to container
+    $('#toast-container').append(toastHtml);
+
+    // Initialize and show toast
+    const toastElement = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastElement, {
+      autohide: true,
+      delay: type === 'info' ? 3000 : 4000
+    });
+
+    toast.show();
+
+    // Remove toast element after it's hidden
+    toastElement.addEventListener('hidden.bs.toast', () => {
+      toastElement.remove();
+    });
+  }
 </script>
 {% endblock %}
