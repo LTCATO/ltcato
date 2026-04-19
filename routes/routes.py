@@ -59,6 +59,21 @@ def register_routes(app):
     @app.route('/dashboard/lgu')
     def lgu_page():
         return lgu_dashboard()
+        
+    @app.route('/dashboard/lgu-management')
+    def lgu_management_page():
+        from controller.LguManagementController import lgu_management_index
+        return lgu_management_index()
+
+    @app.route('/dashboard/lgu-management/<municipality_id>')
+    def lgu_management_details_page(municipality_id):
+        from controller.LguManagementController import lgu_management_details
+        return lgu_management_details(municipality_id)
+
+    @app.route('/api/spots/<spot_id>/status', methods=['POST'])
+    def api_spot_status(spot_id):
+        from controller.LguManagementController import update_spot_status
+        return update_spot_status(spot_id)
     
     @app.route('/dashboard/lgu/spots')
     def lgu_spots_page():

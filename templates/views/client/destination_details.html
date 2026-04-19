@@ -209,6 +209,43 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- How to Get There Section -->
+                    <div class="transport-section mb-5">
+                        <h3 class="section-title mb-3">
+                            <i class="ph ph-car-profile me-2"></i>How to Get There
+                        </h3>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="p-4 border rounded h-100 bg-white shadow-sm">
+                                    <h5 class="mb-4 text-primary fw-bold"><i class="ph ph-bus me-2"></i>Commute Route</h5>
+                                    {% if spot.commute_guide and spot.commute_guide|length > 0 %}
+                                        <ol class="text-muted ps-3 mb-0" style="line-height: 1.8;">
+                                            {% for step in spot.commute_guide %}
+                                            <li>{{ step }}</li>
+                                            {% endfor %}
+                                        </ol>
+                                    {% else %}
+                                        <p class="text-muted m-0"><i class="ph ph-info me-2"></i>Commute information is not yet available.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-4 border rounded h-100 bg-white shadow-sm">
+                                    <h5 class="mb-4 text-primary fw-bold"><i class="ph ph-steering-wheel me-2"></i>Driving Route</h5>
+                                    {% if spot.driving_guide and spot.driving_guide|length > 0 %}
+                                        <ol class="text-muted ps-3 mb-0" style="line-height: 1.8;">
+                                            {% for step in spot.driving_guide %}
+                                            <li>{{ step }}</li>
+                                            {% endfor %}
+                                        </ol>
+                                    {% else %}
+                                        <p class="text-muted m-0"><i class="ph ph-info me-2"></i>Driving information is not yet available.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Image Gallery Section -->

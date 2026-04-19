@@ -72,197 +72,61 @@
           </tr>
         </thead>
         <tbody>
-          <!-- Sample Data Row 1 -->
-          <tr>
-            <td>
-              <div class="municipality-info">
-                <div class="municipality-avatar">
-                  <i class="bx bx-building"></i>
+          {% if arrivals %}
+            {% for arrival in arrivals %}
+            <tr>
+              <td>
+                <div class="municipality-info">
+                  <div class="municipality-avatar">
+                    <i class="bx bx-building"></i>
+                  </div>
+                  <div class="municipality-details">
+                    <div class="municipality-name">{{ arrival.municipality | default('Unknown') }}</div>
+                    <div class="municipality-code">{{ arrival.municipality_code | default('---') }}</div>
+                  </div>
                 </div>
-                <div class="municipality-details">
-                  <div class="municipality-name">Quezon City</div>
-                  <div class="municipality-code">QC-001</div>
+              </td>
+              <td>
+                <div class="submitter-info">
+                  <div class="submitter-avatar">
+                    <span>{{ arrival.submitted_by[:2].upper() if arrival.submitted_by else 'NA' }}</span>
+                  </div>
+                  <div class="submitter-details">
+                    <div class="submitter-name">{{ arrival.submitted_by | default('Unknown') }}</div>
+                    <div class="submitter-role">{{ arrival.submitter_role | default('Staff') }}</div>
+                  </div>
                 </div>
-              </div>
-            </td>
-            <td>
-              <div class="submitter-info">
-                <div class="submitter-avatar">
-                  <span>JD</span>
+              </td>
+              <td>
+                <div class="date-info">
+                  <div class="date-display">{{ arrival.date_submitted | default(arrival.created_at) }}</div>
+                  <div class="time-display">{{ arrival.time_submitted | default('') }}</div>
                 </div>
-                <div class="submitter-details">
-                  <div class="submitter-name">Juan Dela Cruz</div>
-                  <div class="submitter-role">Municipality Admin</div>
+              </td>
+              <td>
+                {% set status = arrival.status | default('pending') %}
+                <span class="arrival-status {{ 'active' if status == 'approved' else ('inactive' if status == 'rejected' else 'pending') }}">
+                  <i class="bx {{ 'bx-check-circle' if status == 'approved' else ('bx-x-circle' if status == 'rejected' else 'bx-time-five') }}"></i>
+                  {{ status|title }}
+                </span>
+              </td>
+              <td>
+                <div class="arrival-actions">
+                  <button class="btn-action view" onclick="viewArrival({{ arrival.id }})" title="View Details">
+                    <i class="bx bx-show"></i>
+                  </button>
+                  <button class="btn-action delete" onclick="deleteArrival({{ arrival.id }})" title="Delete Arrival">
+                    <i class="bx bx-trash"></i>
+                  </button>
                 </div>
-              </div>
-            </td>
-            <td>
-              <div class="date-info">
-                <div class="date-display">March 15, 2024</div>
-                <div class="time-display">10:30 AM</div>
-              </div>
-            </td>
-            <td>
-              <span class="arrival-status pending">
-                <i class="bx bx-time-five"></i>
-                Pending Review
-              </span>
-            </td>
-            <td>
-              <div class="arrival-actions">
-                <button class="btn-action view" onclick="viewArrival(1)" title="View Details">
-                  <i class="bx bx-show"></i>
-                </button>
-                <button class="btn-action delete" onclick="deleteArrival(1)" title="Delete Arrival">
-                  <i class="bx bx-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Sample Data Row 2 -->
-          <tr>
-            <td>
-              <div class="municipality-info">
-                <div class="municipality-avatar">
-                  <i class="bx bx-building"></i>
-                </div>
-                <div class="municipality-details">
-                  <div class="municipality-name">Manila City</div>
-                  <div class="municipality-code">MNL-002</div>
-                </div>
-              </div>
-            </td>
-            <td>
-              <div class="submitter-info">
-                <div class="submitter-avatar">
-                  <span>MS</span>
-                </div>
-                <div class="submitter-details">
-                  <div class="submitter-name">Maria Santos</div>
-                  <div class="submitter-role">Staff Officer</div>
-                </div>
-              </div>
-            </td>
-            <td>
-              <div class="date-info">
-                <div class="date-display">March 14, 2024</div>
-                <div class="time-display">2:45 PM</div>
-              </div>
-            </td>
-            <td>
-              <span class="arrival-status active">
-                <i class="bx bx-check-circle"></i>
-                Approved
-              </span>
-            </td>
-            <td>
-              <div class="arrival-actions">
-                <button class="btn-action view" onclick="viewArrival(2)" title="View Details">
-                  <i class="bx bx-show"></i>
-                </button>
-                <button class="btn-action delete" onclick="deleteArrival(2)" title="Delete Arrival">
-                  <i class="bx bx-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Sample Data Row 3 -->
-          <tr>
-            <td>
-              <div class="municipality-info">
-                <div class="municipality-avatar">
-                  <i class="bx bx-building"></i>
-                </div>
-                <div class="municipality-details">
-                  <div class="municipality-name">Caloocan City</div>
-                  <div class="municipality-code">CAL-003</div>
-                </div>
-              </div>
-            </td>
-            <td>
-              <div class="submitter-info">
-                <div class="submitter-avatar">
-                  <span>RJ</span>
-                </div>
-                <div class="submitter-details">
-                  <div class="submitter-name">Roberto Jose</div>
-                  <div class="submitter-role">Data Encoder</div>
-                </div>
-              </div>
-            </td>
-            <td>
-              <div class="date-info">
-                <div class="date-display">March 13, 2024</div>
-                <div class="time-display">9:15 AM</div>
-              </div>
-            </td>
-            <td>
-              <span class="arrival-status inactive">
-                <i class="bx bx-x-circle"></i>
-                Rejected
-              </span>
-            </td>
-            <td>
-              <div class="arrival-actions">
-                <button class="btn-action view" onclick="viewArrival(3)" title="View Details">
-                  <i class="bx bx-show"></i>
-                </button>
-                <button class="btn-action delete" onclick="deleteArrival(3)" title="Delete Arrival">
-                  <i class="bx bx-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Sample Data Row 4 -->
-          <tr>
-            <td>
-              <div class="municipality-info">
-                <div class="municipality-avatar">
-                  <i class="bx bx-building"></i>
-                </div>
-                <div class="municipality-details">
-                  <div class="municipality-name">Pasay City</div>
-                  <div class="municipality-code">PSY-004</div>
-                </div>
-              </div>
-            </td>
-            <td>
-              <div class="submitter-info">
-                <div class="submitter-avatar">
-                  <span>LG</span>
-                </div>
-                <div class="submitter-details">
-                  <div class="submitter-name">Linda Gomez</div>
-                  <div class="submitter-role">Municipality Admin</div>
-                </div>
-              </div>
-            </td>
-            <td>
-              <div class="date-info">
-                <div class="date-display">March 12, 2024</div>
-                <div class="time-display">4:20 PM</div>
-              </div>
-            </td>
-            <td>
-              <span class="arrival-status active">
-                <i class="bx bx-check-circle"></i>
-                Approved
-              </span>
-            </td>
-            <td>
-              <div class="arrival-actions">
-                <button class="btn-action view" onclick="viewArrival(4)" title="View Details">
-                  <i class="bx bx-show"></i>
-                </button>
-                <button class="btn-action delete" onclick="deleteArrival(4)" title="Delete Arrival">
-                  <i class="bx bx-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="5" class="text-center py-4 text-muted">No arrivals found</td>
+            </tr>
+          {% endif %}
         </tbody>
       </table>
     </div>
