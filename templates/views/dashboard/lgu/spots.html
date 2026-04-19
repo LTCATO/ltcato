@@ -267,72 +267,57 @@
       </div>
     </div>
 
-    <!-- Stats Cards Row -->
+    <!-- Quick Actions Section -->
     <div class="row g-4 mb-4">
-      <!-- Total Spots -->
-      <div class="col-lg-3 col-md-6 col-sm-6">
-        <div class="card mockup-card h-100">
-          <div class="card-body stat-card-inner">
-            <div class="icon-box bg-primary-light">
-              <i class="bx bx-map-pin"></i>
-            </div>
-            <div class="stat-details">
-              <p class="stat-title">Total Spots</p>
-              <h3 class="stat-value">28</h3>
-              <span class="stat-indicator text-info"><i class="bx bx-info-circle"></i> All registered spots</span>
-            </div>
+      <div class="col-12">
+        <div class="card mockup-card">
+          <div class="card-header">
+            <h5 class="card-title mb-0 fw-bold">Quick Actions</h5>
           </div>
-        </div>
-      </div>
-      
-      <!-- Active Spots -->
-      <div class="col-lg-3 col-md-6 col-sm-6">
-        <div class="card mockup-card h-100">
-          <div class="card-body stat-card-inner">
-            <div class="icon-box bg-success-light">
-              <i class="bx bx-check-circle"></i>
-            </div>
-            <div class="stat-details">
-              <p class="stat-title">Active Spots</p>
-              <h3 class="stat-value">24</h3>
-              <span class="stat-indicator text-success"><i class="bx bx-up-arrow-alt"></i> Live and accessible</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Pending Spots -->
-      <div class="col-lg-3 col-md-6 col-sm-6">
-        <div class="card mockup-card h-100">
-          <div class="card-body stat-card-inner">
-            <div class="icon-box bg-warning-light">
-              <i class="bx bx-time-five"></i>
-            </div>
-            <div class="stat-details">
-              <p class="stat-title">Pending</p>
-              <h3 class="stat-value">4</h3>
-              <span class="stat-indicator text-warning"><i class="bx bx-error-circle"></i> Need review</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Average Rating -->
-      <div class="col-lg-3 col-md-6 col-sm-6">
-        <div class="card mockup-card h-100">
-          <div class="card-body stat-card-inner">
-            <div class="icon-box bg-info-light">
-              <i class="bx bx-star"></i>
-            </div>
-            <div class="stat-details">
-              <p class="stat-title">Avg Rating</p>
-              <h3 class="stat-value">4.6</h3>
-              <span class="stat-indicator text-info"><i class="bx bx-message-square-detail"></i> 342 reviews</span>
+          <div class="card-body">
+            <div class="quick-actions">
+              <a href="#" class="quick-action-btn" onclick="openAddSpotModal()">
+                <div class="quick-action-icon">
+                  <i class="bx bx-plus"></i>
+                </div>
+                <div>
+                  <div class="fw-medium">Add New Spot</div>
+                  <small>Register a new tourist destination</small>
+                </div>
+              </a>
+              <a href="#" class="quick-action-btn" onclick="exportSpotsData()">
+                <div class="quick-action-icon">
+                  <i class="bx bx-download"></i>
+                </div>
+                <div>
+                  <div class="fw-medium">Export Data</div>
+                  <small>Download spots information</small>
+                </div>
+              </a>
+              <a href="#" class="quick-action-btn" onclick="importSpotsData()">
+                <div class="quick-action-icon">
+                  <i class="bx bx-upload"></i>
+                </div>
+                <div>
+                  <div class="fw-medium">Import Spots</div>
+                  <small>Bulk import from CSV</small>
+                </div>
+              </a>
+              <a href="#" class="quick-action-btn" onclick="generateReport()">
+                <div class="quick-action-icon">
+                  <i class="bx bx-file"></i>
+                </div>
+                <div>
+                  <div class="fw-medium">Generate Report</div>
+                  <small>Create analytics report</small>
+                </div>
+              </a>
             </div>
           </div>
         </div>
       </div>
     </div>
+
 
     <!-- Tourist Spots Table -->
     <div class="row mb-4">
@@ -387,7 +372,7 @@
                         <img src="https://picsum.photos/seed/beach1/50/50.jpg" alt="White Sand Beach" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" class="me-3">
                         <div>
                           <div class="fw-medium">White Sand Beach</div>
-                          <small class="text-muted">Pristine white sand beach</small>
+                          <small>Pristine white sand beach</small>
                         </div>
                       </div>
                     </td>
@@ -407,15 +392,15 @@
                           <i class="bx bx-star text-warning"></i>
                         </div>
                         <span class="fw-medium">4.8</span>
-                        <small class="text-muted ms-1">(156)</small>
+                        <small class="ms-1">(156)</small>
                       </div>
                     </td>
                     <td>
                       <div class="d-flex align-items-center">
-                        <i class="bx bx-map text-muted me-2"></i>
+                        <i class="bx bx-map me-2"></i>
                         <div>
                           <div class="small">Coastal Road, Barangay San Juan</div>
-                          <small class="text-muted">13.4567, 123.4567</small>
+                          <small>13.4567, 123.4567</small>
                         </div>
                       </div>
                     </td>
@@ -441,7 +426,7 @@
                         <img src="https://picsum.photos/seed/mountain1/50/50.jpg" alt="Mount Vista" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" class="me-3">
                         <div>
                           <div class="fw-medium">Mount Vista</div>
-                          <small class="text-muted">Scenic mountain hiking trail</small>
+                          <small>Scenic mountain hiking trail</small>
                         </div>
                       </div>
                     </td>
@@ -458,18 +443,18 @@
                           <i class="bx bx-star text-warning"></i>
                           <i class="bx bx-star text-warning"></i>
                           <i class="bx bx-star text-warning"></i>
-                          <i class="bx bx-star text-muted"></i>
+                          <i class="bx bx-star"></i>
                         </div>
                         <span class="fw-medium">4.5</span>
-                        <small class="text-muted ms-1">(89)</small>
+                        <small class="ms-1">(89)</small>
                       </div>
                     </td>
                     <td>
                       <div class="d-flex align-items-center">
-                        <i class="bx bx-map text-muted me-2"></i>
+                        <i class="bx bx-map me-2"></i>
                         <div>
                           <div class="small">Highland Trail, Barangay Heights</div>
-                          <small class="text-muted">13.7890, 123.2345</small>
+                          <small>13.7890, 123.2345</small>
                         </div>
                       </div>
                     </td>
@@ -495,7 +480,7 @@
                         <img src="https://picsum.photos/seed/church1/50/50.jpg" alt="Heritage Church" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" class="me-3">
                         <div>
                           <div class="fw-medium">Heritage Church</div>
-                          <small class="text-muted">Historical colonial architecture</small>
+                          <small>Historical colonial architecture</small>
                         </div>
                       </div>
                     </td>
@@ -512,18 +497,18 @@
                           <i class="bx bx-star text-warning"></i>
                           <i class="bx bx-star text-warning"></i>
                           <i class="bx bx-star text-warning"></i>
-                          <i class="bx bx-star text-muted"></i>
+                          <i class="bx bx-star"></i>
                         </div>
                         <span class="fw-medium">4.2</span>
-                        <small class="text-muted ms-1">(45)</small>
+                        <small class="ms-1">(45)</small>
                       </div>
                     </td>
                     <td>
                       <div class="d-flex align-items-center">
-                        <i class="bx bx-map text-muted me-2"></i>
+                        <i class="bx bx-map me-2"></i>
                         <div>
                           <div class="small">Plaza Center, Barangay Poblacion</div>
-                          <small class="text-muted">13.5678, 123.8901</small>
+                          <small>13.5678, 123.8901</small>
                         </div>
                       </div>
                     </td>
@@ -550,7 +535,7 @@
                         <img src="https://picsum.photos/seed/park1/50/50.jpg" alt="Central Park" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" class="me-3">
                         <div>
                           <div class="fw-medium">Central Park</div>
-                          <small class="text-muted">Recreational green space</small>
+                          <small>Recreational green space</small>
                         </div>
                       </div>
                     </td>
@@ -567,18 +552,18 @@
                           <i class="bx bx-star text-warning"></i>
                           <i class="bx bx-star text-warning"></i>
                           <i class="bx bx-star text-warning"></i>
-                          <i class="bx bx-star text-muted"></i>
+                          <i class="bx bx-star"></i>
                         </div>
                         <span class="fw-medium">4.3</span>
-                        <small class="text-muted ms-1">(67)</small>
+                        <small class="ms-1">(67)</small>
                       </div>
                     </td>
                     <td>
                       <div class="d-flex align-items-center">
-                        <i class="bx bx-map text-muted me-2"></i>
+                        <i class="bx bx-map me-2"></i>
                         <div>
                           <div class="small">Park Avenue, Barangay Green</div>
-                          <small class="text-muted">13.3456, 123.6789</small>
+                          <small>13.3456, 123.6789</small>
                         </div>
                       </div>
                     </td>
@@ -606,56 +591,6 @@
       </div>
     </div>
 
-    <!-- Quick Actions Section -->
-    <div class="row g-4 mb-4">
-      <div class="col-12">
-        <div class="card mockup-card">
-          <div class="card-header">
-            <h5 class="card-title mb-0 fw-bold">Quick Actions</h5>
-          </div>
-          <div class="card-body">
-            <div class="quick-actions">
-              <a href="#" class="quick-action-btn" onclick="openAddSpotModal()">
-                <div class="quick-action-icon">
-                  <i class="bx bx-plus"></i>
-                </div>
-                <div>
-                  <div class="fw-medium">Add New Spot</div>
-                  <small class="text-muted">Register a new tourist destination</small>
-                </div>
-              </a>
-              <a href="#" class="quick-action-btn" onclick="exportSpotsData()">
-                <div class="quick-action-icon">
-                  <i class="bx bx-download"></i>
-                </div>
-                <div>
-                  <div class="fw-medium">Export Data</div>
-                  <small class="text-muted">Download spots information</small>
-                </div>
-              </a>
-              <a href="#" class="quick-action-btn" onclick="importSpotsData()">
-                <div class="quick-action-icon">
-                  <i class="bx bx-upload"></i>
-                </div>
-                <div>
-                  <div class="fw-medium">Import Spots</div>
-                  <small class="text-muted">Bulk import from CSV</small>
-                </div>
-              </a>
-              <a href="#" class="quick-action-btn" onclick="generateReport()">
-                <div class="quick-action-icon">
-                  <i class="bx bx-file"></i>
-                </div>
-                <div>
-                  <div class="fw-medium">Generate Report</div>
-                  <small class="text-muted">Create analytics report</small>
-                </div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- Recent Activity Feed -->
     <div class="row g-4">
@@ -723,6 +658,168 @@
           </div>
           <div class="card-body pt-0">
             <div id="categoryChart" style="min-height: 250px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Modal for Add Tourist Spot -->
+    <div class="modal fade" id="addSpotModal" tabindex="-1" aria-labelledby="addSpotModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header border-0">
+            <h5 class="modal-title fw-bold" id="addSpotModalLabel">Add New Tourist Spot</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-0">
+            <!-- Progress Indicator -->
+            <div class="progress-indicator p-4 border-bottom">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="progress-step active" data-step="1">
+                  <div class="step-number">1</div>
+                  <div class="step-label">Basic Info</div>
+                </div>
+                <div class="progress-line flex-grow-1"></div>
+                <div class="progress-step" data-step="2">
+                  <div class="step-number">2</div>
+                  <div class="step-label">Content</div>
+                </div>
+                <div class="progress-line flex-grow-1"></div>
+                <div class="progress-step" data-step="3">
+                  <div class="step-number">3</div>
+                  <div class="step-label">Media</div>
+                </div>
+                <div class="progress-line flex-grow-1"></div>
+                <div class="progress-step" data-step="4">
+                  <div class="step-number">4</div>
+                  <div class="step-label">Details</div>
+                </div>
+                <div class="progress-line flex-grow-1"></div>
+                <div class="progress-step" data-step="5">
+                  <div class="step-number">5</div>
+                  <div class="step-label">Review</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Form Content -->
+            <form id="addSpotForm" method="POST" action="/test-uploader" enctype="multipart/form-data" class="p-4">
+              <!-- Step 1: Basic Information -->
+              <div class="form-step active" data-step="1">
+                <div class="mb-4">
+                  <h6 class="fw-bold mb-3">Basic Information</h6>
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label">Name</label>
+                      <input type="text" name="name" class="form-control" placeholder="e.g. Wonderland Hot Spring" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Category</label>
+                      <select name="category" class="form-control">
+                        <option value="beach">Beach</option>
+                        <option value="mountain">Mountain</option>
+                        <option value="historical">Historical</option>
+                        <option value="religious">Religious</option>
+                        <option value="park">Park</option>
+                        <option value="waterfall">Waterfall</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Address</label>
+                      <input type="text" name="address" class="form-control" placeholder="e.g. Calamba City, Laguna">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 2: Content Details -->
+              <div class="form-step" data-step="2">
+                <div class="mb-4">
+                  <h6 class="fw-bold mb-3">Content Details</h6>
+                  <div class="space-y-4">
+                    <div class="mb-3">
+                      <label class="form-label">Hook Title</label>
+                      <input type="text" name="hook_title" class="form-control" placeholder="e.g. Escape to Nature's Perfect Oasis">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Hook Text</label>
+                      <textarea name="hook_text" rows="2" class="form-control" placeholder="Short inspiring description..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Main Description</label>
+                      <textarea name="description" rows="4" class="form-control" placeholder="Detailed overview..."></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 3: Media Upload -->
+              <div class="form-step" data-step="3">
+                <div class="mb-4">
+                  <h6 class="fw-bold mb-3">Media</h6>
+                  <div class="space-y-4">
+                    <div class="mb-3">
+                      <label class="form-label">Main Image</label>
+                      <input type="file" name="main_image" accept="image/*" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Gallery Images (Multiple)</label>
+                      <input type="file" name="gallery_images" accept="image/*" multiple class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 4: Practical Information -->
+              <div class="form-step" data-step="4">
+                <div class="mb-4">
+                  <h6 class="fw-bold mb-3">Practical Information</h6>
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label">Opening Hours</label>
+                      <input type="text" name="opening_hours" class="form-control" placeholder="6:00 AM - 10:00 PM">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Entrance Fees</label>
+                      <textarea name="entrance_fees" rows="2" class="form-control" placeholder="Adults: ₱300, Kids: ₱150"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">What to Bring</label>
+                      <input type="text" name="what_to_bring" class="form-control" placeholder="Swimwear, towel, extra clothes">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Parking Info</label>
+                      <input type="text" name="parking_info" class="form-control" placeholder="Free parking available">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 5: Lists (Highlights & Target Audience) -->
+              <div class="form-step" data-step="5">
+                <div class="mb-4">
+                  <h6 class="fw-bold mb-3">Lists (Comma Separated)</h6>
+                  <div class="space-y-4">
+                    <div class="mb-3">
+                      <label class="form-label">Highlights (What makes it special?)</label>
+                      <input type="text" name="highlights" class="form-control" placeholder="Natural Hot Springs, Private Cottages, Lush Gardens">
+                      <small>Separate each item with a comma.</small>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Target Audience</label>
+                      <input type="text" name="target_audience" class="form-control" placeholder="Families, Couples, Professionals">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer border-0">
+            <button type="button" class="btn btn-secondary" id="prevBtn" onclick="changeStep(-1)" style="display: none;">Previous</button>
+            <button type="button" class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">Next</button>
+            <button type="button" class="btn btn-success" id="submitBtn" onclick="submitSpotForm()" style="display: none;">Submit</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
           </div>
         </div>
       </div>
@@ -815,67 +912,195 @@
 
   // Action Functions
   function openAddSpotModal() {
-    Swal.fire({
-      title: 'Add Tourist Spot',
-      html: `
-        <form id="addSpotForm">
-          <div class="mb-3">
-            <label class="form-label">Spot Name</label>
-            <input type="text" class="form-control" id="spotName" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Category</label>
-            <select class="form-control" id="spotCategory">
-              <option value="beach">Beach</option>
-              <option value="mountain">Mountain</option>
-              <option value="historical">Historical</option>
-              <option value="religious">Religious</option>
-              <option value="park">Park</option>
-              <option value="waterfall">Waterfall</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Description</label>
-            <textarea class="form-control" id="spotDescription" rows="3"></textarea>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Address</label>
-            <input type="text" class="form-control" id="spotAddress">
-          </div>
-        </form>
-      `,
-      icon: 'info',
-      showCancelButton: true,
-      confirmButtonText: 'Add Spot',
-      confirmButtonColor: '#7f1d1d',
-      preConfirm: () => {
-        const name = document.getElementById('spotName').value;
-        const category = document.getElementById('spotCategory').value;
-        const description = document.getElementById('spotDescription').value;
-        const address = document.getElementById('spotAddress').value;
-        
-        if (!name) {
-          Swal.showValidationMessage('Please enter a spot name');
-          return false;
-        }
-        
-        return { name, category, description, address };
+    const modal = new bootstrap.Modal(document.getElementById('addSpotModal'));
+    modal.show();
+    resetForm();
+  }
+
+  let currentStep = 1;
+  const totalSteps = 5;
+
+  function changeStep(direction) {
+    const currentStepElement = document.querySelector(`.form-step[data-step="${currentStep}"]`);
+    const currentProgressStep = document.querySelector(`.progress-step[data-step="${currentStep}"]`);
+    
+    currentStepElement.classList.remove('active');
+    currentProgressStep.classList.remove('active');
+    
+    currentStep += direction;
+    
+    const nextStepElement = document.querySelector(`.form-step[data-step="${currentStep}"]`);
+    const nextProgressStep = document.querySelector(`.progress-step[data-step="${currentStep}"]`);
+    
+    nextStepElement.classList.add('active');
+    nextProgressStep.classList.add('active');
+    
+    updateButtons();
+  }
+
+  function updateButtons() {
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    prevBtn.style.display = currentStep === 1 ? 'none' : 'inline-block';
+    nextBtn.style.display = currentStep === totalSteps ? 'none' : 'inline-block';
+    submitBtn.style.display = currentStep === totalSteps ? 'inline-block' : 'none';
+  }
+
+  function resetForm() {
+    currentStep = 1;
+    document.getElementById('addSpotForm').reset();
+    
+    // Reset all steps
+    document.querySelectorAll('.form-step').forEach(step => {
+      step.classList.remove('active');
+    });
+    document.querySelectorAll('.progress-step').forEach(step => {
+      step.classList.remove('active');
+    });
+    
+    // Show first step
+    document.querySelector('.form-step[data-step="1"]').classList.add('active');
+    document.querySelector('.progress-step[data-step="1"]').classList.add('active');
+    
+    updateButtons();
+  }
+
+  function submitSpotForm() {
+    const form = document.getElementById('addSpotForm');
+    
+    // Basic validation
+    const name = form.querySelector('input[name="name"]').value;
+    if (!name) {
+      showToast('Please enter a tourist spot name', 'warning');
+      // Go back to step 1
+      while (currentStep > 1) {
+        changeStep(-1);
       }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // TODO: Implement API call to add spot
-        Swal.fire('Success!', 'Tourist spot added successfully', 'success');
+      return;
+    }
+    
+    // Check if main image is uploaded
+    const mainImage = form.querySelector('input[name="main_image"]').files[0];
+    if (!mainImage) {
+      showToast('Please upload a main image', 'warning');
+      // Go to step 3 (Media)
+      while (currentStep > 3) {
+        changeStep(-1);
       }
+      while (currentStep < 3) {
+        changeStep(1);
+      }
+      return;
+    }
+    
+    // Show loading state
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
+    
+    // Submit form using AJAX to handle response
+    const formData = new FormData(form);
+    
+    fetch('/test-uploader', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.text();
+    })
+    .then(html => {
+      // Parse the response HTML to check for success/error messages
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      
+      const successElement = doc.querySelector('.bg-green-100, .text-green-700');
+      const errorElement = doc.querySelector('.bg-red-100, .text-red-700');
+      
+      if (successElement) {
+        showToast('Tourist spot added successfully!', 'success');
+        
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('addSpotModal'));
+        modal.hide();
+        
+        // Reset form
+        resetForm();
+        
+        // Optionally refresh the page or update the table
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      } else if (errorElement) {
+        showToast(errorElement.textContent || 'Error uploading tourist spot', 'error');
+      } else {
+        showToast('Tourist spot added successfully!', 'success');
+        const modal = bootstrap.Modal.getInstance(document.getElementById('addSpotModal'));
+        modal.hide();
+        resetForm();
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showToast('Error uploading tourist spot. Please try again.', 'error');
+    })
+    .finally(() => {
+      // Reset button state
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
     });
   }
 
-  function viewSpotDetails(spotId) {
-    Swal.fire({
-      title: 'Tourist Spot Details',
-      html: '<p>Detailed view functionality will be implemented here.</p>',
-      icon: 'info',
-      confirmButtonText: 'OK'
+  function showToast(message, type = 'info') {
+    const toastContainer = document.createElement('div');
+    toastContainer.className = 'toast-container';
+    
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    
+    const toastHeader = document.createElement('div');
+    toastHeader.className = 'toast-header';
+    
+    const title = document.createElement('strong');
+    title.className = 'me-auto';
+    title.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'btn-close';
+    closeBtn.setAttribute('data-bs-dismiss', 'toast');
+    closeBtn.setAttribute('aria-label', 'Close');
+    
+    toastHeader.appendChild(title);
+    toastHeader.appendChild(closeBtn);
+    
+    const toastBody = document.createElement('div');
+    toastBody.className = 'toast-body';
+    toastBody.textContent = message;
+    
+    toast.appendChild(toastHeader);
+    toast.appendChild(toastBody);
+    toastContainer.appendChild(toast);
+    
+    document.body.appendChild(toastContainer);
+    
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+    
+    // Remove toast element after it's hidden
+    toast.addEventListener('hidden.bs.toast', () => {
+      document.body.removeChild(toastContainer);
     });
   }
 
