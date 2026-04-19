@@ -47,7 +47,7 @@ def login():
                     if role_name == 'super_admin':
                         return redirect(url_for("dashboard_page"))
                     elif role_name == 'municipality_admin':
-                        return redirect(url_for("login_page"))    
+                        return redirect(url_for("lgu_page"))    
                 else:
                     # No profile associated with this account
                     supabase.auth.sign_out()

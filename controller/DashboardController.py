@@ -154,3 +154,162 @@ def delete_account(user_id):
         
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 400
+
+@login_required
+@role_required('municipality_admin')
+def lgu_dashboard():
+    active_menu = ['lgu']
+    municipality_id = session.get('municipality_id')
+    
+    try:
+        # Fetch municipality details
+        municipality_response = supabase.table('municipalities').select('*').eq('id', municipality_id).execute()
+        municipality = municipality_response.data[0] if municipality_response.data else None
+        
+        # Fetch tourist spots for this municipality
+        spots_response = supabase.table('tourist_spots').select('*').eq('municipality_id', municipality_id).execute()
+        tourist_spots = spots_response.data
+        
+        # Calculate tourist spots statistics
+        total_spots = len(tourist_spots)
+        active_spots = len([spot for spot in tourist_spots if spot.get('status') == 'approved'])
+        pending_spots = len([spot for spot in tourist_spots if spot.get('status') == 'pending'])
+        
+        # Fetch recent arrivals for this municipality
+        arrivals_response = supabase.table('tourist_arrivals').select('*').eq('municipality_id', municipality_id).order('created_at', desc=True).limit(12).execute()
+        recent_arrivals = arrivals_response.data
+        
+        # Calculate total arrivals
+        total_arrivals = sum([
+            arrival.get('local_count', 0) + arrival.get('foreigner_count', 0) + arrival.get('outsider_count', 0)
+            for arrival in recent_arrivals
+        ])
+        
+        # Fetch recent feedback for tourist spots in this municipality
+        if tourist_spots:
+            spot_ids = [spot['id'] for spot in tourist_spots]
+            feedback_response = supabase.table('spot_feedbacks').select('*').in_('tourist_spot_id', spot_ids).order('created_at', desc=True).limit(10).execute()
+            recent_feedback = feedback_response.data
+            
+            # Calculate average rating
+            if recent_feedback:
+                avg_rating = sum(feedback.get('rating', 0) for feedback in recent_feedback) / len(recent_feedback)
+            else:
+                avg_rating = 0
+        else:
+            recent_feedback = []
+            avg_rating = 0
+        
+        # Prepare statistics
+        stats = {
+            'total_arrivals': total_arrivals,
+            'total_spots': total_spots,
+            'active_spots': active_spots,
+            'pending_spots': pending_spots,
+            'avg_rating': round(avg_rating, 1) if avg_rating else 0,
+            'recent_feedback_count': len(recent_feedback)
+        }
+        
+    except Exception as e:
+        print(f"Error fetching LGU dashboard data: {e}")
+        municipality = None
+        tourist_spots = []
+        recent_arrivals = []
+        recent_feedback = []
+        stats = {
+            'total_arrivals': 0,
+            'total_spots': 0,
+            'active_spots': 0,
+            'pending_spots': 0,
+            'avg_rating': 0,
+            'recent_feedback_count': 0
+        }
+    
+    return render_template(
+        'views/dashboard/lgu/index.html', 
+        menu=active_menu,
+        municipality=municipality,
+        tourist_spots=tourist_spots,
+        recent_arrivals=recent_arrivals,
+        recent_feedback=recent_feedback,
+        stats=stats
+    )
+
+@login_required
+@role_required('municipality_admin')
+def tourist_spots():
+    active_menu = ['spots']
+    municipality_id = session.get('municipality_id')
+    
+    try:
+        # Fetch municipality details
+        municipality_response = supabase.table('municipalities').select('*').eq('id', municipality_id).execute()
+        municipality = municipality_response.data[0] if municipality_response.data else None
+        
+        # Fetch tourist spots for this municipality
+        spots_response = supabase.table('tourist_spots').select('*').eq('municipality_id', municipality_id).execute()
+        tourist_spots = spots_response.data
+        
+        # Calculate tourist spots statistics
+        total_spots = len(tourist_spots)
+        active_spots = len([spot for spot in tourist_spots if spot.get('status') == 'approved'])
+        pending_spots = len([spot for spot in tourist_spots if spot.get('status') == 'pending'])
+        
+        # Fetch recent feedback for tourist spots in this municipality
+        if tourist_spots:
+            spot_ids = [spot['id'] for spot in tourist_spots]
+            feedback_response = supabase.table('spot_feedbacks').select('*').in_('tourist_spot_id', spot_ids).order('created_at', desc=True).limit(10).execute()
+            recent_feedback = feedback_response.data
+            
+            # Calculate average rating
+            if recent_feedback:
+                avg_rating = sum(feedback.get('rating', 0) for feedback in recent_feedback) / len(recent_feedback)
+            else:
+                avg_rating = 0
+        else:
+            recent_feedback = []
+            avg_rating = 0
+        
+        # Prepare statistics
+        stats = {
+            'total_spots': total_spots,
+            'active_spots': active_spots,
+            'pending_spots': pending_spots,
+            'avg_rating': round(avg_rating, 1) if avg_rating else 0,
+            'recent_feedback_count': len(recent_feedback)
+        }
+        
+        # Prepare category data for chart
+        categories = {}
+        for spot in tourist_spots:
+            cat = spot.get('category') or 'other'
+            categories[cat] = categories.get(cat, 0) + 1
+        
+        category_labels = list(categories.keys())
+        category_data = list(categories.values())
+        
+    except Exception as e:
+        print(f"Error fetching tourist spots data: {e}")
+        municipality = None
+        tourist_spots = []
+        recent_feedback = []
+        stats = {
+            'total_spots': 0,
+            'active_spots': 0,
+            'pending_spots': 0,
+            'avg_rating': 0,
+            'recent_feedback_count': 0
+        }
+        category_labels = []
+        category_data = []
+    
+    return render_template(
+        'views/dashboard/lgu/spots.html', 
+        menu=active_menu,
+        municipality=municipality,
+        tourist_spots=tourist_spots,
+        recent_feedback=recent_feedback,
+        stats=stats,
+        category_labels=category_labels,
+        category_data=category_data
+    )

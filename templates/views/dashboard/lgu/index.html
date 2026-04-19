@@ -1,0 +1,407 @@
+{% extends 'dashboard-base.html' %}
+
+{% block title %}{{ municipality.name if municipality else 'LGU' }} Dashboard{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    
+    <!-- Top Header Row -->
+    <div class="d-flex justify-content-between align-items-center dashboard-header">
+      <div>
+        <h4 class="dashboard-title mb-1">{{ municipality.name if municipality else 'Municipality' }} Dashboard</h4>
+        <span class="dashboard-subtitle">Tourism Management - Current Year</span>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-dashboard-action d-flex align-items-center gap-2 shadow-sm" onclick="openAddSpotModal()">
+          <i class="bx bx-plus fs-5"></i> Add Tourist Spot
+        </button>
+        <button class="btn btn-dashboard-action btn-circle-sm d-flex align-items-center justify-content-center shadow-sm">
+          <i class="bx bx-bell fs-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Cards Row -->
+    <div class="row g-4 mb-4">
+      <!-- Total Arrivals -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card mockup-card h-100">
+          <div class="card-body stat-card-inner">
+            <div class="icon-box bg-primary-light">
+              <i class="bx bx-group"></i>
+            </div>
+            <div class="stat-details">
+              <p class="stat-title">Total Arrivals</p>
+              <h3 class="stat-value">15,842</h3>
+              <span class="stat-indicator"><i class="bx bx-info-circle"></i> Last 12 months</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Active Tourist Spots -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card mockup-card h-100">
+          <div class="card-body stat-card-inner">
+            <div class="icon-box bg-success-light">
+              <i class="bx bx-map-pin"></i>
+            </div>
+            <div class="stat-details">
+              <p class="stat-title">Active Spots</p>
+              <h3 class="stat-value">24</h3>
+              <span class="stat-indicator"><i class="bx bx-check-circle"></i> 28 total spots</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Average Rating -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card mockup-card h-100">
+          <div class="card-body stat-card-inner">
+            <div class="icon-box bg-warning-light">
+              <i class="bx bx-star"></i>
+            </div>
+            <div class="stat-details">
+              <p class="stat-title">Avg Rating</p>
+              <h3 class="stat-value">4.6</h3>
+              <span class="stat-indicator"><i class="bx bx-message-square-detail"></i> 342 reviews</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Approvals -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card mockup-card h-100">
+          <div class="card-body stat-card-inner">
+            <div class="icon-box bg-danger-light">
+              <i class="bx bx-time-five"></i>
+            </div>
+            <div class="stat-details">
+              <p class="stat-title">Pending Spots</p>
+              <h3 class="stat-value">4</h3>
+              <span class="stat-indicator"><i class="bx bx-error-circle"></i> Need review</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tourist Spots Management -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card mockup-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="card-title mb-1 fw-bold">Tourist Spots Management</h5>
+              <small>Manage and monitor tourist destinations in {{ municipality.name if municipality else 'your municipality' }}</small>
+            </div>
+            <div class="btn-group shadow-sm" role="group">
+              <button type="button" class="btn btn-sm btn-dashboard-action active">All Spots</button>
+              <button type="button" class="btn btn-sm btn-dashboard-action">Active</button>
+              <button type="button" class="btn btn-sm btn-dashboard-action">Pending</button>
+            </div>
+          </div>
+          <div class="card-body pt-0">
+            <div class="table-responsive dashboard-table">
+              <table class="table table-hover" id="touristSpotsTable">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Rating</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="https://picsum.photos/seed/beach1/40/40.jpg" alt="White Sand Beach" class="table-image me-3">
+                        <div>
+                          <div class="fw-medium">White Sand Beach</div>
+                          <small class="text-muted-foreground">Coastal Road, Barangay San Juan</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge">Beach</span>
+                    </td>
+                    <td>
+                      <span class="badge status-badge active">Active</span>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <i class="bx bx-star text-warning me-1"></i>
+                        <span>4.8</span>
+                        <small class="text-muted-foreground ms-1">(156)</small>
+                      </div>
+                    </td>
+                    <td class="createdAt">2024-01-15</td>
+                    <td>
+                      <div class="dropdown">
+                        <button class="btn btn-dashboard-action btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                          <i class="bx bx-dots-horizontal-rounded"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="#"><i class="bx bx-edit me-2"></i> Edit</a></li>
+                          <li><a class="dropdown-item" href="#"><i class="bx bx-show me-2"></i> View Details</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="#"><i class="bx bx-trash me-2"></i> Delete</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="https://picsum.photos/seed/mountain1/40/40.jpg" alt="Mount Vista" class="table-image me-3">
+                        <div>
+                          <div class="fw-medium">Mount Vista</div>
+                          <small class="text-muted-foreground">Highland Trail, Barangay Heights</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge">Mountain</span>
+                    </td>
+                    <td>
+                      <span class="badge status-badge active">Active</span>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <i class="bx bx-star text-warning me-1"></i>
+                        <span>4.5</span>
+                        <small class="text-muted-foreground ms-1">(89)</small>
+                      </div>
+                    </td>
+                    <td class="createdAt">2024-02-20</td>
+                    <td>
+                      <div class="dropdown">
+                        <button class="btn btn-dashboard-action btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                          <i class="bx bx-dots-horizontal-rounded"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="#"><i class="bx bx-edit me-2"></i> Edit</a></li>
+                          <li><a class="dropdown-item" href="#"><i class="bx bx-show me-2"></i> View Details</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="#"><i class="bx bx-trash me-2"></i> Delete</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="https://picsum.photos/seed/church1/40/40.jpg" alt="Heritage Church" class="table-image me-3">
+                        <div>
+                          <div class="fw-medium">Heritage Church</div>
+                          <small class="text-muted-foreground">Plaza Center, Barangay Poblacion</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge">Historical</span>
+                    </td>
+                    <td>
+                      <span class="badge status-badge pending">Pending</span>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <i class="bx bx-star text-warning me-1"></i>
+                        <span>4.2</span>
+                        <small class="text-muted-foreground ms-1">(45)</small>
+                      </div>
+                    </td>
+                    <td class="createdAt">2024-03-10</td>
+                    <td>
+                      <div class="dropdown">
+                        <button class="btn btn-dashboard-action btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                          <i class="bx bx-dots-horizontal-rounded"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="#"><i class="bx bx-edit me-2"></i> Edit</a></li>
+                          <li><a class="dropdown-item" href="#"><i class="bx bx-show me-2"></i> View Details</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-success" href="#"><i class="bx bx-check-circle me-2"></i> Approve</a></li>
+                          <li><a class="dropdown-item text-danger" href="#"><i class="bx bx-trash me-2"></i> Delete</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Feedback & Arrivals Row -->
+    <div class="row g-4">
+      <!-- Recent Feedback -->
+      <div class="col-lg-6 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <h5 class="card-title mb-0 fw-bold">Recent Feedback</h5>
+          </div>
+          <div class="card-body pt-0">
+            <div class="feedback-list">
+              <div class="d-flex align-items-start mb-3 pb-3 border-bottom">
+                <div class="me-3">
+                  <div class="bg-muted avatar-circle d-flex align-items-center justify-content-center">
+                    <i class="bx bx-user text-muted-foreground"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between align-items-start mb-1">
+                    <h6 class="mb-0">Maria Santos</h6>
+                    <small class="text-muted-foreground">Mar 15, 2024</small>
+                  </div>
+                  <div class="mb-2">
+                    <i class="bx bx-star text-warning"></i>
+                    <i class="bx bx-star text-warning"></i>
+                    <i class="bx bx-star text-warning"></i>
+                    <i class="bx bx-star text-warning"></i>
+                    <i class="bx bx-star text-warning"></i>
+                  </div>
+                  <p class="small mb-1">Amazing beach! The white sand is pristine and the water is crystal clear. Perfect for family vacations.</p>
+                </div>
+              </div>
+              <div class="d-flex align-items-start mb-3 pb-3 border-bottom">
+                <div class="me-3">
+                  <div class="bg-muted avatar-circle d-flex align-items-center justify-content-center">
+                    <i class="bx bx-user text-muted-foreground"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between align-items-start mb-1">
+                    <h6 class="mb-0">John Reyes</h6>
+                    <small class="text-muted-foreground">Mar 14, 2024</small>
+                  </div>
+                  <div class="mb-2">
+                    <i class="bx bx-star text-warning"></i>
+                    <i class="bx bx-star text-warning"></i>
+                    <i class="bx bx-star text-warning"></i>
+                    <i class="bx bx-star text-warning"></i>
+                    <i class="bx bx-star text-muted-foreground"></i>
+                  </div>
+                  <p class="small mb-1">Great hiking experience at Mount Vista! The trail is well-maintained and the view from the top is breathtaking.</p>
+                </div>
+              </div>
+              <div class="d-flex align-items-start mb-3 pb-3 border-bottom">
+                <div class="me-3">
+                  <div class="bg-muted avatar-circle d-flex align-items-center justify-content-center">
+                    <i class="bx bx-user text-muted-foreground"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between align-items-start mb-1">
+                    <h6 class="mb-0">Anna Cruz</h6>
+                    <small class="text-muted-foreground">Mar 13, 2024</small>
+                  </div>
+                  <div class="mb-2">
+                    <i class="bx bx-star text-warning"></i>
+                    <i class="bx bx-star text-warning"></i>
+                    <i class="bx bx-star text-warning"></i>
+                    <i class="bx bx-star text-warning"></i>
+                    <i class="bx bx-star text-muted-foreground"></i>
+                  </div>
+                  <p class="small mb-1">The Heritage Church is beautiful! The architecture is stunning and the historical significance is well-preserved.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Arrivals -->
+      <div class="col-lg-6 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <h5 class="card-title mb-0 fw-bold">Recent Arrivals Data</h5>
+          </div>
+          <div class="card-body pt-0">
+            <div class="arrivals-list">
+              <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                <div>
+                  <h6 class="mb-1">March 2024</h6>
+                  <div class="d-flex gap-3">
+                    <small class="text-muted-foreground">Local: <strong>1,234</strong></small>
+                    <small class="text-muted-foreground">Foreign: <strong>456</strong></small>
+                    <small class="text-muted-foreground">Outsider: <strong>234</strong></small>
+                  </div>
+                </div>
+                <div class="text-end">
+                  <h5 class="mb-0 text-primary">1,924</h5>
+                  <small class="text-muted-foreground">Total</small>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                <div>
+                  <h6 class="mb-1">February 2024</h6>
+                  <div class="d-flex gap-3">
+                    <small class="text-muted-foreground">Local: <strong>987</strong></small>
+                    <small class="text-muted-foreground">Foreign: <strong>345</strong></small>
+                    <small class="text-muted-foreground">Outsider: <strong>189</strong></small>
+                  </div>
+                </div>
+                <div class="text-end">
+                  <h5 class="mb-0 text-primary">1,521</h5>
+                  <small class="text-muted-foreground">Total</small>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                <div>
+                  <h6 class="mb-1">January 2024</h6>
+                  <div class="d-flex gap-3">
+                    <small class="text-muted-foreground">Local: <strong>1,456</strong></small>
+                    <small class="text-muted-foreground">Foreign: <strong>523</strong></small>
+                    <small class="text-muted-foreground">Outsider: <strong>267</strong></small>
+                  </div>
+                </div>
+                <div class="text-end">
+                  <h5 class="mb-0 text-primary">2,246</h5>
+                  <small class="text-muted-foreground">Total</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Initialize DataTable if exists
+    if ($('#touristSpotsTable').length) {
+      $('#touristSpotsTable').DataTable({
+        responsive: true,
+        order: [[0, 'asc']],
+        pageLength: 10
+      });
+    }
+  });
+
+  function openAddSpotModal() {
+    // Placeholder for add tourist spot modal
+    Swal.fire({
+      title: 'Add Tourist Spot',
+      html: '<p>Tourist spot creation form will be implemented here.</p>',
+      icon: 'info',
+      confirmButtonText: 'OK'
+    });
+  }
+</script>
+{% endblock %}

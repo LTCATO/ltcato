@@ -1,0 +1,694 @@
+{% extends 'dashboard-base.html' %}
+
+{% block title %}Arrivals Data Management{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center dashboard-header">
+      <div>
+        <h4 class="dashboard-title mb-1">Tourism Arrivals Data</h4>
+        <span class="dashboard-subtitle">Manage and analyze visitor statistics and trends</span>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-dashboard-action d-flex align-items-center gap-2 shadow-sm" onclick="openAddArrivalModal()">
+          <i class="bx bx-plus fs-5"></i> Add Arrival Data
+        </button>
+        <button class="btn btn-dashboard-action d-flex align-items-center gap-2 shadow-sm" onclick="exportData()">
+          <i class="bx bx-download fs-5"></i> Export
+        </button>
+        <button class="btn btn-dashboard-action btn-circle-sm d-flex align-items-center justify-content-center shadow-sm">
+          <i class="bx bx-filter fs-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="row g-4 mb-4">
+      <!-- Total Arrivals This Month -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card mockup-card h-100">
+          <div class="card-body stat-card-inner">
+            <div class="icon-box bg-primary-light">
+              <i class="bx bx-group"></i>
+            </div>
+            <div class="stat-details">
+              <p class="stat-title">This Month</p>
+              <h3 class="stat-value">3,847</h3>
+              <span class="stat-indicator"><i class="bx bx-trending-up"></i> +12.3% vs last month</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Year to Date -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card mockup-card h-100">
+          <div class="card-body stat-card-inner">
+            <div class="icon-box bg-success-light">
+              <i class="bx bx-calendar"></i>
+            </div>
+            <div class="stat-details">
+              <p class="stat-title">Year to Date</p>
+              <h3 class="stat-value">42,156</h3>
+              <span class="stat-indicator"><i class="bx bx-trending-up"></i> +8.7% vs last year</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Average Daily -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card mockup-card h-100">
+          <div class="card-body stat-card-inner">
+            <div class="icon-box bg-warning-light">
+              <i class="bx bx-bar-chart"></i>
+            </div>
+            <div class="stat-details">
+              <p class="stat-title">Daily Average</p>
+              <h3 class="stat-value">128</h3>
+              <span class="stat-indicator"><i class="bx bx-info-circle"></i> Last 30 days</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Peak Season -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card mockup-card h-100">
+          <div class="card-body stat-card-inner">
+            <div class="icon-box bg-info-light">
+              <i class="bx bx-sun"></i>
+            </div>
+            <div class="stat-details">
+              <p class="stat-title">Peak Season</p>
+              <h3 class="stat-value">Apr-Jun</h3>
+              <span class="stat-indicator"><i class="bx bx-star"></i> Highest arrivals</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts and Data Section -->
+    <div class="row g-4 mb-4">
+      <!-- Monthly Trend Chart -->
+      <div class="col-lg-8 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="card-title mb-0 fw-bold">Monthly Arrival Trends</h5>
+              <div class="btn-group shadow-sm" role="group">
+                <button type="button" class="btn btn-sm btn-dashboard-action active">6 Months</button>
+                <button type="button" class="btn btn-sm btn-dashboard-action">1 Year</button>
+                <button type="button" class="btn btn-sm btn-dashboard-action">2 Years</button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container" style="height: 300px;">
+              <canvas id="arrivalTrendsChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visitor Types -->
+      <div class="col-lg-4 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <h5 class="card-title mb-0 fw-bold">Visitor Types</h5>
+          </div>
+          <div class="card-body">
+            <div class="chart-container" style="height: 300px;">
+              <canvas id="visitorTypesChart"></canvas>
+            </div>
+            <div class="mt-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted-foreground small">Local Tourists</span>
+                <span class="fw-bold">65%</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted-foreground small">Foreign Tourists</span>
+                <span class="fw-bold">25%</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted-foreground small">Outsiders</span>
+                <span class="fw-bold">10%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed Arrivals Table -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card mockup-card">
+          <div class="card-header border-0">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="card-title mb-0 fw-bold">Detailed Arrivals Data</h5>
+              <div class="d-flex gap-3 align-items-center">
+                <div class="search-box">
+                  <i class="bx bx-search"></i>
+                  <input type="text" placeholder="Search arrivals..." class="form-control">
+                </div>
+                <select class="filter-select">
+                  <option>All Municipalities</option>
+                  <option>San Juan</option>
+                  <option>San Pedro</option>
+                  <option>San Pablo</option>
+                </select>
+                <select class="filter-select">
+                  <option>All Types</option>
+                  <option>Local</option>
+                  <option>Foreign</option>
+                  <option>Outsider</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="card-body pt-0">
+            <div class="table-responsive dashboard-table">
+              <table class="table table-hover" id="arrivalsDataTable">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Municipality</th>
+                    <th>Local</th>
+                    <th>Foreign</th>
+                    <th>Outsider</th>
+                    <th>Total</th>
+                    <th>Submitted By</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="date-info">
+                        <div class="date-display">Mar 15, 2024</div>
+                        <div class="time-display">2:30 PM</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="municipality-info">
+                        <div class="municipality-avatar">SJ</div>
+                        <div class="municipality-details">
+                          <div class="municipality-name">San Juan</div>
+                          <div class="municipality-code">MUN-001</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><strong>245</strong></td>
+                    <td><strong>89</strong></td>
+                    <td><strong>34</strong></td>
+                    <td><h5 class="mb-0 text-primary">368</h5></td>
+                    <td>
+                      <div class="submitter-info">
+                        <div class="submitter-avatar">JD</div>
+                        <div class="submitter-details">
+                          <div class="submitter-name">Juan Dela Cruz</div>
+                          <div class="submitter-role">Tourism Officer</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="arrival-status active">Verified</span>
+                    </td>
+                    <td>
+                      <div class="arrival-actions">
+                        <button class="btn btn-dashboard-action btn-sm" onclick="viewArrivalDetails(1)">
+                          <i class="bx bx-show"></i>
+                        </button>
+                        <button class="btn btn-dashboard-action btn-sm" onclick="editArrival(1)">
+                          <i class="bx bx-edit"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="date-info">
+                        <div class="date-display">Mar 14, 2024</div>
+                        <div class="time-display">10:15 AM</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="municipality-info">
+                        <div class="municipality-avatar">SP</div>
+                        <div class="municipality-details">
+                          <div class="municipality-name">San Pedro</div>
+                          <div class="municipality-code">MUN-002</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><strong>189</strong></td>
+                    <td><strong>67</strong></td>
+                    <td><strong>28</strong></td>
+                    <td><h5 class="mb-0 text-primary">284</h5></td>
+                    <td>
+                      <div class="submitter-info">
+                        <div class="submitter-avatar">MS</div>
+                        <div class="submitter-details">
+                          <div class="submitter-name">Maria Santos</div>
+                          <div class="submitter-role">Data Encoder</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="arrival-status active">Verified</span>
+                    </td>
+                    <td>
+                      <div class="arrival-actions">
+                        <button class="btn btn-dashboard-action btn-sm" onclick="viewArrivalDetails(2)">
+                          <i class="bx bx-show"></i>
+                        </button>
+                        <button class="btn btn-dashboard-action btn-sm" onclick="editArrival(2)">
+                          <i class="bx bx-edit"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="date-info">
+                        <div class="date-display">Mar 13, 2024</div>
+                        <div class="time-display">3:45 PM</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="municipality-info">
+                        <div class="municipality-avatar">SA</div>
+                        <div class="municipality-details">
+                          <div class="municipality-name">San Pablo</div>
+                          <div class="municipality-code">MUN-003</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><strong>156</strong></td>
+                    <td><strong>45</strong></td>
+                    <td><strong>19</strong></td>
+                    <td><h5 class="mb-0 text-primary">220</h5></td>
+                    <td>
+                      <div class="submitter-info">
+                        <div class="submitter-avatar">RC</div>
+                        <div class="submitter-details">
+                          <div class="submitter-name">Roberto Cruz</div>
+                          <div class="submitter-role">Tourism Officer</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="arrival-status pending">Pending</span>
+                    </td>
+                    <td>
+                      <div class="arrival-actions">
+                        <button class="btn btn-dashboard-action btn-sm" onclick="viewArrivalDetails(3)">
+                          <i class="bx bx-show"></i>
+                        </button>
+                        <button class="btn btn-dashboard-action btn-sm" onclick="editArrival(3)">
+                          <i class="bx bx-edit"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="date-info">
+                        <div class="date-display">Mar 12, 2024</div>
+                        <div class="time-display">11:20 AM</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="municipality-info">
+                        <div class="municipality-avatar">SJ</div>
+                        <div class="municipality-details">
+                          <div class="municipality-name">San Juan</div>
+                          <div class="municipality-code">MUN-001</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><strong>298</strong></td>
+                    <td><strong>112</strong></td>
+                    <td><strong>41</strong></td>
+                    <td><h5 class="mb-0 text-primary">451</h5></td>
+                    <td>
+                      <div class="submitter-info">
+                        <div class="submitter-avatar">AL</div>
+                        <div class="submitter-details">
+                          <div class="submitter-name">Anna Lopez</div>
+                          <div class="submitter-role">Tourism Officer</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="arrival-status active">Verified</span>
+                    </td>
+                    <td>
+                      <div class="arrival-actions">
+                        <button class="btn btn-dashboard-action btn-sm" onclick="viewArrivalDetails(4)">
+                          <i class="bx bx-show"></i>
+                        </button>
+                        <button class="btn btn-dashboard-action btn-sm" onclick="editArrival(4)">
+                          <i class="bx bx-edit"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="date-info">
+                        <div class="date-display">Mar 11, 2024</div>
+                        <div class="time-display">4:30 PM</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="municipality-info">
+                        <div class="municipality-avatar">SP</div>
+                        <div class="municipality-details">
+                          <div class="municipality-name">San Pedro</div>
+                          <div class="municipality-code">MUN-002</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><strong>167</strong></td>
+                    <td><strong>58</strong></td>
+                    <td><strong>22</strong></td>
+                    <td><h5 class="mb-0 text-primary">247</h5></td>
+                    <td>
+                      <div class="submitter-info">
+                        <div class="submitter-avatar">JD</div>
+                        <div class="submitter-details">
+                          <div class="submitter-name">Juan Dela Cruz</div>
+                          <div class="submitter-role">Tourism Officer</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="arrival-status active">Verified</span>
+                    </td>
+                    <td>
+                      <div class="arrival-actions">
+                        <button class="btn btn-dashboard-action btn-sm" onclick="viewArrivalDetails(5)">
+                          <i class="bx bx-show"></i>
+                        </button>
+                        <button class="btn btn-dashboard-action btn-sm" onclick="editArrival(5)">
+                          <i class="bx bx-edit"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+<!-- View Arrival Modal -->
+<div class="modal fade" id="viewArrivalModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Arrival Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="municipality-avatar mx-auto mb-3">SJ</div>
+            <h5 class="text-center mb-1">San Juan</h5>
+            <p class="text-muted-foreground text-center">MUN-001</p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Date:</strong> March 15, 2024</p>
+            <p><strong>Time:</strong> 2:30 PM</p>
+            <p><strong>Status:</strong> <span class="arrival-status active">Verified</span></p>
+            <p><strong>Submitted by:</strong> Juan Dela Cruz</p>
+          </div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="text-center">
+              <h4 class="text-primary">245</h4>
+              <p class="text-muted-foreground mb-0">Local Tourists</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="text-center">
+              <h4 class="text-primary">89</h4>
+              <p class="text-muted-foreground mb-0">Foreign Tourists</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="text-center">
+              <h4 class="text-primary">34</h4>
+              <p class="text-muted-foreground mb-0">Outsiders</p>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="text-center">
+          <h3 class="text-primary">368</h3>
+          <p class="text-muted-foreground mb-0">Total Arrivals</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dashboard-action" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-dashboard-action" onclick="editArrival(1)">Edit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Arrival Modal -->
+<div class="modal fade" id="addArrivalModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Arrival Data</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="arrivalForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Date</label>
+                <input type="date" class="form-control" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Time</label>
+                <input type="time" class="form-control" required>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Municipality</label>
+            <select class="form-control" required>
+              <option value="">Select Municipality</option>
+              <option value="san-juan">San Juan</option>
+              <option value="san-pedro">San Pedro</option>
+              <option value="san-pablo">San Pablo</option>
+            </select>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label">Local Tourists</label>
+                <input type="number" class="form-control" min="0" required>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label">Foreign Tourists</label>
+                <input type="number" class="form-control" min="0" required>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label">Outsiders</label>
+                <input type="number" class="form-control" min="0" required>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Notes</label>
+            <textarea class="form-control" rows="3" placeholder="Additional notes..."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dashboard-action" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-dashboard-action" onclick="saveArrival()">Save Arrival Data</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Initialize DataTable
+    if ($('#arrivalsDataTable').length) {
+      $('#arrivalsDataTable').DataTable({
+        responsive: true,
+        order: [[0, 'desc']],
+        pageLength: 10,
+        language: {
+          search: "Search arrivals:",
+          lengthMenu: "Show _MENU_ entries",
+          info: "Showing _START_ to _END_ of _TOTAL_ arrivals",
+          paginate: {
+            first: "First",
+            last: "Last",
+            next: "Next",
+            previous: "Previous"
+          }
+        }
+      });
+    }
+
+    // Initialize Charts
+    initializeCharts();
+  });
+
+  function initializeCharts() {
+    // Monthly Trends Chart
+    const trendsCtx = document.getElementById('arrivalTrendsChart');
+    if (trendsCtx) {
+      new Chart(trendsCtx, {
+        type: 'line',
+        data: {
+          labels: ['October', 'November', 'December', 'January', 'February', 'March'],
+          datasets: [{
+            label: 'Local',
+            data: [3200, 3450, 4100, 3800, 3600, 3900],
+            borderColor: '#7f1d1d',
+            backgroundColor: 'rgba(127, 29, 29, 0.1)',
+            tension: 0.4
+          }, {
+            label: 'Foreign',
+            data: [1200, 1350, 1600, 1400, 1300, 1450],
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            tension: 0.4
+          }, {
+            label: 'Outsider',
+            data: [450, 520, 680, 590, 540, 610],
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    // Visitor Types Chart
+    const typesCtx = document.getElementById('visitorTypesChart');
+    if (typesCtx) {
+      new Chart(typesCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Local', 'Foreign', 'Outsider'],
+          datasets: [{
+            data: [65, 25, 10],
+            backgroundColor: [
+              '#7f1d1d',
+              '#3b82f6',
+              '#10b981'
+            ],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+  }
+
+  function openAddArrivalModal() {
+    $('#addArrivalModal').modal('show');
+  }
+
+  function viewArrivalDetails(id) {
+    $('#viewArrivalModal').modal('show');
+  }
+
+  function editArrival(id) {
+    $('#viewArrivalModal').modal('hide');
+    $('#addArrivalModal').modal('show');
+  }
+
+  function saveArrival() {
+    // Placeholder for save functionality
+    Swal.fire({
+      title: 'Success!',
+      text: 'Arrival data has been saved successfully.',
+      icon: 'success',
+      confirmButtonText: 'OK'
+    });
+    $('#addArrivalModal').modal('hide');
+  }
+
+  function exportData() {
+    // Placeholder for export functionality
+    Swal.fire({
+      title: 'Export Data',
+      html: '<p>Select export format:</p>',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'Export as Excel',
+      cancelButtonText: 'Export as CSV',
+      showDenyButton: true,
+      denyButtonText: 'Export as PDF'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire('Exported!', 'Data exported as Excel file.', 'success');
+      } else if (result.isDenied) {
+        Swal.fire('Exported!', 'Data exported as PDF file.', 'success');
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire('Exported!', 'Data exported as CSV file.', 'success');
+      }
+    });
+  }
+</script>
+{% endblock %}

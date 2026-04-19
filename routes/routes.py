@@ -1,6 +1,6 @@
 from controller.HomeController import home, explore_map, destination_details, municipalities, municipality_details, tourist_spots, lara_ai
 from controller.LoginController import login, register, logout
-from controller.DashboardController import dashboardIndex, accounts, create_account, update_account, delete_account
+from controller.DashboardController import dashboardIndex, accounts, create_account, update_account, delete_account, lgu_dashboard, tourist_spots as lgu_tourist_spots
 from controller.ArrivalsController import arrivals
 from controller.DecisionController import decision
 
@@ -51,6 +51,24 @@ def register_routes(app):
     @app.route('/dashboard/decision')
     def decision_page():
         return decision()
+    
+    @app.route('/dashboard/lgu')
+    def lgu_page():
+        return lgu_dashboard()
+    
+    @app.route('/dashboard/lgu/spots')
+    def lgu_spots_page():
+        return lgu_tourist_spots()
+    
+    @app.route('/dashboard/lgu/arrivals-data')
+    def lgu_arrivals_data_page():
+        from flask import render_template
+        return render_template('views/dashboard/lgu/arrivals_data.html')
+    
+    @app.route('/dashboard/lgu/feedbacks')
+    def lgu_feedbacks_page():
+        from flask import render_template
+        return render_template('views/dashboard/lgu/feedbacks.html')
 
 # AUTH ROUTES
     @app.route("/login", methods=["GET", "POST"])

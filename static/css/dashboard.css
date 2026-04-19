@@ -1303,9 +1303,6 @@ body {
     max-width: none;
   }
   
-  .toast {
-    margin-bottom: 0.5rem;
-  }
 }
 
 /* Modern Decision Support System Styles */
@@ -1313,6 +1310,321 @@ body {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 1rem;
+}
+
+/* LGU Index Page Additional Styles */
+/* Feedback list styling */
+.feedback-list {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.feedback-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.feedback-list::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 3px;
+}
+
+.feedback-list::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 3px;
+}
+
+.feedback-list .d-flex {
+  transition: all 0.3s ease;
+}
+
+.feedback-list .d-flex:hover {
+  background: var(--accent);
+  margin: 0 -1rem;
+  padding: 1rem;
+  border-radius: var(--radius);
+}
+
+/* Arrivals list styling */
+.arrivals-list {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.arrivals-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.arrivals-list::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 3px;
+}
+
+.arrivals-list::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 3px;
+}
+
+.arrivals-list .d-flex {
+  transition: all 0.3s ease;
+}
+
+.arrivals-list .d-flex:hover {
+  background: var(--accent);
+  margin: 0 -1rem;
+  padding: 1rem;
+  border-radius: var(--radius);
+}
+
+/* Button group styling for LGU dashboard */
+.btn-group .btn-dashboard-action {
+  border-radius: 0;
+  margin: 0;
+}
+
+.btn-group .btn-dashboard-action:first-child {
+  border-top-left-radius: var(--radius);
+  border-bottom-left-radius: var(--radius);
+}
+
+.btn-group .btn-dashboard-action:last-child {
+  border-top-right-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+}
+
+.btn-group .btn-dashboard-action.active {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.btn-group .btn-dashboard-action:not(.active) {
+  background: var(--muted);
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+}
+
+.btn-group .btn-dashboard-action:not(.active):hover {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+
+/* Badge styling */
+.badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+}
+
+/* Rating stars styling */
+.rating-stars {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.rating-stars .bx-star {
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.rating-stars .bx-star.text-warning {
+  color: #f59e0b !important;
+}
+
+.rating-stars .bx-star.text-muted {
+  color: #d1d5db !important;
+}
+
+/* Responsive fixes for LGU dashboard */
+@media (max-width: 768px) {
+  .btn-group {
+    flex-direction: column;
+  }
+  
+  .btn-group .btn-dashboard-action {
+    border-radius: var(--radius) !important;
+    margin-bottom: 0.25rem;
+  }
+}
+
+/* Additional utility classes for LGU dashboard */
+.btn-circle-sm {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+}
+
+.table-image {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* Arrivals Data Page Styles */
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-box i {
+  position: absolute;
+  left: 12px;
+  color: var(--muted-foreground);
+  z-index: 1;
+}
+
+.search-box input {
+  padding-left: 40px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--foreground);
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(127, 29, 29, 0.1);
+}
+
+.filter-select {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(127, 29, 29, 0.1);
+}
+
+.date-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.date-display {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.time-display {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.municipality-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.municipality-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.municipality-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.municipality-name {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.municipality-code {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.submitter-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.submitter-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--muted);
+  color: var(--muted-foreground);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.submitter-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.submitter-name {
+  font-weight: 500;
+  color: var(--foreground);
+  font-size: 0.875rem;
+}
+
+.submitter-role {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.arrival-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: var(--font-sans);
+}
+
+.arrival-status.active {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.arrival-status.pending {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.arrival-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
 }
 
 /* AI Insights Section */
