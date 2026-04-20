@@ -1,6 +1,6 @@
 from controller.HomeController import home, explore_map, destination_details, municipalities, municipality_details, tourist_spots, lara_ai, test_uploader
 from controller.LoginController import login, register, logout
-from controller.DashboardController import dashboardIndex, accounts, create_account, update_account, delete_account, lgu_dashboard, tourist_spots as lgu_tourist_spots
+from controller.DashboardController import dashboardIndex, accounts, create_account, update_account, delete_account, lgu_dashboard, tourist_spots as lgu_tourist_spots, lgu_add_spot, lgu_get_spot_data, lgu_edit_spot, lgu_delete_spot
 from controller.ArrivalsController import arrivals
 from controller.DecisionController import decision
 
@@ -78,7 +78,23 @@ def register_routes(app):
     @app.route('/dashboard/lgu/spots')
     def lgu_spots_page():
         return lgu_tourist_spots()
-    
+
+    @app.route('/dashboard/lgu/spots/add', methods=['POST'])
+    def lgu_add_spot_page():
+        return lgu_add_spot()
+
+    @app.route('/dashboard/lgu/spots/<spot_id>/data', methods=['GET'])
+    def lgu_get_spot_data_page(spot_id):
+        return lgu_get_spot_data(spot_id)
+
+    @app.route('/dashboard/lgu/spots/<spot_id>/edit', methods=['POST'])
+    def lgu_edit_spot_page(spot_id):
+        return lgu_edit_spot(spot_id)
+
+    @app.route('/dashboard/lgu/spots/<spot_id>/delete', methods=['POST'])
+    def lgu_delete_spot_page(spot_id):
+        return lgu_delete_spot(spot_id)
+
     @app.route('/dashboard/lgu/arrivals-data')
     def lgu_arrivals_data_page():
         from flask import render_template

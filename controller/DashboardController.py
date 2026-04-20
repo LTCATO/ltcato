@@ -1,3 +1,4 @@
+import uuid
 from flask import render_template, session, request, jsonify
 from utils import role_required, login_required
 from supabase_client import supabase, service_supabase
@@ -313,3 +314,208 @@ def tourist_spots():
         category_labels=category_labels,
         category_data=category_data
     )   
+
+@login_required
+@role_required('municipality_admin')
+def lgu_add_spot():
+    """Handle tourist spot creation from the LGU dashboard."""
+    if request.method != 'POST':
+        return jsonify({"success": False, "message": "Method not allowed"}), 405
+
+    try:
+        # 1. Handle Main Image Upload
+        main_image = request.files.get('main_image')
+        main_image_url = ""
+
+        if main_image and main_image.filename:
+            ext = main_image.filename.rsplit('.', 1)[1].lower() if '.' in main_image.filename else 'jpg'
+            filename = f"destinations/{uuid.uuid4().hex}.{ext}"
+
+            file_bytes = main_image.read()
+            service_supabase.storage.from_("images").upload(
+                path=filename,
+                file=file_bytes,
+                file_options={"content-type": main_image.content_type}
+            )
+            main_image_url = service_supabase.storage.from_("images").get_public_url(filename)
+
+        # 2. Handle Gallery Images Upload
+        gallery_images = request.files.getlist('gallery_images')
+        gallery_urls = []
+
+        for img in gallery_images:
+            if img and img.filename:
+                ext = img.filename.rsplit('.', 1)[1].lower() if '.' in img.filename else 'jpg'
+                filename = f"destinations/{uuid.uuid4().hex}.{ext}"
+
+                file_bytes = img.read()
+                service_supabase.storage.from_("images").upload(
+                    path=filename,
+                    file=file_bytes,
+                    file_options={"content-type": img.content_type}
+                )
+                url = service_supabase.storage.from_("images").get_public_url(filename)
+                gallery_urls.append(url)
+
+        # 3. Process comma-separated lists
+        highlights_str = request.form.get('highlights', '')
+        highlights = [h.strip() for h in highlights_str.split(',') if h.strip()]
+
+        audience_str = request.form.get('target_audience', '')
+        target_audience = [t.strip() for t in audience_str.split(',') if t.strip()]
+
+        # 4. Get municipality ID from logged-in LGU session
+        municipality_id = session.get('municipality_id')
+
+        # 5. Construct payload
+        payload = {
+            "name": request.form.get('name'),
+            "category": request.form.get('category'),
+            "address": request.form.get('address'),
+            "municipality_id": municipality_id,
+            "hook_title": request.form.get('hook_title'),
+            "hook_text": request.form.get('hook_text'),
+            "description": request.form.get('description'),
+            "opening_hours": request.form.get('opening_hours'),
+            "entrance_fees": request.form.get('entrance_fees'),
+            "what_to_bring": request.form.get('what_to_bring'),
+            "parking_info": request.form.get('parking_info'),
+            "highlights": highlights,
+            "target_audience": target_audience,
+            "main_image_url": main_image_url,
+            "gallery_images": gallery_urls,
+            "status": "pending"
+        }
+
+        # 6. Insert record
+        service_supabase.table('tourist_spots').insert(payload).execute()
+
+        return jsonify({"success": True, "message": "Tourist spot submitted successfully!"}), 200
+
+    except Exception as e:
+        print(f"Error adding LGU tourist spot: {e}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@login_required
+@role_required('municipality_admin')
+def lgu_get_spot_data(spot_id):
+    """Return a single tourist spot's data as JSON (used by the Edit modal)."""
+    try:
+        municipality_id = session.get('municipality_id')
+        response = service_supabase.table('tourist_spots') \
+            .select('*') \
+            .eq('id', spot_id) \
+            .eq('municipality_id', municipality_id) \
+            .single() \
+            .execute()
+
+        spot = response.data
+        if not spot:
+            return jsonify({"success": False, "message": "Spot not found or access denied."}), 404
+
+        return jsonify({"success": True, "spot": spot}), 200
+
+    except Exception as e:
+        print(f"Error fetching spot data: {e}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@login_required
+@role_required('municipality_admin')
+def lgu_edit_spot(spot_id):
+    """Update an existing tourist spot. Optionally replaces images if new files are supplied."""
+    try:
+        municipality_id = session.get('municipality_id')
+
+        # Build the text-field payload (same structure as insert)
+        highlights_str = request.form.get('highlights', '')
+        highlights = [h.strip() for h in highlights_str.split(',') if h.strip()]
+
+        audience_str = request.form.get('target_audience', '')
+        target_audience = [t.strip() for t in audience_str.split(',') if t.strip()]
+
+        payload = {
+            "name": request.form.get('name'),
+            "category": request.form.get('category'),
+            "address": request.form.get('address'),
+            "hook_title": request.form.get('hook_title'),
+            "hook_text": request.form.get('hook_text'),
+            "description": request.form.get('description'),
+            "opening_hours": request.form.get('opening_hours'),
+            "entrance_fees": request.form.get('entrance_fees'),
+            "what_to_bring": request.form.get('what_to_bring'),
+            "parking_info": request.form.get('parking_info'),
+            "highlights": highlights,
+            "target_audience": target_audience,
+        }
+
+        # Optional: replace main image if a new file was uploaded
+        main_image = request.files.get('main_image')
+        if main_image and main_image.filename:
+            ext = main_image.filename.rsplit('.', 1)[1].lower() if '.' in main_image.filename else 'jpg'
+            filename = f"destinations/{uuid.uuid4().hex}.{ext}"
+            file_bytes = main_image.read()
+            service_supabase.storage.from_("images").upload(
+                path=filename,
+                file=file_bytes,
+                file_options={"content-type": main_image.content_type}
+            )
+            payload["main_image_url"] = service_supabase.storage.from_("images").get_public_url(filename)
+
+        # Optional: append new gallery images
+        gallery_images = request.files.getlist('gallery_images')
+        new_gallery_urls = []
+        for img in gallery_images:
+            if img and img.filename:
+                ext = img.filename.rsplit('.', 1)[1].lower() if '.' in img.filename else 'jpg'
+                filename = f"destinations/{uuid.uuid4().hex}.{ext}"
+                file_bytes = img.read()
+                service_supabase.storage.from_("images").upload(
+                    path=filename,
+                    file=file_bytes,
+                    file_options={"content-type": img.content_type}
+                )
+                url = service_supabase.storage.from_("images").get_public_url(filename)
+                new_gallery_urls.append(url)
+
+        if new_gallery_urls:
+            # Fetch existing gallery and append new ones
+            existing = service_supabase.table('tourist_spots').select('gallery_images') \
+                .eq('id', spot_id).single().execute()
+            existing_gallery = existing.data.get('gallery_images') or []
+            payload["gallery_images"] = existing_gallery + new_gallery_urls
+
+        # Update only the record that belongs to this municipality (security check)
+        service_supabase.table('tourist_spots') \
+            .update(payload) \
+            .eq('id', spot_id) \
+            .eq('municipality_id', municipality_id) \
+            .execute()
+
+        return jsonify({"success": True, "message": "Tourist spot updated successfully!"}), 200
+
+    except Exception as e:
+        print(f"Error editing tourist spot: {e}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+
+@login_required
+@role_required('municipality_admin')
+def lgu_delete_spot(spot_id):
+    """Delete a tourist spot record. Only deletes from DB; storage files are left intact."""
+    try:
+        municipality_id = session.get('municipality_id')
+
+        # Verify ownership before deleting
+        service_supabase.table('tourist_spots') \
+            .delete() \
+            .eq('id', spot_id) \
+            .eq('municipality_id', municipality_id) \
+            .execute()
+
+        return jsonify({"success": True, "message": "Tourist spot deleted."}), 200
+
+    except Exception as e:
+        print(f"Error deleting tourist spot: {e}")
+        return jsonify({"success": False, "message": str(e)}), 500
