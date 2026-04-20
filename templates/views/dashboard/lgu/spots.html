@@ -1,0 +1,1149 @@
+{% extends 'dashboard-base.html' %}
+
+{% block title %}Tourist Spots Management{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<style>
+/* Additional fixes for spots page */
+.table-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 250px;
+}
+
+.search-box i {
+  position: absolute;
+  left: 1rem;
+  color: var(--muted-foreground);
+  font-size: 1rem;
+  z-index: 1;
+}
+
+.search-box input {
+  padding: 0.625rem 1rem 0.625rem 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(127, 29, 29, 0.1);
+}
+
+.filter-select {
+  padding: 0.625rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  min-width: 150px;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(127, 29, 29, 0.1);
+}
+
+/* Quick actions styling */
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.quick-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--foreground);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.quick-action-btn:hover {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(127, 29, 29, 0.15);
+}
+
+.quick-action-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius);
+  background: rgba(127, 29, 29, 0.1);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.quick-action-btn:hover .quick-action-icon {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--primary-foreground);
+}
+
+/* Activity feed styling */
+.activity-feed {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.activity-feed::-webkit-scrollbar {
+  width: 6px;
+}
+
+.activity-feed::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 3px;
+}
+
+.activity-feed::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 3px;
+}
+
+.activity-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.activity-item:hover {
+  background: var(--accent);
+  margin: 0 -1rem;
+  padding: 1rem;
+  border-radius: var(--radius);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.activity-icon.user {
+  background: rgba(127, 29, 29, 0.1);
+  color: var(--primary);
+}
+
+.activity-icon.user:hover {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  transform: scale(1.1);
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-title {
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 0.25rem;
+}
+
+.activity-time {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.status-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge.active {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.status-badge.pending {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.status-badge.inactive {
+  background: rgba(107, 114, 128, 0.1);
+  color: #6b7280;
+  border-color: rgba(107, 114, 128, 0.2);
+}
+
+/* Responsive fixes */
+@media (max-width: 768px) {
+  .table-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .search-box {
+    width: 100%;
+  }
+  
+  .filter-select {
+    width: 100%;
+  }
+  
+  .quick-actions {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    
+    <!-- Top Header Row -->
+    <div class="d-flex justify-content-between align-items-center dashboard-header">
+      <div>
+        <h4 class="dashboard-title mb-1">Tourist Spots Management</h4>
+        <span class="dashboard-subtitle">Manage and monitor tourist destinations in {{ municipality.name if municipality else 'your municipality' }}</span>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-dashboard-action btn-primary d-flex align-items-center gap-2 shadow-sm" onclick="openAddSpotModal()">
+          <i class="bx bx-plus fs-5"></i> Add Tourist Spot
+        </button>
+        <button class="btn btn-outline-secondary rounded-circle p-2 d-flex align-items-center justify-content-center bg-white shadow-sm border-0" style="width: 42px; height: 42px;">
+          <i class="bx bx-filter fs-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Actions Section -->
+    <div class="row g-4 mb-4">
+      <div class="col-12">
+        <div class="card mockup-card">
+          <div class="card-header">
+            <h5 class="card-title mb-0 fw-bold">Quick Actions</h5>
+          </div>
+          <div class="card-body">
+            <div class="quick-actions">
+              <a href="#" class="quick-action-btn" onclick="openAddSpotModal()">
+                <div class="quick-action-icon">
+                  <i class="bx bx-plus"></i>
+                </div>
+                <div>
+                  <div class="fw-medium">Add New Spot</div>
+                  <small>Register a new tourist destination</small>
+                </div>
+              </a>
+              <a href="#" class="quick-action-btn" onclick="exportSpotsData()">
+                <div class="quick-action-icon">
+                  <i class="bx bx-download"></i>
+                </div>
+                <div>
+                  <div class="fw-medium">Export Data</div>
+                  <small>Download spots information</small>
+                </div>
+              </a>
+              <a href="#" class="quick-action-btn" onclick="importSpotsData()">
+                <div class="quick-action-icon">
+                  <i class="bx bx-upload"></i>
+                </div>
+                <div>
+                  <div class="fw-medium">Import Spots</div>
+                  <small>Bulk import from CSV</small>
+                </div>
+              </a>
+              <a href="#" class="quick-action-btn" onclick="generateReport()">
+                <div class="quick-action-icon">
+                  <i class="bx bx-file"></i>
+                </div>
+                <div>
+                  <div class="fw-medium">Generate Report</div>
+                  <small>Create analytics report</small>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Tourist Spots Table -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card mockup-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="card-title mb-1 fw-bold">All Tourist Spots</h5>
+              <small>Complete list of tourist destinations in your municipality</small>
+            </div>
+            <div class="table-controls">
+              <div class="search-box">
+                <i class="bx bx-search"></i>
+                <input type="text" id="spotSearch" placeholder="Search spots...">
+              </div>
+              <select class="filter-select" id="statusFilter">
+                <option value="">All Status</option>
+                <option value="approved">Active</option>
+                <option value="pending">Pending</option>
+                <option value="rejected">Rejected</option>
+              </select>
+              <select class="filter-select" id="categoryFilter">
+                <option value="">All Categories</option>
+                <option value="beach">Beach</option>
+                <option value="mountain">Mountain</option>
+                <option value="historical">Historical</option>
+                <option value="religious">Religious</option>
+                <option value="park">Park</option>
+                <option value="waterfall">Waterfall</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-body pt-0">
+            <div class="table-responsive">
+              <table class="table table-hover" id="touristSpotsTable" data-no-dt>
+                <thead>
+                  <tr>
+                    <th>Tourist Spot</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Rating</th>
+                    <th>Address</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if tourist_spots %}
+                  {% for spot in tourist_spots %}
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        {% if spot.main_image_url %}
+                        <img src="{{ spot.main_image_url }}" alt="{{ spot.name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" class="me-3">
+                        {% else %}
+                        <div class="me-3 d-flex align-items-center justify-content-center bg-light rounded" style="width: 50px; height: 50px; flex-shrink: 0;">
+                          <i class="bx bx-image text-muted fs-4"></i>
+                        </div>
+                        {% endif %}
+                        <div>
+                          <div class="fw-medium">{{ spot.name }}</div>
+                          <small class="text-muted">{{ spot.hook_title or spot.category | capitalize }}</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge bg-light text-dark text-capitalize">{{ spot.category or '—' }}</span>
+                    </td>
+                    <td>
+                      {% if spot.status == 'approved' %}
+                      <span class="status-badge active"><i class="bx bx-check-circle"></i> Active</span>
+                      {% elif spot.status == 'pending' %}
+                      <span class="status-badge pending"><i class="bx bx-time-five"></i> Pending</span>
+                      {% elif spot.status == 'rejected' %}
+                      <span class="status-badge inactive"><i class="bx bx-x-circle"></i> Rejected</span>
+                      {% else %}
+                      <span class="status-badge inactive"><i class="bx bx-minus-circle"></i> {{ spot.status | capitalize }}</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <span class="text-muted small">No ratings yet</span>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <i class="bx bx-map me-2 text-muted"></i>
+                        <div class="small">{{ spot.address or '—' }}</div>
+                      </div>
+                    </td>
+                    <td class="createdAt small text-muted">
+                      {{ spot.created_at[:10] if spot.created_at else '—' }}
+                    </td>
+                    <td>
+                      <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                          <i class="bx bx-dots-horizontal-rounded"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="/destination/{{ spot.id }}"><i class="bx bx-show me-2"></i> View Details</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="editSpot('{{ spot.id }}')"><i class="bx bx-edit me-2"></i> Edit</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item text-danger" href="#" onclick="deleteSpot('{{ spot.id }}')"><i class="bx bx-trash me-2"></i> Delete</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  {% endif %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Recent Activity Feed -->
+    <div class="row g-4">
+      <div class="col-lg-6 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <h5 class="card-title mb-0 fw-bold">Recent Activity</h5>
+          </div>
+          <div class="card-body pt-0">
+            <div class="activity-feed">
+              {% set recent_spots = tourist_spots[:5] if tourist_spots else [] %}
+              {% if recent_spots %}
+              {% for spot in recent_spots %}
+              <div class="activity-item">
+                <div class="activity-icon user">
+                  <i class="bx bx-map-pin"></i>
+                </div>
+                <div class="activity-content">
+                  <div class="activity-title">
+                    {% if spot.status == 'approved' %}
+                    <span class="text-success"><i class="bx bx-check-circle me-1"></i></span>
+                    {% elif spot.status == 'pending' %}
+                    <span class="text-warning"><i class="bx bx-time-five me-1"></i></span>
+                    {% else %}
+                    <span class="text-danger"><i class="bx bx-x-circle me-1"></i></span>
+                    {% endif %}
+                    {{ spot.name }}
+                  </div>
+                  <div class="activity-time">
+                    Added {{ spot.created_at[:10] if spot.created_at else 'recently' }} &nbsp;&bull;&nbsp;
+                    <span class="text-capitalize">{{ spot.status }}</span>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+              {% else %}
+              <div class="text-center py-4">
+                <i class="bx bx-time-five" style="font-size: 2rem; color: var(--muted-foreground);"></i>
+                <div class="text-muted small mt-2">No activity yet</div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <h5 class="card-title mb-0 fw-bold">Category Distribution</h5>
+          </div>
+          <div class="card-body pt-0">
+            <div id="categoryChart" style="min-height: 250px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Modal for Add Tourist Spot -->
+    <div class="modal fade" id="addSpotModal" tabindex="-1" aria-labelledby="addSpotModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header border-0">
+            <h5 class="modal-title fw-bold" id="addSpotModalLabel">Add New Tourist Spot</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-0">
+            <!-- Progress Indicator -->
+            <div class="progress-indicator p-4 border-bottom">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="progress-step active" data-step="1">
+                  <div class="step-number">1</div>
+                  <div class="step-label">Basic Info</div>
+                </div>
+                <div class="progress-line flex-grow-1"></div>
+                <div class="progress-step" data-step="2">
+                  <div class="step-number">2</div>
+                  <div class="step-label">Content</div>
+                </div>
+                <div class="progress-line flex-grow-1"></div>
+                <div class="progress-step" data-step="3">
+                  <div class="step-number">3</div>
+                  <div class="step-label">Media</div>
+                </div>
+                <div class="progress-line flex-grow-1"></div>
+                <div class="progress-step" data-step="4">
+                  <div class="step-number">4</div>
+                  <div class="step-label">Details</div>
+                </div>
+                <div class="progress-line flex-grow-1"></div>
+                <div class="progress-step" data-step="5">
+                  <div class="step-number">5</div>
+                  <div class="step-label">Review</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Form Content -->
+            <form id="addSpotForm" method="POST" action="/dashboard/lgu/spots/add" enctype="multipart/form-data" class="p-4">
+              <!-- Step 1: Basic Information -->
+              <div class="form-step active" data-step="1">
+                <div class="mb-4">
+                  <h6 class="fw-bold mb-3">Basic Information</h6>
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label">Name</label>
+                      <input type="text" name="name" class="form-control" placeholder="e.g. Wonderland Hot Spring" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Category</label>
+                      <select name="category" class="form-control">
+                        <option value="beach">Beach</option>
+                        <option value="mountain">Mountain</option>
+                        <option value="historical">Historical</option>
+                        <option value="religious">Religious</option>
+                        <option value="park">Park</option>
+                        <option value="waterfall">Waterfall</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Address</label>
+                      <input type="text" name="address" class="form-control" placeholder="e.g. Calamba City, Laguna">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 2: Content Details -->
+              <div class="form-step" data-step="2">
+                <div class="mb-4">
+                  <h6 class="fw-bold mb-3">Content Details</h6>
+                  <div class="space-y-4">
+                    <div class="mb-3">
+                      <label class="form-label">Hook Title</label>
+                      <input type="text" name="hook_title" class="form-control" placeholder="e.g. Escape to Nature's Perfect Oasis">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Hook Text</label>
+                      <textarea name="hook_text" rows="2" class="form-control" placeholder="Short inspiring description..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Main Description</label>
+                      <textarea name="description" rows="4" class="form-control" placeholder="Detailed overview..."></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 3: Media Upload -->
+              <div class="form-step" data-step="3">
+                <div class="mb-4">
+                  <h6 class="fw-bold mb-3">Media</h6>
+                  <div class="space-y-4">
+                    <div class="mb-3">
+                      <label class="form-label">Main Image</label>
+                      <input type="file" name="main_image" accept="image/*" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Gallery Images (Multiple)</label>
+                      <input type="file" name="gallery_images" accept="image/*" multiple class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 4: Practical Information -->
+              <div class="form-step" data-step="4">
+                <div class="mb-4">
+                  <h6 class="fw-bold mb-3">Practical Information</h6>
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label">Opening Hours</label>
+                      <input type="text" name="opening_hours" class="form-control" placeholder="6:00 AM - 10:00 PM">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Entrance Fees</label>
+                      <textarea name="entrance_fees" rows="2" class="form-control" placeholder="Adults: ₱300, Kids: ₱150"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">What to Bring</label>
+                      <input type="text" name="what_to_bring" class="form-control" placeholder="Swimwear, towel, extra clothes">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Parking Info</label>
+                      <input type="text" name="parking_info" class="form-control" placeholder="Free parking available">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 5: Lists (Highlights & Target Audience) -->
+              <div class="form-step" data-step="5">
+                <div class="mb-4">
+                  <h6 class="fw-bold mb-3">Lists (Comma Separated)</h6>
+                  <div class="space-y-4">
+                    <div class="mb-3">
+                      <label class="form-label">Highlights (What makes it special?)</label>
+                      <input type="text" name="highlights" class="form-control" placeholder="Natural Hot Springs, Private Cottages, Lush Gardens">
+                      <small>Separate each item with a comma.</small>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Target Audience</label>
+                      <input type="text" name="target_audience" class="form-control" placeholder="Families, Couples, Professionals">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer border-0">
+            <button type="button" class="btn btn-secondary" id="prevBtn" onclick="changeStep(-1)" style="display: none;">Previous</button>
+            <button type="button" class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">Next</button>
+            <button type="button" class="btn btn-success" id="submitBtn" onclick="submitSpotForm()" style="display: none;">Submit</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+<!-- Edit Spot Modal -->
+<div class="modal fade" id="editSpotModal" tabindex="-1" aria-labelledby="editSpotModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold" id="editSpotModalLabel">Edit Tourist Spot</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form id="editSpotForm" enctype="multipart/form-data">
+          <input type="hidden" id="editSpotId" name="spot_id">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-medium">Name <span class="text-danger">*</span></label>
+              <input type="text" name="name" id="editName" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-medium">Category</label>
+              <select name="category" id="editCategory" class="form-control">
+                <option value="beach">Beach</option>
+                <option value="mountain">Mountain</option>
+                <option value="historical">Historical</option>
+                <option value="religious">Religious</option>
+                <option value="park">Park</option>
+                <option value="waterfall">Waterfall</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-medium">Address</label>
+              <input type="text" name="address" id="editAddress" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-medium">Hook Title</label>
+              <input type="text" name="hook_title" id="editHookTitle" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-medium">Opening Hours</label>
+              <input type="text" name="opening_hours" id="editOpeningHours" class="form-control">
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-medium">Hook Text</label>
+              <textarea name="hook_text" id="editHookText" rows="2" class="form-control"></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-medium">Description</label>
+              <textarea name="description" id="editDescription" rows="4" class="form-control"></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-medium">Entrance Fees</label>
+              <textarea name="entrance_fees" id="editEntranceFees" rows="2" class="form-control"></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-medium">Parking Info</label>
+              <input type="text" name="parking_info" id="editParkingInfo" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-medium">What to Bring</label>
+              <input type="text" name="what_to_bring" id="editWhatToBring" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-medium">Highlights <small class="text-muted">(comma-separated)</small></label>
+              <input type="text" name="highlights" id="editHighlights" class="form-control">
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-medium">Target Audience <small class="text-muted">(comma-separated)</small></label>
+              <input type="text" name="target_audience" id="editTargetAudience" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-medium">Replace Main Image <small class="text-muted">(optional)</small></label>
+              <input type="file" name="main_image" id="editMainImage" accept="image/*" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-medium">Add Gallery Images <small class="text-muted">(optional)</small></label>
+              <input type="file" name="gallery_images" id="editGalleryImages" accept="image/*" multiple class="form-control">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="saveEditBtn" onclick="saveEditSpot()">
+          <i class="bx bx-save me-1"></i> Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Initialize DataTable
+    if ($('#touristSpotsTable').length) {
+      const table = $('#touristSpotsTable').DataTable({
+        responsive: true,
+        order: [[5, 'desc']],
+        pageLength: 10,
+        dom: 'lrtip',
+        columnDefs: [
+          { orderable: false, targets: [0, 3, 6] }  // Disable sort on Spot name thumbnail, Rating, Actions
+        ],
+        language: {
+          emptyTable: '<div class="d-flex flex-column align-items-center gap-2 py-4"><i class="bx bx-map-alt" style="font-size:2.5rem;color:#9ca3af;"></i><div class="fw-medium">No tourist spots yet</div><small class="text-muted">Click \"Add Tourist Spot\" to register your first destination.</small></div>',
+          zeroRecords: 'No spots match your search or filter.'
+        }
+      });
+
+      // Search functionality
+      $('#spotSearch').on('keyup', function() {
+        table.search(this.value).draw();
+      });
+
+      // Status filter
+      $('#statusFilter').on('change', function() {
+        const status = $(this).val();
+        if (status) {
+          table.column(2).search(status).draw();
+        } else {
+          table.column(2).search('').draw();
+        }
+      });
+
+      // Category filter
+      $('#categoryFilter').on('change', function() {
+        const category = $(this).val();
+        if (category) {
+          table.column(1).search(category).draw();
+        } else {
+          table.column(1).search('').draw();
+        }
+      });
+    }
+
+    // Category Chart — real data from Supabase via DashboardController
+    const categoryData = {
+      labels: {{ category_labels | tojson }},
+      data: {{ category_data | tojson }}
+    };
+
+    if (categoryData.labels.length > 0) {
+      const categoryOptions = {
+        series: [{
+          data: categoryData.data
+        }],
+        chart: {
+          type: 'bar',
+          height: 250,
+          fontFamily: 'Poppins, sans-serif',
+          toolbar: { show: false }
+        },
+        colors: ['#7f1d1d'],
+        plotOptions: {
+          bar: {
+            borderRadius: 6,
+            columnWidth: '50%'
+          }
+        },
+        dataLabels: { enabled: false },
+        xaxis: {
+          categories: categoryData.labels,
+          labels: { style: { colors: '#1a1a1a', fontSize: '12px' } }
+        },
+        yaxis: {
+          labels: { style: { colors: '#1a1a1a', fontSize: '12px' } }
+        },
+        grid: {
+          borderColor: '#f5e8d2',
+          strokeDashArray: 0
+        }
+      };
+      new ApexCharts(document.querySelector("#categoryChart"), categoryOptions).render();
+    }
+  });
+
+  // Action Functions
+  function openAddSpotModal() {
+    const modal = new bootstrap.Modal(document.getElementById('addSpotModal'));
+    modal.show();
+    resetForm();
+  }
+
+  let currentStep = 1;
+  const totalSteps = 5;
+
+  function changeStep(direction) {
+    const currentStepElement = document.querySelector(`.form-step[data-step="${currentStep}"]`);
+    const currentProgressStep = document.querySelector(`.progress-step[data-step="${currentStep}"]`);
+    
+    currentStepElement.classList.remove('active');
+    currentProgressStep.classList.remove('active');
+    
+    currentStep += direction;
+    
+    const nextStepElement = document.querySelector(`.form-step[data-step="${currentStep}"]`);
+    const nextProgressStep = document.querySelector(`.progress-step[data-step="${currentStep}"]`);
+    
+    nextStepElement.classList.add('active');
+    nextProgressStep.classList.add('active');
+    
+    updateButtons();
+  }
+
+  function updateButtons() {
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    prevBtn.style.display = currentStep === 1 ? 'none' : 'inline-block';
+    nextBtn.style.display = currentStep === totalSteps ? 'none' : 'inline-block';
+    submitBtn.style.display = currentStep === totalSteps ? 'inline-block' : 'none';
+  }
+
+  function resetForm() {
+    currentStep = 1;
+    document.getElementById('addSpotForm').reset();
+    
+    // Reset all steps
+    document.querySelectorAll('.form-step').forEach(step => {
+      step.classList.remove('active');
+    });
+    document.querySelectorAll('.progress-step').forEach(step => {
+      step.classList.remove('active');
+    });
+    
+    // Show first step
+    document.querySelector('.form-step[data-step="1"]').classList.add('active');
+    document.querySelector('.progress-step[data-step="1"]').classList.add('active');
+    
+    updateButtons();
+  }
+
+  function submitSpotForm() {
+    const form = document.getElementById('addSpotForm');
+    
+    // Basic validation
+    const name = form.querySelector('input[name="name"]').value;
+    if (!name) {
+      showToast('Please enter a tourist spot name', 'warning');
+      // Go back to step 1
+      while (currentStep > 1) {
+        changeStep(-1);
+      }
+      return;
+    }
+    
+    // Check if main image is uploaded
+    const mainImage = form.querySelector('input[name="main_image"]').files[0];
+    if (!mainImage) {
+      showToast('Please upload a main image', 'warning');
+      // Go to step 3 (Media)
+      while (currentStep > 3) {
+        changeStep(-1);
+      }
+      while (currentStep < 3) {
+        changeStep(1);
+      }
+      return;
+    }
+    
+    // Show loading state
+    const submitBtn = document.getElementById('submitBtn');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
+    
+    // Submit form using AJAX to handle response
+    const formData = new FormData(form);
+    
+    fetch('/dashboard/lgu/spots/add', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        showToast(data.message || 'Tourist spot submitted successfully!', 'success');
+
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('addSpotModal'));
+        modal.hide();
+
+        // Reset form
+        resetForm();
+
+        // Refresh the page so the table reflects the new record
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      } else {
+        showToast(data.message || 'Error submitting tourist spot.', 'error');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showToast('Error submitting tourist spot. Please try again.', 'error');
+    })
+    .finally(() => {
+      // Reset button state
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    });
+  }
+
+  function showToast(message, type = 'info') {
+    const toastContainer = document.createElement('div');
+    toastContainer.className = 'toast-container';
+    
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    
+    const toastHeader = document.createElement('div');
+    toastHeader.className = 'toast-header';
+    
+    const title = document.createElement('strong');
+    title.className = 'me-auto';
+    title.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+    
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'btn-close';
+    closeBtn.setAttribute('data-bs-dismiss', 'toast');
+    closeBtn.setAttribute('aria-label', 'Close');
+    
+    toastHeader.appendChild(title);
+    toastHeader.appendChild(closeBtn);
+    
+    const toastBody = document.createElement('div');
+    toastBody.className = 'toast-body';
+    toastBody.textContent = message;
+    
+    toast.appendChild(toastHeader);
+    toast.appendChild(toastBody);
+    toastContainer.appendChild(toast);
+    
+    document.body.appendChild(toastContainer);
+    
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+    
+    // Remove toast element after it's hidden
+    toast.addEventListener('hidden.bs.toast', () => {
+      document.body.removeChild(toastContainer);
+    });
+  }
+
+  function editSpot(spotId) {
+    // Fetch current spot data from server
+    fetch(`/dashboard/lgu/spots/${spotId}/data`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success) {
+          showToast(data.message || 'Could not load spot data.', 'error');
+          return;
+        }
+        const spot = data.spot;
+
+        // Populate the edit modal fields
+        document.getElementById('editSpotId').value = spot.id;
+        document.getElementById('editName').value = spot.name || '';
+        document.getElementById('editCategory').value = spot.category || 'other';
+        document.getElementById('editAddress').value = spot.address || '';
+        document.getElementById('editHookTitle').value = spot.hook_title || '';
+        document.getElementById('editHookText').value = spot.hook_text || '';
+        document.getElementById('editDescription').value = spot.description || '';
+        document.getElementById('editOpeningHours').value = spot.opening_hours || '';
+        document.getElementById('editEntranceFees').value = spot.entrance_fees || '';
+        document.getElementById('editParkingInfo').value = spot.parking_info || '';
+        document.getElementById('editWhatToBring').value = spot.what_to_bring || '';
+        document.getElementById('editHighlights').value = Array.isArray(spot.highlights) ? spot.highlights.join(', ') : (spot.highlights || '');
+        document.getElementById('editTargetAudience').value = Array.isArray(spot.target_audience) ? spot.target_audience.join(', ') : (spot.target_audience || '');
+
+        // Clear file inputs
+        document.getElementById('editMainImage').value = '';
+        document.getElementById('editGalleryImages').value = '';
+
+        // Show modal
+        new bootstrap.Modal(document.getElementById('editSpotModal')).show();
+      })
+      .catch(err => {
+        console.error(err);
+        showToast('Failed to load spot data. Please try again.', 'error');
+      });
+  }
+
+  function saveEditSpot() {
+    const spotId = document.getElementById('editSpotId').value;
+    if (!spotId) return;
+
+    const saveBtn = document.getElementById('saveEditBtn');
+    const originalHtml = saveBtn.innerHTML;
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Saving...';
+
+    const formData = new FormData(document.getElementById('editSpotForm'));
+
+    fetch(`/dashboard/lgu/spots/${spotId}/edit`, {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showToast(data.message || 'Tourist spot updated successfully!', 'success');
+        const modal = bootstrap.Modal.getInstance(document.getElementById('editSpotModal'));
+        modal.hide();
+        setTimeout(() => window.location.reload(), 1200);
+      } else {
+        showToast(data.message || 'Error saving changes.', 'error');
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      showToast('Error saving changes. Please try again.', 'error');
+    })
+    .finally(() => {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = originalHtml;
+    });
+  }
+
+  function deleteSpot(spotId) {
+    Swal.fire({
+      title: 'Delete Tourist Spot',
+      text: 'Are you sure? This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Delete',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`/dashboard/lgu/spots/${spotId}/delete`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            Swal.fire({
+              title: 'Deleted!',
+              text: 'The tourist spot has been removed.',
+              icon: 'success',
+              confirmButtonColor: '#7f1d1d'
+            }).then(() => window.location.reload());
+          } else {
+            Swal.fire('Error', data.message || 'Could not delete this spot.', 'error');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          Swal.fire('Error', 'Network error. Please try again.', 'error');
+        });
+      }
+    });
+  }
+
+  function exportSpotsData() {
+    Swal.fire({
+      title: 'Export Data',
+      html: '<p>Export functionality will be implemented here.</p>',
+      icon: 'info',
+      confirmButtonText: 'OK'
+    });
+  }
+
+  function importSpotsData() {
+    Swal.fire({
+      title: 'Import Spots',
+      html: '<p>Import functionality will be implemented here.</p>',
+      icon: 'info',
+      confirmButtonText: 'OK'
+    });
+  }
+
+  function generateReport() {
+    Swal.fire({
+      title: 'Generate Report',
+      html: '<p>Report generation will be implemented here.</p>',
+      icon: 'info',
+      confirmButtonText: 'OK'
+    });
+  }
+</script>
+{% endblock %}

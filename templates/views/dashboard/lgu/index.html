@@ -1,0 +1,648 @@
+{% extends 'dashboard-base.html' %}
+
+{% block title %}Analytics Dashboard{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center dashboard-header">
+      <div>
+        <h4 class="dashboard-title mb-1">Analytics Dashboard</h4>
+        <span class="dashboard-subtitle">Comprehensive tourism data insights and trends analysis</span>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-dashboard-action d-flex align-items-center gap-2 shadow-sm" onclick="exportAnalytics()">
+          <i class="bx bx-download fs-5"></i> Export Report
+        </button>
+        <button class="btn btn-dashboard-action d-flex align-items-center gap-2 shadow-sm" onclick="refreshData()">
+          <i class="bx bx-refresh fs-5"></i> Refresh
+        </button>
+        <div class="btn-group shadow-sm" role="group">
+          <button type="button" class="btn btn-sm btn-dashboard-action active" onclick="setTimeRange('month')">Month</button>
+          <button type="button" class="btn btn-sm btn-dashboard-action" onclick="setTimeRange('quarter')">Quarter</button>
+          <button type="button" class="btn btn-sm btn-dashboard-action" onclick="setTimeRange('year')">Year</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Metrics Overview -->
+    <div class="row g-4 mb-4">
+      <!-- Total Visitors -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card mockup-card h-100">
+          <div class="card-body stat-card-inner">
+            <div class="icon-box bg-primary-light">
+              <i class="bx bx-group"></i>
+            </div>
+            <div class="stat-details">
+              <p class="stat-title">Total Visitors</p>
+              <h3 class="stat-value">45,892</h3>
+              <span class="stat-indicator"><i class="bx bx-trending-up"></i> +15.3% vs last period</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tourist Spots -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card mockup-card h-100">
+          <div class="card-body stat-card-inner">
+            <div class="icon-box bg-success-light">
+              <i class="bx bx-map"></i>
+            </div>
+            <div class="stat-details">
+              <p class="stat-title">Active Spots</p>
+              <h3 class="stat-value">127</h3>
+              <span class="stat-indicator"><i class="bx bx-check-circle"></i> All operational</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Average Rating -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card mockup-card h-100">
+          <div class="card-body stat-card-inner">
+            <div class="icon-box bg-warning-light">
+              <i class="bx bx-star"></i>
+            </div>
+            <div class="stat-details">
+              <p class="stat-title">Avg Rating</p>
+              <h3 class="stat-value">4.6</h3>
+              <span class="stat-indicator"><i class="bx bx-info-circle"></i> From 2,847 reviews</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Peak Activity -->
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card mockup-card h-100">
+          <div class="card-body stat-card-inner">
+            <div class="icon-box bg-info-light">
+              <i class="bx bx-time-five"></i>
+            </div>
+            <div class="stat-details">
+              <p class="stat-title">Peak Hours</p>
+              <h3 class="stat-value">10AM-2PM</h3>
+              <span class="stat-indicator"><i class="bx bx-sun"></i> Highest activity</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics Charts Section -->
+    <div class="row g-4 mb-4">
+      <!-- Visitor Trends Chart -->
+      <div class="col-lg-8 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="card-title mb-0 fw-bold">Visitor Trends Analysis</h5>
+              <div class="btn-group shadow-sm" role="group">
+                <button type="button" class="btn btn-sm btn-dashboard-action active">Daily</button>
+                <button type="button" class="btn btn-sm btn-dashboard-action">Weekly</button>
+                <button type="button" class="btn btn-sm btn-dashboard-action">Monthly</button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container" style="height: 350px;">
+              <canvas id="visitorTrendsChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visitor Demographics -->
+      <div class="col-lg-4 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <h5 class="card-title mb-0 fw-bold">Visitor Demographics</h5>
+          </div>
+          <div class="card-body">
+            <div class="chart-container" style="height: 200px;">
+              <canvas id="demographicsChart"></canvas>
+            </div>
+            <div class="mt-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="small">Local Tourists</span>
+                <span class="fw-bold">68%</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="small">Domestic Tourists</span>
+                <span class="fw-bold">22%</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="small">International Tourists</span>
+                <span class="fw-bold">10%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Popular Destinations & Activity Heatmap -->
+    <div class="row g-4 mb-4">
+      <!-- Top Tourist Spots -->
+      <div class="col-lg-6 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <h5 class="card-title mb-0 fw-bold">Top Tourist Spots</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Spot Name</th>
+                    <th>Visitors</th>
+                    <th>Rating</th>
+                    <th>Trend</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="spot-avatar bg-primary-light text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.75rem;">WH</div>
+                        <div>
+                          <div class="fw-bold">Wonderland Hot Spring</div>
+                          <div class="small">Calamba City</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><strong>8,432</strong></td>
+                    <td><span class="badge bg-success-light text-success">4.8</span></td>
+                    <td><i class="bx bx-trending-up text-success"></i></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="spot-avatar bg-info-light text-info rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.75rem;">MV</div>
+                        <div>
+                          <div class="fw-bold">Mountain View Resort</div>
+                          <div class="small">San Pablo</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><strong>6,789</strong></td>
+                    <td><span class="badge bg-success-light text-success">4.6</span></td>
+                    <td><i class="bx bx-trending-up text-success"></i></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="spot-avatar bg-warning-light text-warning rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.75rem;">LF</div>
+                        <div>
+                          <div class="fw-bold">Lakefront Park</div>
+                          <div class="small">San Pedro</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><strong>5,234</strong></td>
+                    <td><span class="badge bg-warning-light text-warning">4.5</span></td>
+                    <td><i class="bx bx-minus text-warning"></i></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="spot-avatar bg-success-light text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.75rem;">EG</div>
+                        <div>
+                          <div class="fw-bold">Eco Garden</div>
+                          <div class="small">San Juan</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><strong>4,567</strong></td>
+                    <td><span class="badge bg-success-light text-success">4.7</span></td>
+                    <td><i class="bx bx-trending-up text-success"></i></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Heatmap -->
+      <div class="col-lg-6 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <h5 class="card-title mb-0 fw-bold">Weekly Activity Heatmap</h5>
+          </div>
+          <div class="card-body">
+            <div class="chart-container" style="height: 300px;">
+              <canvas id="activityHeatmapChart"></canvas>
+            </div>
+            <div class="mt-3 text-center">
+              <small>Peak activity shown in darker shades</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visitor Feedback & Insights -->
+    <div class="row g-4">
+      <!-- Recent Feedback -->
+      <div class="col-lg-6 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <h5 class="card-title mb-0 fw-bold">Recent Visitor Feedback</h5>
+          </div>
+          <div class="card-body">
+            <div class="feedback-list">
+              <div class="d-flex gap-3 mb-3">
+                <div class="flex-shrink-0">
+                  <div class="avatar bg-primary-light text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">JD</div>
+                </div>
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between align-items-start mb-1">
+                    <div>
+                      <div class="fw-bold">Juan Dela Cruz</div>
+                      <div class="small">Wonderland Hot Spring</div>
+                    </div>
+                    <div class="text-end">
+                      <div class="small">2 days ago</div>
+                      <div class="text-warning small">*****</div>
+                    </div>
+                  </div>
+                  <p class="small mb-0">Amazing experience! The hot springs were perfect and the staff was very accommodating.</p>
+                </div>
+              </div>
+              
+              <div class="d-flex gap-3 mb-3">
+                <div class="flex-shrink-0">
+                  <div class="avatar bg-success-light text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">MS</div>
+                </div>
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between align-items-start mb-1">
+                    <div>
+                      <div class="fw-bold">Maria Santos</div>
+                      <div class="small">Mountain View Resort</div>
+                    </div>
+                    <div class="text-end">
+                      <div class="small">3 days ago</div>
+                      <div class="text-warning small">****</div>
+                    </div>
+                  </div>
+                  <p class="small mb-0">Great place for family outings. Beautiful scenery and well-maintained facilities.</p>
+                </div>
+              </div>
+              
+              <div class="d-flex gap-3 mb-3">
+                <div class="flex-shrink-0">
+                  <div class="avatar bg-info-light text-info rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">RC</div>
+                </div>
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between align-items-start mb-1">
+                    <div>
+                      <div class="fw-bold">Roberto Cruz</div>
+                      <div class="small">Lakefront Park</div>
+                    </div>
+                    <div class="text-end">
+                      <div class="small">1 week ago</div>
+                      <div class="text-warning small">*****</div>
+                    </div>
+                  </div>
+                  <p class="small mb-0">Perfect for morning walks and picnics. Clean and peaceful environment.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Insights -->
+      <div class="col-lg-6 col-md-12">
+        <div class="card mockup-card h-100">
+          <div class="card-header border-0">
+            <h5 class="card-title mb-0 fw-bold">Key Insights & Recommendations</h5>
+          </div>
+          <div class="card-body">
+            <div class="insights-list">
+              <div class="alert alert-info d-flex align-items-start gap-3 mb-3">
+                <i class="bx bx-info-circle fs-5 flex-shrink-0"></i>
+                <div>
+                  <strong>Peak Season Alert:</strong>
+                  <p class="mb-0 small">Visitor traffic expected to increase by 35% during April-June. Consider capacity planning.</p>
+                </div>
+              </div>
+              
+              <div class="alert alert-success d-flex align-items-start gap-3 mb-3">
+                <i class="bx bx-trending-up fs-5 flex-shrink-0"></i>
+                <div>
+                  <strong>Growth Opportunity:</strong>
+                  <p class="mb-0 small">International tourist arrivals up 22% this quarter. Focus on multilingual services.</p>
+                </div>
+              </div>
+              
+              <div class="alert alert-warning d-flex align-items-start gap-3 mb-3">
+                <i class="bx bx-time-five fs-5 flex-shrink-0"></i>
+                <div>
+                  <strong>Optimization Needed:</strong>
+                  <p class="mb-0 small">Peak hours (10AM-2PM) show 45% higher wait times. Consider staggered scheduling.</p>
+                </div>
+              </div>
+              
+              <div class="alert alert-primary d-flex align-items-start gap-3 mb-0">
+                <i class="bx bx-star fs-5 flex-shrink-0"></i>
+                <div>
+                  <strong>Quality Improvement:</strong>
+                  <p class="mb-0 small">Spots with ratings below 4.0 show 30% lower repeat visits. Focus on service training.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Initialize all charts
+    initializeCharts();
+  });
+
+  function initializeCharts() {
+    // Visitor Trends Chart
+    const trendsCtx = document.getElementById('visitorTrendsChart');
+    if (trendsCtx) {
+      new Chart(trendsCtx, {
+        type: 'line',
+        data: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          datasets: [{
+            label: 'This Week',
+            data: [420, 380, 450, 520, 680, 890, 750],
+            borderColor: '#7f1d1d',
+            backgroundColor: 'rgba(127, 29, 29, 0.1)',
+            tension: 0.4,
+            fill: true
+          }, {
+            label: 'Last Week',
+            data: [380, 350, 400, 480, 620, 750, 680],
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    // Demographics Chart
+    const demographicsCtx = document.getElementById('demographicsChart');
+    if (demographicsCtx) {
+      new Chart(demographicsCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Local', 'Domestic', 'International'],
+          datasets: [{
+            data: [68, 22, 10],
+            backgroundColor: [
+              '#7f1d1d',
+              '#3b82f6',
+              '#10b981'
+            ],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+
+    // Activity Heatmap Chart
+    const heatmapCtx = document.getElementById('activityHeatmapChart');
+    if (heatmapCtx) {
+      new Chart(heatmapCtx, {
+        type: 'bar',
+        data: {
+          labels: ['6AM', '9AM', '12PM', '3PM', '6PM', '9PM'],
+          datasets: [{
+            label: 'Monday',
+            data: [20, 85, 120, 95, 60, 25],
+            backgroundColor: 'rgba(127, 29, 29, 0.3)'
+          }, {
+            label: 'Tuesday',
+            data: [15, 90, 135, 100, 65, 20],
+            backgroundColor: 'rgba(127, 29, 29, 0.4)'
+          }, {
+            label: 'Wednesday',
+            data: [25, 95, 140, 105, 70, 30],
+            backgroundColor: 'rgba(127, 29, 29, 0.5)'
+          }, {
+            label: 'Thursday',
+            data: [20, 100, 145, 110, 75, 35],
+            backgroundColor: 'rgba(127, 29, 29, 0.6)'
+          }, {
+            label: 'Friday',
+            data: [30, 120, 165, 130, 90, 45],
+            backgroundColor: 'rgba(127, 29, 29, 0.7)'
+          }, {
+            label: 'Saturday',
+            data: [40, 150, 185, 155, 110, 60],
+            backgroundColor: 'rgba(127, 29, 29, 0.8)'
+          }, {
+            label: 'Sunday',
+            data: [35, 140, 175, 145, 100, 50],
+            backgroundColor: 'rgba(127, 29, 29, 0.9)'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            x: {
+              stacked: true
+            },
+            y: {
+              stacked: true
+            }
+          }
+        }
+      });
+    }
+
+    // Performance Metrics Chart
+    const performanceCtx = document.getElementById('performanceMetricsChart');
+    if (performanceCtx) {
+      new Chart(performanceCtx, {
+        type: 'radar',
+        data: {
+          labels: ['Visitor Growth', 'Spot Quality', 'Staff Performance', 'Facility Maintenance', 'Community Engagement', 'Environmental Impact'],
+          datasets: [{
+            label: 'Current Performance',
+            data: [85, 92, 78, 88, 75, 90],
+            borderColor: '#7f1d1d',
+            backgroundColor: 'rgba(127, 29, 29, 0.2)'
+          }, {
+            label: 'Target Goals',
+            data: [90, 95, 85, 90, 80, 95],
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            borderDash: [5, 5]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 100
+            }
+          }
+        }
+      });
+    }
+  }
+
+  // Time range functions
+  function setTimeRange(range) {
+    // Update active button
+    document.querySelectorAll('.btn-group .btn-dashboard-action').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Update charts data based on range
+    console.log('Setting time range to:', range);
+    // Placeholder for actual data update logic
+  }
+
+  function exportAnalytics() {
+    // Placeholder for export functionality
+    const modal = document.createElement('div');
+    modal.innerHTML = `
+      <div class="modal fade" id="exportModal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Export Analytics Report</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <p>Select export format:</p>
+              <div class="d-grid gap-2">
+                <button class="btn btn-dashboard-action" onclick="downloadReport('pdf')">
+                  <i class="bx bx-file-pdf"></i> Export as PDF
+                </button>
+                <button class="btn btn-dashboard-action" onclick="downloadReport('excel')">
+                  <i class="bx bx-file-excel"></i> Export as Excel
+                </button>
+                <button class="btn btn-dashboard-action" onclick="downloadReport('csv')">
+                  <i class="bx bx-file-csv"></i> Export as CSV
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    const exportModal = new bootstrap.Modal(document.getElementById('exportModal'));
+    exportModal.show();
+    
+    // Clean up modal after hidden
+    document.getElementById('exportModal').addEventListener('hidden.bs.modal', function() {
+      modal.remove();
+    });
+  }
+
+  function downloadReport(format) {
+    console.log('Downloading report in format:', format);
+    // Placeholder for actual download logic
+    bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
+    
+    // Show success message
+    const toast = document.createElement('div');
+    toast.className = 'toast toast-success show';
+    toast.innerHTML = `
+      <div class="toast-header">
+        <strong>Export Successful</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+      </div>
+      <div class="toast-body">
+        Analytics report exported successfully as ${format.toUpperCase()}.
+      </div>
+    `;
+    document.querySelector('.toast-container')?.appendChild(toast) || document.body.appendChild(toast);
+    
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  function refreshData() {
+    console.log('Refreshing analytics data...');
+    // Placeholder for data refresh logic
+    
+    // Show loading state
+    const refreshBtn = event.target.closest('button');
+    const originalIcon = refreshBtn.querySelector('i').className;
+    refreshBtn.querySelector('i').className = 'bx bx-loader-alt bx-spin';
+    refreshBtn.disabled = true;
+    
+    // Simulate data refresh
+    setTimeout(() => {
+      refreshBtn.querySelector('i').className = originalIcon;
+      refreshBtn.disabled = false;
+      
+      // Show success message
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-success show';
+      toast.innerHTML = `
+        <div class="toast-header">
+          <strong>Data Refreshed</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body">
+          Analytics data has been updated successfully.
+        </div>
+      `;
+      document.querySelector('.toast-container')?.appendChild(toast) || document.body.appendChild(toast);
+      
+      setTimeout(() => toast.remove(), 3000);
+    }, 1500);
+  }
+</script>
+{% endblock %}

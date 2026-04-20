@@ -33,8 +33,7 @@
             <button class="filter-btn active" data-filter="all">All Spots</button>
             <button class="filter-btn" data-filter="resort"><i class="ph ph-swimming-pool me-1"></i> Resorts</button>
             <button class="filter-btn" data-filter="nature"><i class="ph ph-tree me-1"></i> Nature</button>
-            <button class="filter-btn" data-filter="pilgrimage"><i class="ph ph-hands-praying me-1"></i>
-                Pilgrimage</button>
+            <button class="filter-btn" data-filter="pilgrimage"><i class="ph ph-hands-praying me-1"></i> Pilgrimage</button>
             <button class="filter-btn" data-filter="heritage"><i class="ph ph-bank me-1"></i> Heritage</button>
         </div>
     </div>
@@ -43,215 +42,64 @@
 <!-- Main Grid Section -->
 <div class="container pb-5">
     <div class="destinations-grid" id="spotsGrid">
-        <!-- Spot 1: Resort -->
-        <div class="destination-card spot-item" data-category="resort">
-            <div class="card-background">
-                <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=600&q=80"
-                     alt="Wonderland Hot Spring">
-                <div class="card-overlay"></div>
-                
-                <!-- Top Badges -->
-                <div class="card-badges">
-                    <div class="badge-glass category-resort">
-                        <i class="ph ph-swimming-pool"></i>
-                        <span>Resort</span>
+        
+        {% if spots %}
+            {% for spot in spots %}
+            <!-- Dynamic Spot Card -->
+            <div class="destination-card spot-item" data-category="{{ spot.category | lower | default('general') }}">
+                <div class="card-background">
+                    <img src="{{ spot.main_image_url | default('https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=600&q=80') }}"
+                         alt="{{ spot.name }}">
+                    <div class="card-overlay"></div>
+                    
+                    <!-- Top Badges -->
+                    <div class="card-badges">
+                        <div class="badge-glass category-{{ spot.category | lower | replace(' ', '-') }}">
+                            {% if 'resort' in spot.category|lower %}
+                                <i class="ph ph-swimming-pool"></i>
+                            {% elif 'nature' in spot.category|lower %}
+                                <i class="ph ph-tree"></i>
+                            {% elif 'pilgrimage' in spot.category|lower %}
+                                <i class="ph ph-hands-praying"></i>
+                            {% elif 'heritage' in spot.category|lower %}
+                                <i class="ph ph-bank"></i>
+                            {% else %}
+                                <i class="ph ph-map-pin"></i>
+                            {% endif %}
+                            <span>{{ spot.category | default('Destination') }}</span>
+                        </div>
+                        <div class="badge-glass rating">
+                            <i class="ph-fill ph-star"></i>
+                            <span>{{ spot.rating | default('0.0') }}</span>
+                        </div>
                     </div>
-                    <div class="badge-glass rating">
-                        <i class="ph-fill ph-star"></i>
-                        <span>4.5</span>
+                    
+                    <!-- Bottom Content -->
+                    <div class="card-content">
+                        <div class="card-location">
+                            <i class="ph ph-map-pin"></i>
+                            <span>{{ spot.address.split(',')[0] if spot.address else 'Laguna' }}</span>
+                        </div>
+                        <h3 class="card-title">{{ spot.name }}</h3>
+                        <p class="card-description">{{ spot.description | truncate(100) if spot.description else 'Experience the beauty of Laguna.' }}</p>
+                        
+                        <!-- CTA button now points to the dynamic ID -->
+                        <a href="/destination/{{ spot.id }}" class="card-cta text-decoration-none">
+                            <span>Explore Destination</span>
+                            <i class="ph ph-arrow-right"></i>
+                        </a>
                     </div>
-                </div>
-                
-                <!-- Bottom Content -->
-                <div class="card-content">
-                    <div class="card-location">
-                        <i class="ph ph-map-pin"></i>
-                        <span>Calamba City</span>
-                    </div>
-                    <h3 class="card-title">Wonderland Hot Spring</h3>
-                    <p class="card-description">Relaxing natural hot spring resort featuring multiple therapeutic pools and private cottages.</p>
-                    <button class="card-cta">
-                        <span>Explore Destination</span>
-                        <i class="ph ph-arrow-right"></i>
-                    </button>
                 </div>
             </div>
-        </div>
-
-        <!-- Spot 2: Nature -->
-        <div class="destination-card spot-item" data-category="nature">
-            <div class="card-background">
-                <img src="https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=600&q=80"
-                     alt="Pagsanjan Falls">
-                <div class="card-overlay"></div>
-                
-                <!-- Top Badges -->
-                <div class="card-badges">
-                    <div class="badge-glass category-nature">
-                        <i class="ph ph-tree"></i>
-                        <span>Nature</span>
-                    </div>
-                    <div class="badge-glass rating">
-                        <i class="ph-fill ph-star"></i>
-                        <span>4.8</span>
-                    </div>
-                </div>
-                
-                <!-- Bottom Content -->
-                <div class="card-content">
-                    <div class="card-location">
-                        <i class="ph ph-map-pin"></i>
-                        <span>Pagsanjan</span>
-                    </div>
-                    <h3 class="card-title">Pagsanjan Falls</h3>
-                    <p class="card-description">One of the most famous waterfalls in the Philippines, accessible via a thrilling canoe ride.</p>
-                    <button class="card-cta">
-                        <span>Explore Destination</span>
-                        <i class="ph ph-arrow-right"></i>
-                    </button>
-                </div>
+            {% endfor %}
+        {% else %}
+            <!-- Fallback if no spots are found in DB -->
+            <div class="col-12 text-center py-5 w-100">
+                <i class="ph ph-magnifying-glass text-muted" style="font-size: 4rem;"></i>
+                <h3 class="text-muted mt-3">No tourist spots available yet.</h3>
+                <p class="text-muted">Use the admin uploader to add destinations.</p>
             </div>
-        </div>
-
-        <!-- Spot 3: Pilgrimage -->
-        <div class="destination-card spot-item" data-category="pilgrimage">
-            <div class="card-background">
-                <img src="https://images.unsplash.com/photo-1548625361-ec8464673327?auto=format&fit=crop&w=600&q=80"
-                     alt="St. John the Baptist Parish">
-                <div class="card-overlay"></div>
-                
-                <!-- Top Badges -->
-                <div class="card-badges">
-                    <div class="badge-glass category-pilgrimage">
-                        <i class="ph ph-hands-praying"></i>
-                        <span>Pilgrimage</span>
-                    </div>
-                    <div class="badge-glass rating">
-                        <i class="ph-fill ph-star"></i>
-                        <span>4.6</span>
-                    </div>
-                </div>
-                
-                <!-- Bottom Content -->
-                <div class="card-content">
-                    <div class="card-location">
-                        <i class="ph ph-map-pin"></i>
-                        <span>Calamba City</span>
-                    </div>
-                    <h3 class="card-title">St. John the Baptist Parish</h3>
-                    <p class="card-description">A beautiful historical church where the Philippine national hero Jose Rizal was baptized.</p>
-                    <button class="card-cta">
-                        <span>Explore Destination</span>
-                        <i class="ph ph-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Spot 4: Nature -->
-        <div class="destination-card spot-item" data-category="nature">
-            <div class="card-background">
-                <img src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=600&q=80"
-                     alt="Mt. Makiling">
-                <div class="card-overlay"></div>
-                
-                <!-- Top Badges -->
-                <div class="card-badges">
-                    <div class="badge-glass category-nature">
-                        <i class="ph ph-tree"></i>
-                        <span>Nature</span>
-                    </div>
-                    <div class="badge-glass rating">
-                        <i class="ph-fill ph-star"></i>
-                        <span>4.7</span>
-                    </div>
-                </div>
-                
-                <!-- Bottom Content -->
-                <div class="card-content">
-                    <div class="card-location">
-                        <i class="ph ph-map-pin"></i>
-                        <span>Los Baños</span>
-                    </div>
-                    <h3 class="card-title">Mt. Makiling Forest Reserve</h3>
-                    <p class="card-description">A dormant volcano famous for its rich biodiversity, hiking trails, and legendary folklore.</p>
-                    <button class="card-cta">
-                        <span>Explore Destination</span>
-                        <i class="ph ph-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Spot 5: Heritage -->
-        <div class="destination-card spot-item" data-category="heritage">
-            <div class="card-background">
-                <img src="https://images.unsplash.com/photo-1505305976870-c0be1cd39939?auto=format&fit=crop&w=600&q=80"
-                     alt="Rizal Shrine">
-                <div class="card-overlay"></div>
-                
-                <!-- Top Badges -->
-                <div class="card-badges">
-                    <div class="badge-glass category-heritage">
-                        <i class="ph ph-bank"></i>
-                        <span>Heritage</span>
-                    </div>
-                    <div class="badge-glass rating">
-                        <i class="ph-fill ph-star"></i>
-                        <span>4.9</span>
-                    </div>
-                </div>
-                
-                <!-- Bottom Content -->
-                <div class="card-content">
-                    <div class="card-location">
-                        <i class="ph ph-map-pin"></i>
-                        <span>Calamba City</span>
-                    </div>
-                    <h3 class="card-title">Rizal Shrine</h3>
-                    <p class="card-description">A reproduction of the original two-story, Spanish-colonial style house where Dr. Jose Rizal was born.</p>
-                    <button class="card-cta">
-                        <span>Explore Destination</span>
-                        <i class="ph ph-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Spot 6: Resort -->
-        <div class="destination-card spot-item" data-category="resort">
-            <div class="card-background">
-                <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80"
-                     alt="Hidden Valley Springs">
-                <div class="card-overlay"></div>
-                
-                <!-- Top Badges -->
-                <div class="card-badges">
-                    <div class="badge-glass category-resort">
-                        <i class="ph ph-swimming-pool"></i>
-                        <span>Resort</span>
-                    </div>
-                    <div class="badge-glass rating">
-                        <i class="ph-fill ph-star"></i>
-                        <span>4.4</span>
-                    </div>
-                </div>
-                
-                <!-- Bottom Content -->
-                <div class="card-content">
-                    <div class="card-location">
-                        <i class="ph ph-map-pin"></i>
-                        <span>Calauan</span>
-                    </div>
-                    <h3 class="card-title">Hidden Valley Springs</h3>
-                    <p class="card-description">A secluded tropical rainforest resort featuring natural thermal pools enclosed by majestic trees.</p>
-                    <button class="card-cta">
-                        <span>Explore Destination</span>
-                        <i class="ph ph-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
+        {% endif %}
 
     </div>
 </div>
@@ -271,7 +119,6 @@
     });
 
     function initializeAnimations() {
-        // Add sophisticated staggered load animation to cards
         const cards = document.querySelectorAll('.destination-card');
         cards.forEach((card, index) => {
             card.style.opacity = '0';
@@ -282,7 +129,6 @@
                 card.style.opacity = '1';
                 card.style.transform = 'translateY(0) scale(1)';
                 
-                // Add subtle entrance animation for badges
                 const badges = card.querySelectorAll('.badge-glass');
                 badges.forEach((badge, badgeIndex) => {
                     badge.style.opacity = '0';
@@ -303,19 +149,15 @@
 
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                // Remove active class from all buttons
                 filterBtns.forEach(b => b.classList.remove('active'));
-                // Add active class to clicked
                 btn.classList.add('active');
 
                 const filterValue = btn.getAttribute('data-filter');
                 
-                // Filter cards with animation
                 destinationCards.forEach((card, index) => {
                     const category = card.getAttribute('data-category');
                     
-                    if (filterValue === 'all' || category === filterValue) {
-                        // Show card with animation
+                    if (filterValue === 'all' || category.includes(filterValue)) {
                         setTimeout(() => {
                             card.style.display = 'block';
                             card.style.opacity = '0';
@@ -328,7 +170,6 @@
                             });
                         }, index * 50);
                     } else {
-                        // Hide card with animation
                         card.style.transition = 'all 0.3s ease';
                         card.style.opacity = '0';
                         card.style.transform = 'scale(0.9) translateY(-20px)';
@@ -348,47 +189,28 @@
 
         // Card hover effects
         cards.forEach(card => {
-            const background = card.querySelector('.card-background');
             const image = card.querySelector('.card-background img');
             const overlay = card.querySelector('.card-overlay');
             
             card.addEventListener('mouseenter', () => {
-                // Lift and scale the entire card
                 card.style.transform = 'translateY(-8px) scale(1.02)';
                 card.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3)';
-                
-                // Zoom image
-                if (image) {
-                    image.style.transform = 'scale(1.1)';
-                }
-                
-                // Darken overlay for better readability
-                if (overlay) {
-                    overlay.style.opacity = '0.4';
-                }
+                if (image) image.style.transform = 'scale(1.1)';
+                if (overlay) overlay.style.opacity = '0.4';
             });
             
             card.addEventListener('mouseleave', () => {
-                // Reset card transform
                 card.style.transform = 'translateY(0) scale(1)';
                 card.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.1)';
-                
-                // Reset image
-                if (image) {
-                    image.style.transform = 'scale(1)';
-                }
-                
-                // Reset overlay
-                if (overlay) {
-                    overlay.style.opacity = '0.3';
-                }
+                if (image) image.style.transform = 'scale(1)';
+                if (overlay) overlay.style.opacity = '0.3';
             });
         });
 
-        // CTA button interactions
+        // CTA button interactions tailored for actual link navigation
         ctas.forEach(cta => {
             cta.addEventListener('click', (e) => {
-                e.preventDefault();
+                e.preventDefault(); // Prevent instant jump
                 e.stopPropagation();
                 
                 // Add ripple effect
@@ -396,15 +218,11 @@
                 ripple.classList.add('cta-ripple');
                 cta.appendChild(ripple);
                 
-                // Remove ripple after animation
+                // Navigate to destination URL after animation completes
                 setTimeout(() => {
                     ripple.remove();
-                }, 600);
-                
-                // Navigate to destination (you can customize this)
-                const card = cta.closest('.destination-card');
-                const destinationName = card.querySelector('.card-title').textContent;
-                console.log(`Navigating to ${destinationName}...`);
+                    window.location.href = cta.getAttribute('href');
+                }, 400); 
             });
         });
     }

@@ -1,0 +1,395 @@
+{% extends "dashboard-base.html" %}
+
+{% block title %}LGU Spots Review - {{ municipality.name }}{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <!-- Page Header -->
+  <div class="page-header-section mb-5">
+    <div class="header-content card mockup-card px-4 py-5 border-0 rounded-4 shadow-sm"
+      style="background: linear-gradient(145deg, #1e1e24 0%, #121215 100%);">
+      <div class="page-info text-center mb-4">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-center mb-2">
+            <li class="breadcrumb-item"><a href="/dashboard/lgu-management"
+                class="text-decoration-none text-danger fw-medium">LGU Management</a></li>
+            <li class="breadcrumb-item active" aria-current="page" style="color: #94a3b8;">{{ municipality.name }}</li>
+          </ol>
+        </nav>
+        <h2 class="page-title fw-bold text-danger m-0">Review Tourist Spots</h2>
+      </div>
+
+      <!-- Enhanced Search & Sort Bar -->
+      <div class="search-sort-container mx-auto mb-4" style="max-width: 750px; width: 100%;">
+        <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
+
+          <!-- Search Input -->
+          <div class="position-relative flex-grow-1">
+            <i class="bx bx-search position-absolute top-50 start-0 translate-middle-y ms-4 fs-4"
+              style="color: #94a3b8; z-index: 5;"></i>
+            <input type="text" id="spotSearch"
+              class="form-control form-control-lg bg-dark text-white shadow-sm search-input"
+              placeholder="Search spots by name or category..." onkeyup="filterAndSortSpots()">
+          </div>
+
+          <!-- Sort Dropdown -->
+          <div class="sort-container" style="min-width: 200px;">
+            <select id="spotSort" class="form-select form-select-lg bg-dark text-white shadow-sm sort-select"
+              onchange="filterAndSortSpots()">
+              <option value="pending-first">Sort: Pending First</option>
+              <option value="name-asc">Sort: Name (A-Z)</option>
+              <option value="name-desc">Sort: Name (Z-A)</option>
+            </select>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions text-center mt-2">
+        <a href="/dashboard/lgu-management"
+          class="btn btn-outline-secondary rounded-pill d-inline-flex align-items-center gap-2 px-4 py-2 hover-white"
+          style="color: #94a3b8; border-color: rgba(255, 255, 255, 0.2);">
+          <i class="bx bx-arrow-back fs-5"></i> Back to LGUs
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid px-4 pb-5">
+    <div class="row g-4" id="spotGrid">
+      {% if spots %}
+      {% for spot in spots %}
+      <div class="col-12 col-xl-6 spot-card-container">
+        <div class="card border-0 mockup-card custom-card-hover rounded-4 h-100 overflow-hidden">
+          <div class="row g-0 h-100">
+
+            <!-- Image Column -->
+            <div class="col-md-5 col-lg-4 position-relative image-wrapper">
+              <img src="{{ spot.main_image_url | default('https://placehold.co/400x300?text=No+Image') }}"
+                class="img-fluid h-100 w-100 object-fit-cover" alt="{{ spot.name }}">
+
+              <!-- Status Badge -->
+              <div class="position-absolute top-0 start-0 m-3 z-index-2">
+                {% if spot.status == 'approved' %}
+                <span class="badge bg-success shadow-sm rounded-pill px-3 py-2 spot-badge" data-status-weight="3"><i
+                    class="bx bx-check-circle me-1"></i> Approved</span>
+                {% elif spot.status == 'rejected' %}
+                <span class="badge bg-danger shadow-sm rounded-pill px-3 py-2 spot-badge" data-status-weight="2"><i
+                    class="bx bx-x-circle me-1"></i> Rejected</span>
+                {% else %}
+                <span class="badge bg-warning text-dark shadow-sm rounded-pill px-3 py-2 spot-badge"
+                  data-status-weight="1"><i class="bx bx-time-five me-1"></i> Pending</span>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Content Column -->
+            <div class="col-md-7 col-lg-8">
+              <div class="card-body d-flex flex-column h-100 p-4">
+
+                <div class="d-flex justify-content-between align-items-start mb-2 gap-2">
+                  <h4 class="card-title fw-bold mb-0 spot-name text-white lh-sm" style="letter-spacing: 0.5px;">{{
+                    spot.name }}</h4>
+                  <span
+                    class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill spot-category px-3 py-2 flex-shrink-0">{{
+                    spot.category | default('General') }}</span>
+                </div>
+
+                <p class="card-text small mb-3 fw-medium d-flex align-items-center gap-1" style="color: #94a3b8;">
+                  <i class="bx bx-map text-danger fs-5"></i> {{ spot.address | default('Address not provided') }}
+                </p>
+
+                <p class="card-text mb-4 description-clamp"
+                  style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.5;">
+                  {{ spot.description | default('No description available.') }}
+                </p>
+
+                <!-- Action Buttons -->
+                <div class="mt-auto pt-4 border-top d-flex flex-wrap gap-2 justify-content-end"
+                  style="border-color: rgba(255, 255, 255, 0.05) !important;">
+                  <a href="/destination/{{ spot.id }}" target="_blank"
+                    class="btn btn-sm btn-outline-info rounded-pill px-3 py-2 d-flex align-items-center gap-1 fw-medium transition-all">
+                    <i class="bx bx-link-external fs-5"></i> View Full Page
+                  </a>
+
+                  {% if spot.status != 'approved' %}
+                  <button
+                    class="btn btn-sm btn-success rounded-pill px-3 py-2 d-flex align-items-center gap-1 fw-medium transition-all"
+                    onclick="updateSpotStatus('{{ spot.id }}', 'approved')">
+                    <i class="bx bx-check fs-5"></i> Approve
+                  </button>
+                  {% endif %}
+
+                  {% if spot.status != 'rejected' %}
+                  <button
+                    class="btn btn-sm btn-danger rounded-pill px-3 py-2 d-flex align-items-center gap-1 fw-medium transition-all"
+                    onclick="updateSpotStatus('{{ spot.id }}', 'rejected')">
+                    <i class="bx bx-x fs-5"></i> Reject
+                  </button>
+                  {% endif %}
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      {% else %}
+      <!-- Empty State -->
+      <div class="col-12 text-center py-5 mt-4">
+        <div class="card border-0 mockup-card rounded-4 p-5 mx-auto" style="max-width: 600px;">
+          <i class="bx bx-map-alt mb-3 text-muted" style="font-size: 4rem;"></i>
+          <h4 class="text-white fw-bold">No Tourist Spots Found</h4>
+          <p style="color: #94a3b8;">This municipality has not submitted any tourist spots yet.</p>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- No Search Results State (Hidden by default) -->
+      <div id="noResultsMsg" class="col-12 text-center py-5 mt-4" style="display: none;">
+        <i class="bx bx-search-alt mb-3 text-muted" style="font-size: 4rem;"></i>
+        <h4 class="text-white fw-bold">No matching spots</h4>
+        <p style="color: #94a3b8;">Try adjusting your search term.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Background for card */
+  .mockup-card {
+    background-color: #1a1d24;
+  }
+
+  /* Image Wrapper Settings */
+  .image-wrapper {
+    min-height: 250px;
+  }
+
+  .object-fit-cover {
+    object-fit: cover;
+  }
+
+  /* Search & Sort Input Styling */
+  .search-input,
+  .sort-select {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50px;
+    transition: all 0.3s ease;
+  }
+
+  .search-input {
+    padding: 0.85rem 1.5rem 0.85rem 3.5rem;
+  }
+
+  .sort-select {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50px;
+    padding: 0.85rem 2.5rem 0.85rem 1.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    color: #e2e8f0;
+    /* Override Bootstrap's default arrow with a single light-colored one */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e2e8f0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 1rem center !important;
+    background-size: 16px 12px !important;
+  }
+
+  .search-input::placeholder {
+    color: #94a3b8;
+    opacity: 0.8;
+  }
+
+  .search-input:focus,
+  .sort-select:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+    background-color: #212529 !important;
+    color: #ffffff !important;
+  }
+
+  .sort-select option {
+    background-color: #1a1d24;
+    color: #ffffff;
+  }
+
+  /* Base Card Transition */
+  .custom-card-hover {
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  .custom-card-hover:hover {
+    transform: translateY(-5px);
+    border-color: rgba(220, 53, 69, 0.3) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  /* Clamp Description lines */
+  .description-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Buttons and Links */
+  .hover-white:hover {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .transition-all {
+    transition: all 0.2s ease;
+  }
+
+  .transition-all:hover {
+    transform: scale(1.03);
+  }
+
+  .z-index-2 {
+    z-index: 2;
+  }
+</style>
+
+{% endblock %}
+
+{% block script %}
+<script>
+  // Runs on load to ensure initial state matches default sort
+  document.addEventListener("DOMContentLoaded", () => {
+    filterAndSortSpots();
+  });
+
+  function filterAndSortSpots() {
+    const searchInput = document.getElementById('spotSearch').value.toLowerCase();
+    const sortValue = document.getElementById('spotSort').value;
+
+    const grid = document.getElementById('spotGrid');
+    const noResultsMsg = document.getElementById('noResultsMsg');
+
+    if (!grid) return; // safeguard if grid empty
+
+    // Get all card containers
+    let cards = Array.from(document.getElementsByClassName('spot-card-container'));
+
+    // 1. Sort the cards array
+    cards.sort((a, b) => {
+      const nameA = a.querySelector('.spot-name').textContent.trim();
+      const nameB = b.querySelector('.spot-name').textContent.trim();
+
+      if (sortValue === 'name-asc') {
+        return nameA.localeCompare(nameB);
+      } else if (sortValue === 'name-desc') {
+        return nameB.localeCompare(nameA);
+      } else if (sortValue === 'pending-first') {
+        // weights: 1 = Pending, 2 = Rejected, 3 = Approved
+        const weightA = parseInt(a.querySelector('.spot-badge').getAttribute('data-status-weight')) || 3;
+        const weightB = parseInt(b.querySelector('.spot-badge').getAttribute('data-status-weight')) || 3;
+
+        if (weightA !== weightB) {
+          return weightA - weightB; // Ascending order (1 comes before 3)
+        }
+        // Fallback to alphabetical if status is the same
+        return nameA.localeCompare(nameB);
+      }
+      return 0;
+    });
+
+    // 2. Filter and re-append to DOM
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      grid.appendChild(card); // Re-appending moves the element
+
+      const nameNode = card.querySelector('.spot-name');
+      const categoryNode = card.querySelector('.spot-category');
+
+      const name = nameNode ? nameNode.textContent.toLowerCase() : '';
+      const category = categoryNode ? categoryNode.textContent.toLowerCase() : '';
+
+      if (name.includes(searchInput) || category.includes(searchInput)) {
+        card.style.display = "";
+        visibleCount++;
+      } else {
+        card.style.display = "none";
+      }
+    });
+
+    // Handle "No Results" display state
+    if (noResultsMsg) {
+      grid.appendChild(noResultsMsg);
+      if (visibleCount === 0 && cards.length > 0) {
+        noResultsMsg.style.display = "block";
+      } else {
+        noResultsMsg.style.display = "none";
+      }
+    }
+  }
+
+  async function updateSpotStatus(spotId, status) {
+    const actionPhrase = status === 'approved' ? 'Approve' : 'Reject';
+    const actionColor = status === 'approved' ? '#198754' : '#dc3545';
+
+    const confirmChoice = await Swal.fire({
+      title: `Are you sure?`,
+      text: `You want to ${actionPhrase.toLowerCase()} this tourist spot?`,
+      icon: 'warning',
+      background: '#1a1d24',
+      color: '#ffffff',
+      showCancelButton: true,
+      confirmButtonColor: actionColor,
+      cancelButtonColor: '#475569',
+      confirmButtonText: `Yes, ${actionPhrase} it!`
+    });
+
+    if (confirmChoice.isConfirmed) {
+      try {
+        const res = await fetch(`/api/spots/${spotId}/status`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ status: status })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          await Swal.fire({
+            title: `${actionPhrase}d!`,
+            text: data.message,
+            icon: 'success',
+            background: '#1a1d24',
+            color: '#ffffff',
+            confirmButtonColor: '#dc3545'
+          });
+          window.location.reload();
+        } else {
+          Swal.fire({
+            title: 'Error!',
+            text: data.message || 'Something went wrong.',
+            icon: 'error',
+            background: '#1a1d24',
+            color: '#ffffff'
+          });
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire({
+          title: 'Error!',
+          text: 'Network connectivity issue.',
+          icon: 'error',
+          background: '#1a1d24',
+          color: '#ffffff'
+        });
+      }
+    }
+  }
+</script>
+{% endblock %}

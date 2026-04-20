@@ -1,0 +1,301 @@
+{% extends "dashboard-base.html" %}
+
+{% block title %}LGU Management{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+  <!-- Page Header -->
+  <div class="page-header-section mb-5">
+    <div class="header-content d-block text-center">
+      <div class="page-info text-center mb-4">
+        <h2 class="page-title fw-bold text-danger mb-2">LGU Management</h2>
+        <p class="page-description fs-5" style="color: #e2e8f0;">Select a municipality to review and manage their
+          submitted tourist spots.</p>
+      </div>
+
+      <!-- Enhanced Search & Sort Bar -->
+      <div class="search-sort-container mx-auto" style="max-width: 750px; width: 100%;">
+        <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
+
+          <!-- Search Input -->
+          <div class="position-relative flex-grow-1">
+            <i class="bx bx-search position-absolute top-50 start-0 translate-middle-y ms-4 fs-4"
+              style="color: #94a3b8; z-index: 5;"></i>
+            <input type="text" id="lguSearch"
+              class="form-control form-control-lg bg-dark text-white shadow-sm search-input"
+              placeholder="Search by municipality name..." onkeyup="filterAndSortLGUs()">
+          </div>
+
+          <!-- Sort Dropdown -->
+          <div class="sort-container" style="min-width: 200px;">
+            <select id="lguSort" class="form-select form-select-lg bg-dark text-white shadow-sm sort-select"
+              onchange="filterAndSortLGUs()">
+              <option value="name-asc">Sort: Name (A-Z)</option>
+              <option value="name-desc">Sort: Name (Z-A)</option>
+              <option value="pending-desc">Pending First</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area (Table Layout) -->
+  <div class="container-fluid px-4 pb-5">
+    <div class="card mockup-card border-0 rounded-4 overflow-hidden shadow-lg">
+      <div class="table-responsive">
+        <table class="table table-borderless align-middle custom-dark-table mb-0" data-no-dt>
+          <thead style="background-color: #121418;">
+            <tr>
+              <th class="ps-4 py-3 text-uppercase fw-semibold"
+                style="color: #94a3b8; font-size: 0.85rem; letter-spacing: 1px;">Municipality</th>
+              <th class="py-3 text-uppercase fw-semibold"
+                style="color: #94a3b8; font-size: 0.85rem; letter-spacing: 1px;">Zip Code</th>
+              <th class="py-3 text-uppercase fw-semibold"
+                style="color: #94a3b8; font-size: 0.85rem; letter-spacing: 1px;">Status</th>
+              <th class="pe-4 py-3 text-uppercase fw-semibold text-end"
+                style="color: #94a3b8; font-size: 0.85rem; letter-spacing: 1px;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="lguTableBody">
+            {% if municipalities %}
+            {% for m in municipalities %}
+            <tr class="lgu-row" data-name="{{ m.name | lower }}" data-pending="{{ m.pending_count | default(0) }}">
+
+              <!-- Municipality Name & Icon -->
+              <td class="ps-4 py-3">
+                <div class="d-flex align-items-center gap-3">
+                  <div
+                    class="icon-wrapper-sm rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
+                    <i class="bx bx-building-house"></i>
+                  </div>
+                  <div>
+                    <h6 class="mb-0 fw-bold text-white lgu-name" style="letter-spacing: 0.5px;">{{ m.name }}</h6>
+                  </div>
+                </div>
+              </td>
+
+              <!-- Code -->
+              <td class="py-3">
+                <span class="text-secondary fw-medium" style="letter-spacing: 0.5px;">{{ m.zip_code | default('---')
+                  }}</span>
+              </td>
+
+              <!-- Status / Pending Badge -->
+              <td class="py-3">
+                {% if m.pending_count and m.pending_count > 0 %}
+                <span
+                  class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-2 d-inline-flex align-items-center gap-1">
+                  <i class="bx bx-time-five fs-6"></i> {{ m.pending_count }} Pending
+                </span>
+                {% else %}
+                <span
+                  class="badge bg-dark border border-secondary text-secondary rounded-pill px-3 py-2 d-inline-flex align-items-center gap-1">
+                  <i class="bx bx-check-double fs-6"></i> All Reviewed
+                </span>
+                {% endif %}
+              </td>
+
+              <!-- Action Button -->
+              <td class="pe-4 py-3 text-end">
+                <a href="/dashboard/lgu-management/{{ m.id }}"
+                  class="btn btn-outline-danger btn-sm rounded-pill px-4 py-2 fw-semibold action-btn transition-all d-inline-flex align-items-center gap-2">
+                  Review <i class="bx bx-right-arrow-alt fs-5"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <!-- Empty State Row -->
+            <tr>
+              <td colspan="4" class="text-center py-5">
+                <div class="empty-state-icon mx-auto mb-3 text-muted" style="font-size: 3rem;">
+                  <i class="bx bx-map-alt"></i>
+                </div>
+                <h5 class="text-white fw-bold">No municipalities found</h5>
+                <p class="text-secondary mb-0">Check back later for new LGU submissions.</p>
+              </td>
+            </tr>
+            {% endif %}
+
+            <!-- No Search Results State (Hidden by default) -->
+            <tr id="noResultsMsg" style="display: none;">
+              <td colspan="4" class="text-center py-5">
+                <div class="empty-state-icon mx-auto mb-3 text-muted" style="font-size: 3rem;">
+                  <i class="bx bx-search-alt"></i>
+                </div>
+                <h5 class="text-white fw-bold">No matching LGUs</h5>
+                <p style="color: #94a3b8;" class="mb-0">Try adjusting your search term.</p>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Background for card/table container */
+  .mockup-card {
+    background-color: #1a1d24;
+  }
+
+  /* Custom Table Styling */
+  .custom-dark-table {
+    background-color: transparent;
+  }
+
+  .custom-dark-table tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background-color 0.2s ease;
+  }
+
+  .custom-dark-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .custom-dark-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+    /* Subtle hover highlight for rows */
+  }
+
+  /* Small Icon Wrapper for Table */
+  .icon-wrapper-sm {
+    width: 42px;
+    height: 42px;
+    font-size: 1.25rem;
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+  }
+
+  /* Search Input Styling */
+  .search-input {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50px;
+    padding: 0.85rem 1.5rem 0.85rem 3.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .search-input::placeholder {
+    color: #94a3b8;
+    opacity: 0.8;
+  }
+
+  .search-input:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+    background-color: #212529 !important;
+    color: #ffffff !important;
+  }
+
+  /* Sort Select Styling */
+  .sort-select {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50px;
+    padding: 0.85rem 2.5rem 0.85rem 1.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    color: #e2e8f0;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e2e8f0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 1rem center !important;
+    background-size: 16px 12px !important;
+  }
+
+  .sort-select:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+    background-color: #212529 !important;
+  }
+
+  .sort-select option {
+    background-color: #1a1d24;
+    color: #ffffff;
+  }
+
+  /* Buttons */
+  .action-btn {
+    border-width: 1px;
+  }
+
+  .action-btn:hover {
+    background-color: #dc3545;
+    color: #ffffff !important;
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+  }
+
+  .transition-all {
+    transition: all 0.3s ease;
+  }
+</style>
+
+<script>
+  // Runs on load to ensure initial state matches default sort (A-Z)
+  document.addEventListener("DOMContentLoaded", () => {
+    filterAndSortLGUs();
+  });
+
+  function filterAndSortLGUs() {
+    const searchInput = document.getElementById('lguSearch').value.toLowerCase();
+    const sortValue = document.getElementById('lguSort').value;
+
+    const tbody = document.getElementById('lguTableBody');
+    const noResultsMsg = document.getElementById('noResultsMsg');
+
+    if (!tbody) return;
+
+    // Get all rows
+    let rows = Array.from(document.getElementsByClassName('lgu-row'));
+
+    // 1. Sort the rows array using data attributes (much faster/cleaner than parsing innerText)
+    rows.sort((a, b) => {
+      const nameA = a.getAttribute('data-name');
+      const nameB = b.getAttribute('data-name');
+
+      if (sortValue === 'name-asc') {
+        return nameA.localeCompare(nameB);
+      } else if (sortValue === 'name-desc') {
+        return nameB.localeCompare(nameA);
+      } else if (sortValue === 'pending-desc') {
+        const pendingA = parseInt(a.getAttribute('data-pending'), 10) || 0;
+        const pendingB = parseInt(b.getAttribute('data-pending'), 10) || 0;
+
+        if (pendingB !== pendingA) {
+          return pendingB - pendingA; // Highest pending numbers first
+        }
+        return nameA.localeCompare(nameB); // Fallback to A-Z
+      }
+      return 0;
+    });
+
+    // 2. Filter and re-append to DOM
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+      // Re-appending naturally moves the row into its sorted position
+      tbody.appendChild(row);
+
+      const name = row.getAttribute('data-name');
+      if (name.includes(searchInput)) {
+        row.style.display = ""; // Show row
+        visibleCount++;
+      } else {
+        row.style.display = "none"; // Hide row
+      }
+    });
+
+    // Ensure "No Results" message stays at the very bottom
+    if (noResultsMsg) {
+      tbody.appendChild(noResultsMsg);
+
+      if (visibleCount === 0 && rows.length > 0) {
+        noResultsMsg.style.display = "table-row";
+      } else {
+        noResultsMsg.style.display = "none";
+      }
+    }
+  }
+</script>
+{% endblock %}
