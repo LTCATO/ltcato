@@ -56,6 +56,16 @@ def register_routes(app):
     def decision_page():
         return decision()
     
+    @app.route('/dashboard/promoton')
+    def promoton_page():
+        from flask import render_template
+        return render_template('views/dashboard/promoton.html')
+    
+    @app.route('/dashboard/chatbot-config')
+    def chatbot_config_page():
+        from flask import render_template
+        return render_template('views/dashboard/chatbot-config.html')
+    
     @app.route('/dashboard/lgu')
     def lgu_page():
         return lgu_dashboard()

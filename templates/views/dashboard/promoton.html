@@ -1,0 +1,735 @@
+{% extends 'dashboard-base.html' %}
+
+{% block title %}Event Promotion Management{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center dashboard-header">
+      <div>
+        <h4 class="dashboard-title mb-1">Event Promotion Management</h4>
+        <span class="dashboard-subtitle">Create and manage promotional events for tourism</span>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-dashboard-action d-flex align-items-center gap-2 shadow-sm" onclick="openAddEventModal()">
+          <i class="bx bx-plus fs-5"></i> Create Event
+        </button>
+        <button class="btn btn-dashboard-action d-flex align-items-center gap-2 shadow-sm" onclick="exportEvents()">
+          <i class="bx bx-download fs-5"></i> Export
+        </button>
+        <button class="btn btn-dashboard-action btn-circle-sm d-flex align-items-center justify-content-center shadow-sm">
+          <i class="bx bx-filter fs-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="bx bx-calendar-event"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-number">24</div>
+            <p class="stat-label">Total Events</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card">
+          <div class="stat-icon active">
+            <i class="bx bx-play-circle"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-number">8</div>
+            <p class="stat-label">Active Events</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card">
+          <div class="stat-icon pending">
+            <i class="bx bx-time-five"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-number">5</div>
+            <p class="stat-label">Upcoming</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="bx bx-user-check"></i>
+          </div>
+          <div class="stat-info">
+            <div class="stat-number">1,247</div>
+            <p class="stat-label">Total Attendees</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Events Table -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card mockup-card">
+          <div class="card-header border-0">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="card-title mb-0 fw-bold">Events List</h5>
+              <div class="d-flex gap-3 align-items-center">
+                <div class="search-box">
+                  <i class="bx bx-search"></i>
+                  <input type="text" placeholder="Search events..." class="form-control" id="eventSearch">
+                </div>
+                <select class="filter-select" id="statusFilter">
+                  <option value="">All Status</option>
+                  <option value="active">Active</option>
+                  <option value="upcoming">Upcoming</option>
+                  <option value="completed">Completed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+                <select class="filter-select" id="typeFilter">
+                  <option value="">All Types</option>
+                  <option value="festival">Festival</option>
+                  <option value="concert">Concert</option>
+                  <option value="exhibition">Exhibition</option>
+                  <option value="sports">Sports</option>
+                  <option value="cultural">Cultural</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="card-body pt-0">
+            <div class="table-responsive dashboard-table">
+              <table class="table table-hover" id="eventsDataTable">
+                <thead>
+                  <tr>
+                    <th>Event</th>
+                    <th>Date & Time</th>
+                    <th>Location</th>
+                    <th>Type</th>
+                    <th>Attendees</th>
+                    <th>Status</th>
+                    <th>Created By</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="event-info">
+                        <div class="event-avatar">SF</div>
+                        <div class="event-details">
+                          <div class="event-name">Summer Festival 2024</div>
+                          <div class="event-description">Annual summer celebration</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="date-info">
+                        <div class="date-display">Apr 15, 2024</div>
+                        <div class="time-display">6:00 PM</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="location-info">
+                        <i class="bx bx-map-pin text-primary"></i>
+                        <span>City Plaza</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="event-type-badge festival">Festival</span>
+                    </td>
+                    <td>
+                      <div class="attendee-info">
+                        <strong>450</strong> / 500
+                        <div class="progress mt-1" style="height: 4px;">
+                          <div class="progress-bar bg-primary" style="width: 90%"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="event-status active">Active</span>
+                    </td>
+                    <td>
+                      <div class="creator-info">
+                        <div class="creator-avatar">JD</div>
+                        <div class="creator-details">
+                          <div class="creator-name">Juan Dela Cruz</div>
+                          <div class="creator-role">Event Manager</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="event-actions">
+                        <button class="btn btn-dashboard-action btn-sm" onclick="viewEventDetails(1)" title="View">
+                          <i class="bx bx-show"></i>
+                        </button>
+                        <button class="btn btn-dashboard-action btn-sm" onclick="editEvent(1)" title="Edit">
+                          <i class="bx bx-edit"></i>
+                        </button>
+                        <button class="btn btn-dashboard-action btn-sm" onclick="promoteEvent(1)" title="Promote">
+                          <i class="bx bx-share-alt"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="event-info">
+                        <div class="event-avatar">CC</div>
+                        <div class="event-details">
+                          <div class="event-name">Classical Concert</div>
+                          <div class="event-description">Orchestra performance</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="date-info">
+                        <div class="date-display">Apr 20, 2024</div>
+                        <div class="time-display">8:00 PM</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="location-info">
+                        <i class="bx bx-map-pin text-primary"></i>
+                        <span>Auditorium</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="event-type-badge concert">Concert</span>
+                    </td>
+                    <td>
+                      <div class="attendee-info">
+                        <strong>180</strong> / 200
+                        <div class="progress mt-1" style="height: 4px;">
+                          <div class="progress-bar bg-primary" style="width: 90%"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="event-status upcoming">Upcoming</span>
+                    </td>
+                    <td>
+                      <div class="creator-info">
+                        <div class="creator-avatar">MS</div>
+                        <div class="creator-details">
+                          <div class="creator-name">Maria Santos</div>
+                          <div class="creator-role">Cultural Director</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="event-actions">
+                        <button class="btn btn-dashboard-action btn-sm" onclick="viewEventDetails(2)" title="View">
+                          <i class="bx bx-show"></i>
+                        </button>
+                        <button class="btn btn-dashboard-action btn-sm" onclick="editEvent(2)" title="Edit">
+                          <i class="bx bx-edit"></i>
+                        </button>
+                        <button class="btn btn-dashboard-action btn-sm" onclick="promoteEvent(2)" title="Promote">
+                          <i class="bx bx-share-alt"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="event-info">
+                        <div class="event-avatar">AE</div>
+                        <div class="event-details">
+                          <div class="event-name">Art Exhibition</div>
+                          <div class="event-description">Local artists showcase</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="date-info">
+                        <div class="date-display">Mar 10, 2024</div>
+                        <div class="time-display">10:00 AM</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="location-info">
+                        <i class="bx bx-map-pin text-primary"></i>
+                        <span>Art Gallery</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="event-type-badge exhibition">Exhibition</span>
+                    </td>
+                    <td>
+                      <div class="attendee-info">
+                        <strong>320</strong> / 300
+                        <div class="progress mt-1" style="height: 4px;">
+                          <div class="progress-bar bg-success" style="width: 100%"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="event-status completed">Completed</span>
+                    </td>
+                    <td>
+                      <div class="creator-info">
+                        <div class="creator-avatar">RC</div>
+                        <div class="creator-details">
+                          <div class="creator-name">Roberto Cruz</div>
+                          <div class="creator-role">Gallery Curator</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="event-actions">
+                        <button class="btn btn-dashboard-action btn-sm" onclick="viewEventDetails(3)" title="View">
+                          <i class="bx bx-show"></i>
+                        </button>
+                        <button class="btn btn-dashboard-action btn-sm" onclick="editEvent(3)" title="Edit">
+                          <i class="bx bx-edit"></i>
+                        </button>
+                        <button class="btn btn-dashboard-action btn-sm" onclick="promoteEvent(3)" title="Promote">
+                          <i class="bx bx-share-alt"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="event-info">
+                        <div class="event-avatar">SM</div>
+                        <div class="event-details">
+                          <div class="event-name">Sports Marathon</div>
+                          <div class="event-description">Annual city marathon</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="date-info">
+                        <div class="date-display">May 5, 2024</div>
+                        <div class="time-display">5:00 AM</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="location-info">
+                        <i class="bx bx-map-pin text-primary"></i>
+                        <span>City Stadium</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="event-type-badge sports">Sports</span>
+                    </td>
+                    <td>
+                      <div class="attendee-info">
+                        <strong>150</strong> / 1000
+                        <div class="progress mt-1" style="height: 4px;">
+                          <div class="progress-bar bg-warning" style="width: 15%"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="event-status upcoming">Upcoming</span>
+                    </td>
+                    <td>
+                      <div class="creator-info">
+                        <div class="creator-avatar">AL</div>
+                        <div class="creator-details">
+                          <div class="creator-name">Anna Lopez</div>
+                          <div class="creator-role">Sports Coordinator</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="event-actions">
+                        <button class="btn btn-dashboard-action btn-sm" onclick="viewEventDetails(4)" title="View">
+                          <i class="bx bx-show"></i>
+                        </button>
+                        <button class="btn btn-dashboard-action btn-sm" onclick="editEvent(4)" title="Edit">
+                          <i class="bx bx-edit"></i>
+                        </button>
+                        <button class="btn btn-dashboard-action btn-sm" onclick="promoteEvent(4)" title="Promote">
+                          <i class="bx bx-share-alt"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+<!-- View Event Modal -->
+<div class="modal fade" id="viewEventModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Event Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="event-avatar mx-auto mb-3">SF</div>
+            <h4 class="text-center mb-1">Summer Festival 2024</h4>
+            <p class="text-center text-muted mb-3">Annual summer celebration</p>
+          </div>
+          <div class="col-md-4">
+            <span class="event-status active">Active</span>
+          </div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong><i class="bx bx-calendar text-primary"></i> Date:</strong> April 15, 2024</p>
+            <p><strong><i class="bx bx-time text-primary"></i> Time:</strong> 6:00 PM</p>
+            <p><strong><i class="bx bx-map-pin text-primary"></i> Location:</strong> City Plaza</p>
+          </div>
+          <div class="col-md-6">
+            <p><strong><i class="bx bx-category text-primary"></i> Type:</strong> <span class="event-type-badge festival">Festival</span></p>
+            <p><strong><i class="bx bx-user text-primary"></i> Created by:</strong> Juan Dela Cruz</p>
+            <p><strong><i class="bx bx-group text-primary"></i> Attendees:</strong> 450 / 500</p>
+          </div>
+        </div>
+        <hr>
+        <div class="mb-3">
+          <h6>Event Description</h6>
+          <p>Join us for the annual Summer Festival, a celebration of music, food, and culture. This family-friendly event features live performances, local vendors, and activities for all ages.</p>
+        </div>
+        <div class="mb-3">
+          <h6>Event Highlights</h6>
+          <ul>
+            <li>Live music performances</li>
+            <li>Local food vendors</li>
+            <li>Kids' entertainment zone</li>
+            <li>Fireworks display</li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dashboard-action" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-dashboard-action" onclick="editEvent(1)">Edit Event</button>
+        <button type="button" class="btn btn-dashboard-action" onclick="promoteEvent(1)">Promote Event</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Event Modal -->
+<div class="modal fade" id="addEventModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create New Event</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="eventForm">
+          <div class="row">
+            <div class="col-md-8">
+              <div class="mb-3">
+                <label class="form-label">Event Name *</label>
+                <input type="text" class="form-control" id="eventName" required>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label class="form-label">Event Type *</label>
+                <select class="form-control" id="eventType" required>
+                  <option value="">Select Type</option>
+                  <option value="festival">Festival</option>
+                  <option value="concert">Concert</option>
+                  <option value="exhibition">Exhibition</option>
+                  <option value="sports">Sports</option>
+                  <option value="cultural">Cultural</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Event Description</label>
+            <textarea class="form-control" rows="3" id="eventDescription" placeholder="Describe your event..."></textarea>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Event Date *</label>
+                <input type="date" class="form-control" id="eventDate" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Event Time *</label>
+                <input type="time" class="form-control" id="eventTime" required>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Location *</label>
+                <input type="text" class="form-control" id="eventLocation" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Max Attendees</label>
+                <input type="number" class="form-control" id="maxAttendees" min="1" placeholder="0 for unlimited">
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Event Image</label>
+            <div class="upload-area" id="imageUploadArea">
+              <div class="upload-content">
+                <i class="bx bx-cloud-upload upload-icon"></i>
+                <p>Click to upload or drag and drop</p>
+                <p class="text-muted small">PNG, JPG, GIF up to 10MB</p>
+              </div>
+              <input type="file" id="eventImage" accept="image/*" style="display: none;">
+            </div>
+            <div id="imagePreview" class="mt-2" style="display: none;">
+              <img src="" alt="Event preview" style="max-width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Event Highlights</label>
+            <textarea class="form-control" rows="2" id="eventHighlights" placeholder="List event highlights (one per line)..."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dashboard-action" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-dashboard-action" onclick="saveEvent()">Create Event</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Promote Event Modal -->
+<div class="modal fade" id="promoteEventModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Promote Event</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Select promotion channels for <strong id="promoteEventName">Summer Festival 2024</strong>:</p>
+        <div class="form-check mb-2">
+          <input class="form-check-input" type="checkbox" id="promoteWebsite" checked>
+          <label class="form-check-label" for="promoteWebsite">
+            <i class="bx bx-globe text-primary"></i> Website Banner
+          </label>
+        </div>
+        <div class="form-check mb-2">
+          <input class="form-check-input" type="checkbox" id="promoteSocial" checked>
+          <label class="form-check-label" for="promoteSocial">
+            <i class="bx bx-share-alt text-info"></i> Social Media
+          </label>
+        </div>
+        <div class="form-check mb-2">
+          <input class="form-check-input" type="checkbox" id="promoteEmail">
+          <label class="form-check-label" for="promoteEmail">
+            <i class="bx bx-envelope text-warning"></i> Email Newsletter
+          </label>
+        </div>
+        <div class="form-check mb-2">
+          <input class="form-check-input" type="checkbox" id="promoteSMS">
+          <label class="form-check-label" for="promoteSMS">
+            <i class="bx bx-mobile-alt text-success"></i> SMS Notification
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dashboard-action" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-dashboard-action" onclick="confirmPromotion()">Start Promotion</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Initialize DataTable
+    if ($('#eventsDataTable').length) {
+      $('#eventsDataTable').DataTable({
+        responsive: true,
+        order: [[1, 'asc']],
+        pageLength: 10,
+        language: {
+          search: "Search events:",
+          lengthMenu: "Show _MENU_ entries",
+          info: "Showing _START_ to _END_ of _TOTAL_ events",
+          paginate: {
+            first: "First",
+            last: "Last",
+            next: "Next",
+            previous: "Previous"
+          }
+        }
+      });
+    }
+
+    // Search functionality
+    $('#eventSearch').on('keyup', function() {
+      $('#eventsDataTable').DataTable().search($(this).val()).draw();
+    });
+
+    // Filter functionality
+    $('#statusFilter, #typeFilter').on('change', function() {
+      $('#eventsDataTable').DataTable().draw();
+    });
+
+    // Image upload functionality
+    const uploadArea = document.getElementById('imageUploadArea');
+    const fileInput = document.getElementById('eventImage');
+    const imagePreview = document.getElementById('imagePreview');
+
+    uploadArea.addEventListener('click', () => fileInput.click());
+
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+      handleFiles(e.dataTransfer.files);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      handleFiles(e.target.files);
+    });
+
+    function handleFiles(files) {
+      if (files.length > 0) {
+        const file = files[0];
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            imagePreview.querySelector('img').src = e.target.result;
+            imagePreview.style.display = 'block';
+            uploadArea.style.display = 'none';
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+    }
+  });
+
+  function openAddEventModal() {
+    $('#addEventModal').modal('show');
+  }
+
+  function viewEventDetails(id) {
+    $('#viewEventModal').modal('show');
+  }
+
+  function editEvent(id) {
+    $('#viewEventModal').modal('hide');
+    $('#addEventModal').modal('show');
+  }
+
+  function promoteEvent(id) {
+    $('#promoteEventModal').modal('show');
+  }
+
+  function saveEvent() {
+    const eventName = document.getElementById('eventName').value;
+    const eventType = document.getElementById('eventType').value;
+    const eventDate = document.getElementById('eventDate').value;
+    const eventTime = document.getElementById('eventTime').value;
+    const eventLocation = document.getElementById('eventLocation').value;
+
+    if (!eventName || !eventType || !eventDate || !eventTime || !eventLocation) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Please fill in all required fields.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: 'Success!',
+      text: 'Event has been created successfully.',
+      icon: 'success',
+      confirmButtonText: 'OK'
+    }).then(() => {
+      $('#addEventModal').modal('hide');
+      document.getElementById('eventForm').reset();
+      // Reset image upload
+      document.getElementById('imagePreview').style.display = 'none';
+      document.getElementById('imageUploadArea').style.display = 'block';
+    });
+  }
+
+  function confirmPromotion() {
+    const channels = [];
+    if (document.getElementById('promoteWebsite').checked) channels.push('Website');
+    if (document.getElementById('promoteSocial').checked) channels.push('Social Media');
+    if (document.getElementById('promoteEmail').checked) channels.push('Email');
+    if (document.getElementById('promoteSMS').checked) channels.push('SMS');
+
+    if (channels.length === 0) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Please select at least one promotion channel.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: 'Promotion Started!',
+      html: `<p>Your event is being promoted through:</p><ul>${channels.map(c => `<li>${c}</li>`).join('')}</ul>`,
+      icon: 'success',
+      confirmButtonText: 'OK'
+    }).then(() => {
+      $('#promoteEventModal').modal('hide');
+    });
+  }
+
+  function exportEvents() {
+    Swal.fire({
+      title: 'Export Events',
+      html: '<p>Select export format:</p>',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'Export as Excel',
+      cancelButtonText: 'Export as CSV',
+      showDenyButton: true,
+      denyButtonText: 'Export as PDF'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire('Exported!', 'Events data exported as Excel file.', 'success');
+      } else if (result.isDenied) {
+        Swal.fire('Exported!', 'Events data exported as PDF file.', 'success');
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire('Exported!', 'Events data exported as CSV file.', 'success');
+      }
+    });
+  }
+</script>
+{% endblock %}
