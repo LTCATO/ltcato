@@ -103,25 +103,18 @@
 
       <!-- SHARED MENU ITEMS -->
       {% if session.role_name == 'super_admin' %}
-      <!-- Feedback -->
-      <li class="menu-item">
-        <a href="#" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-message-square-detail"></i>
-          <div data-i18n="Feedback">Feedback</div>
-        </a>
-      </li>
 
       <!-- Promotion Mgmt -->
-      <li class="menu-item">
-        <a href="#" class="menu-link">
+      <li class="menu-item {% if 'promoton' in menu %}active{% endif %}">
+        <a href="/dashboard/promoton" class="menu-link">
           <i class="menu-icon tf-icons bx bx-trending-up"></i>
-          <div data-i18n="Promotion Mgmt">Promotion Mgmt</div>
+          <div data-i18n="Promotion Mgmt">Promotion</div>
         </a>
       </li>
 
       <!-- Chatbot Config -->
-      <li class="menu-item">
-        <a href="#" class="menu-link">
+      <li class="menu-item {% if 'chatbot-config' in menu %}active{% endif %}">
+        <a href="/dashboard/chatbot-config" class="menu-link">
           <i class="menu-icon tf-icons bx bx-bot"></i>
           <div data-i18n="Chatbot Config">Chatbot Config</div>
         </a>
