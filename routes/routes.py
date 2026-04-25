@@ -1,4 +1,4 @@
-from controller.HomeController import home, explore_map, destination_details, municipalities, municipality_details, tourist_spots, lara_ai, test_uploader
+from controller.HomeController import home, explore_map, destination_details, municipalities, municipality_details, tourist_spots, lara_ai, test_uploader, platform_features, security, lgu_support
 from controller.LoginController import login, register, logout
 from controller.DashboardController import dashboardIndex, accounts, create_account, update_account, delete_account, lgu_dashboard, tourist_spots as lgu_tourist_spots, lgu_add_spot, lgu_get_spot_data, lgu_edit_spot, lgu_delete_spot
 from controller.ArrivalsController import arrivals
@@ -37,6 +37,18 @@ def register_routes(app):
     @app.route('/test-uploader', methods=["GET", "POST"])
     def test_uploader_page():
         return test_uploader()
+
+    @app.route('/platform-features')
+    def platform_features_page():
+        return platform_features()
+
+    @app.route('/security')
+    def security_page():
+        return security()
+
+    @app.route('/lgu-support')
+    def lgu_support_page():
+        return lgu_support()
 
 # SUPERADMIN DASHBOARD ROUTES
     

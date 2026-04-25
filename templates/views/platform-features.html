@@ -1,0 +1,742 @@
+{% extends "base.html" %}
+
+{% block title %}Platform Features - LTCATO Tourism Management System{% endblock %}
+
+{% block content %}
+{% include 'include/admin-navbar.html' %}
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container text-center">
+    <div class="hero-content">
+      <span class="hero-badge"><i class="ph ph-cube me-1"></i> Complete Platform Solution</span>
+      <h1 class="hero-title">LTCATO Platform Features.</h1>
+      <p class="hero-subtitle">A comprehensive tourism management ecosystem designed for local government units, tourists, and service providers.</p>
+      
+      <div class="d-flex gap-3 flex-wrap mt-4 justify-content-center">
+        <div class="stat-badge">
+          <span class="stat-number">5+</span>
+          <span class="stat-label">Modules</span>
+        </div>
+        <div class="stat-badge">
+          <span class="stat-number">24/7</span>
+          <span class="stat-label">Support</span>
+        </div>
+        <div class="stat-badge">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">Cloud-Based</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Overview Section -->
+<section class="features-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-6 fw-bold">Everything you need for tourism management</h2>
+      <p class="text-muted fs-5">A complete ecosystem connecting all stakeholders in the tourism industry.</p>
+    </div>
+    
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-4 col-sm-6">
+        <div class="feature-box">
+          <div class="feature-icon-wrapper"><i class="ph ph-users-three"></i></div>
+          <h4 class="fw-bold">Multi-User System</h4>
+          <p class="text-muted small">Supports Super Admins, LGU Managers, Tourists, and Service Providers with role-based access.</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="feature-box">
+          <div class="feature-icon-wrapper"><i class="ph ph-cloud"></i></div>
+          <h4 class="fw-bold">Cloud-Based</h4>
+          <p class="text-muted small">Accessible anywhere with secure cloud infrastructure and automatic backups.</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="feature-box">
+          <div class="feature-icon-wrapper"><i class="ph ph-devices"></i></div>
+          <h4 class="fw-bold">Mobile Responsive</h4>
+          <p class="text-muted small">Optimized for all devices and screen sizes with seamless user experience.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Core Features Section -->
+<section class="showcase-section">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="ps-lg-5">
+          <span class="text-danger fw-bold tracking-wide text-uppercase small mb-2 d-block">Powerful Features</span>
+          <h2 class="display-5 fw-bold mb-4" style="color: var(--primary);">Comprehensive tools for every user.</h2>
+          <p class="fs-5 text-muted mb-4 lh-lg">
+            Our platform offers specialized tools designed for each user type in the tourism ecosystem.
+          </p>
+          <ul class="list-unstyled mb-5">
+            <li class="d-flex align-items-start mb-3">
+              <i class="ph-fill ph-check-circle text-success fs-4 me-3 mt-1"></i>
+              <div>
+                <strong class="d-block text-dark">Admin Dashboard</strong>
+                <span class="text-muted small">Complete system control with analytics, user management, and configuration tools.</span>
+              </div>
+            </li>
+            <li class="d-flex align-items-start mb-3">
+              <i class="ph-fill ph-check-circle text-success fs-4 me-3 mt-1"></i>
+              <div>
+                <strong class="d-block text-dark">LGU Management</strong>
+                <span class="text-muted small">Tools for destination management, events, and tourism statistics.</span>
+              </div>
+            </li>
+            <li class="d-flex align-items-start mb-3">
+              <i class="ph-fill ph-check-circle text-success fs-4 me-3 mt-1"></i>
+              <div>
+                <strong class="d-block text-dark">Tourist Portal</strong>
+                <span class="text-muted small">Complete visitor experience with trip planning and booking features.</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="position-relative">
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80" alt="Platform Features Dashboard" class="showcase-img">
+            
+            <div class="position-absolute bg-white p-3 rounded-4 shadow-lg border" style="bottom: -20px; right: -20px; width: 250px;">
+                <div class="d-flex align-items-center justify-content-between mb-2 pb-2 border-bottom">
+                    <span class="fw-bold text-dark small">Active Users</span>
+                    <i class="ph ph-trend-up text-success"></i>
+                </div>
+                <h3 class="fw-bold text-dark mb-1">12,458</h3>
+                <p class="small text-muted mb-0"><span class="text-success fw-bold">+23%</span> vs last month</p>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Core Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-badge">
+                <i class="fas fa-cogs me-2"></i>Core Features
+            </span>
+            <h2 class="hook-title">Powerful Features for Every User</h2>
+            <p class="hook-text">Our platform offers comprehensive tools for tourism management and visitor engagement</p>
+        </div>
+        
+        <div class="row">
+            <!-- Admin Dashboard Features -->
+            <div class="col-lg-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon bg-primary">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div>
+                            <h4>Admin Dashboard</h4>
+                            <p class="text-muted">Complete system control and oversight</p>
+                        </div>
+                    </div>
+                    <div class="feature-body">
+                        <ul class="feature-list">
+                            <li><i class="fas fa-chart-line"></i>Analytics and Reporting</li>
+                            <li><i class="fas fa-users-cog"></i>User Account Management</li>
+                            <li><i class="fas fa-map-marked-alt"></i>Destination Management</li>
+                            <li><i class="fas fa-cog"></i>System Configuration</li>
+                            <li><i class="fas fa-database"></i>Database Administration</li>
+                            <li><i class="fas fa-bell"></i>Notification Management</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- LGU Management Features -->
+            <div class="col-lg-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon bg-success">
+                            <i class="fas fa-city"></i>
+                        </div>
+                        <div>
+                            <h4>LGU Management</h4>
+                            <p class="text-muted">Tools for Local Government Units</p>
+                        </div>
+                    </div>
+                    <div class="feature-body">
+                        <ul class="feature-list">
+                            <li><i class="fas fa-map-pin"></i>Tourist Spot Registration</li>
+                            <li><i class="fas fa-calendar-alt"></i>Event Management</li>
+                            <li><i class="fas fa-comments"></i>Visitor Feedback System</li>
+                            <li><i class="fas fa-chart-bar"></i>Tourism Statistics</li>
+                            <li><i class="fas fa-file-alt"></i>Permit and Licensing</li>
+                            <li><i class="fas fa-handshake"></i>Partner Management</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tourist Portal Features -->
+            <div class="col-lg-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon bg-info">
+                            <i class="fas fa-user-friends"></i>
+                        </div>
+                        <div>
+                            <h4>Tourist Portal</h4>
+                            <p class="text-muted">Complete visitor experience platform</p>
+                        </div>
+                    </div>
+                    <div class="feature-body">
+                        <ul class="feature-list">
+                            <li><i class="fas fa-search"></i>Destination Discovery</li>
+                            <li><i class="fas fa-route"></i>Trip Planning Tools</li>
+                            <li><i class="fas fa-bookmark"></i>Personalized Itineraries</li>
+                            <li><i class="fas fa-star"></i>Rating and Reviews</li>
+                            <li><i class="fas fa-share-alt"></i>Social Sharing</li>
+                            <li><i class="fas fa-gift"></i>Promotional Offers</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Service Provider Features -->
+            <div class="col-lg-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <div class="feature-icon bg-warning">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <div>
+                            <h4>Service Provider Portal</h4>
+                            <p class="text-muted">Business management tools</p>
+                        </div>
+                    </div>
+                    <div class="feature-body">
+                        <ul class="feature-list">
+                            <li><i class="fas fa-building"></i>Business Registration</li>
+                            <li><i class="fas fa-bed"></i>Accommodation Management</li>
+                            <li><i class="fas fa-utensils"></i>Restaurant & Dining</li>
+                            <li><i class="fas fa-bus"></i>Transportation Services</li>
+                            <li><i class="fas fa-shopping-bag"></i>Retail and Souvenirs</li>
+                            <li><i class="fas fa-calendar-check"></i>Booking Management</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Advanced Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-badge">
+                <i class="fas fa-rocket me-2"></i>Advanced Features
+            </span>
+            <h2 class="hook-title">Cutting-Edge Technology</h2>
+            <p class="hook-text">Leveraging modern technology for enhanced tourism experiences</p>
+        </div>
+        
+        <div class="experience-grid">
+            <div class="experience-item">
+                <div class="experience-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h5>AI-Powered Recommendations</h5>
+                <p>Smart destination suggestions based on user preferences and behavior patterns</p>
+            </div>
+            
+            <div class="experience-item">
+                <div class="experience-icon">
+                    <i class="fas fa-map"></i>
+                </div>
+                <h5>Interactive Maps</h5>
+                <p>Real-time navigation with points of interest and route optimization</p>
+            </div>
+            
+            <div class="experience-item">
+                <div class="experience-icon">
+                    <i class="fas fa-language"></i>
+                </div>
+                <h5>Multi-Language Support</h5>
+                <p>Catering to international tourists with comprehensive language options</p>
+            </div>
+            
+            <div class="experience-item">
+                <div class="experience-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <h5>Secure Payments</h5>
+                <p>Integrated payment gateway for bookings and service purchases</p>
+            </div>
+            
+            <div class="experience-item">
+                <div class="experience-icon">
+                    <i class="fas fa-mobile"></i>
+                </div>
+                <h5>Mobile App Integration</h5>
+                <p>Native mobile applications for iOS and Android platforms</p>
+            </div>
+            
+            <div class="experience-item">
+                <div class="experience-icon">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <h5>Real-time Analytics</h5>
+                <p>Comprehensive insights and reporting for data-driven decisions</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-badge">
+                <i class="fas fa-trophy me-2"></i>Platform Benefits
+            </span>
+            <h2 class="hook-title">Why Choose LTCATO?</h2>
+            <p class="hook-text">Experience the advantages of our comprehensive tourism management platform</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="benefit-card">
+                    <div class="benefit-header">
+                        <i class="fas fa-check-circle text-success"></i>
+                        <h5>Increased Tourism Revenue</h5>
+                    </div>
+                    <p>Streamlined booking processes and enhanced visitor experiences lead to higher tourism spending and repeat visits.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="benefit-card">
+                    <div class="benefit-header">
+                        <i class="fas fa-check-circle text-success"></i>
+                        <h5>Improved Visitor Satisfaction</h5>
+                    </div>
+                    <p>Comprehensive information and easy access to services enhance the overall tourist experience.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="benefit-card">
+                    <div class="benefit-header">
+                        <i class="fas fa-check-circle text-success"></i>
+                        <h5>Data-Driven Decision Making</h5>
+                    </div>
+                    <p>Analytics and insights help LGUs make informed decisions about tourism development and marketing.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="benefit-card">
+                    <div class="benefit-header">
+                        <i class="fas fa-check-circle text-success"></i>
+                        <h5>Cost-Effective Management</h5>
+                    </div>
+                    <p>Centralized platform reduces administrative overhead and improves operational efficiency.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- User Roles Section -->
+<section class="features-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-6 fw-bold">Role-Based Access Control</h2>
+      <p class="text-muted fs-5">Secure and appropriate access for different user types</p>
+    </div>
+    
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-4 col-sm-6">
+        <div class="feature-box">
+          <div class="feature-icon-wrapper"><i class="ph ph-user-shield"></i></div>
+          <h4 class="fw-bold">Super Admin</h4>
+          <p class="text-muted small">Complete system control, user management, and configuration access.</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="feature-box">
+          <div class="feature-icon-wrapper"><i class="ph ph-user-tie"></i></div>
+          <h4 class="fw-bold">LGU Manager</h4>
+          <p class="text-muted small">Manage local destinations, events, and tourism data for their municipality.</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="feature-box">
+          <div class="feature-icon-wrapper"><i class="ph ph-user"></i></div>
+          <h4 class="fw-bold">Tourist</h4>
+          <p class="text-muted small">Explore destinations, plan trips, and book services.</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="feature-box">
+          <div class="feature-icon-wrapper"><i class="ph ph-user-cog"></i></div>
+          <h4 class="fw-bold">Service Provider</h4>
+          <p class="text-muted small">Register business, manage listings, and handle bookings.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Advanced Features Section -->
+<section class="showcase-section">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6 order-lg-2">
+        <div class="ps-lg-5">
+          <span class="text-danger fw-bold tracking-wide text-uppercase small mb-2 d-block">Cutting-Edge Technology</span>
+          <h2 class="display-5 fw-bold mb-4" style="color: var(--primary);">Advanced features for modern tourism.</h2>
+          <p class="fs-5 text-muted mb-4 lh-lg">
+            Leveraging modern technology to enhance tourism experiences and streamline operations.
+          </p>
+          <ul class="list-unstyled mb-5">
+            <li class="d-flex align-items-start mb-3">
+              <i class="ph-fill ph-check-circle text-success fs-4 me-3 mt-1"></i>
+              <div>
+                <strong class="d-block text-dark">AI-Powered Recommendations</strong>
+                <span class="text-muted small">Smart destination suggestions based on user preferences and behavior patterns.</span>
+              </div>
+            </li>
+            <li class="d-flex align-items-start mb-3">
+              <i class="ph-fill ph-check-circle text-success fs-4 me-3 mt-1"></i>
+              <div>
+                <strong class="d-block text-dark">Interactive Maps</strong>
+                <span class="text-muted small">Real-time navigation with points of interest and route optimization.</span>
+              </div>
+            </li>
+            <li class="d-flex align-items-start mb-3">
+              <i class="ph-fill ph-check-circle text-success fs-4 me-3 mt-1"></i>
+              <div>
+                <strong class="d-block text-dark">Multi-Language Support</strong>
+                <span class="text-muted small">Catering to international tourists with comprehensive language options.</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-6 order-lg-1">
+        <div class="position-relative">
+            <img src="https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?auto=format&fit=crop&w=800&q=80" alt="Advanced Technology Features" class="showcase-img">
+            
+            <div class="position-absolute bg-white p-3 rounded-4 shadow-lg border" style="bottom: -20px; right: -20px; width: 250px;">
+                <div class="d-flex align-items-center justify-content-between mb-2 pb-2 border-bottom">
+                    <span class="fw-bold text-dark small">AI Accuracy</span>
+                    <i class="ph ph-trend-up text-success"></i>
+                </div>
+                <h3 class="fw-bold text-dark mb-1">94.7%</h3>
+                <p class="small text-muted mb-0"><span class="text-success fw-bold">+5.2%</span> recommendation accuracy</p>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="features-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-6 fw-bold">Why Choose LTCATO?</h2>
+      <p class="text-muted fs-5">Experience the advantages of our comprehensive tourism management platform</p>
+    </div>
+    
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-4 col-sm-6">
+        <div class="feature-box">
+          <div class="feature-icon-wrapper"><i class="ph ph-money"></i></div>
+          <h4 class="fw-bold">Increased Revenue</h4>
+          <p class="text-muted small">Streamlined booking processes and enhanced visitor experiences lead to higher tourism spending.</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="feature-box">
+          <div class="feature-icon-wrapper"><i class="ph ph-smiley"></i></div>
+          <h4 class="fw-bold">Visitor Satisfaction</h4>
+          <p class="text-muted small">Comprehensive information and easy access to services enhance the overall tourist experience.</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="feature-box">
+          <div class="feature-icon-wrapper"><i class="ph ph-chart-line"></i></div>
+          <h4 class="fw-bold">Data-Driven Decisions</h4>
+          <p class="text-muted small">Analytics and insights help LGUs make informed decisions about tourism development.</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="feature-box">
+          <div class="feature-icon-wrapper"><i class="ph ph-piggy-bank"></i></div>
+          <h4 class="fw-bold">Cost-Effective</h4>
+          <p class="text-muted small">Centralized platform reduces administrative overhead and improves operational efficiency.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- User Roles Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-badge">
+                <i class="fas fa-user-tag me-2"></i>User Roles & Permissions
+            </span>
+            <h2 class="hook-title">Role-Based Access Control</h2>
+            <p class="hook-text">Secure and appropriate access for different user types</p>
+        </div>
+        
+        <div class="audience-grid">
+            <div class="audience-card">
+                <div class="audience-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h5>Super Admin</h5>
+                <p>Complete system control, user management, and configuration access</p>
+            </div>
+            
+            <div class="audience-card">
+                <div class="audience-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h5>LGU Manager</h5>
+                <p>Manage local destinations, events, and tourism data for their municipality</p>
+            </div>
+            
+            <div class="audience-card">
+                <div class="audience-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h5>Tourist</h5>
+                <p>Explore destinations, plan trips, and book services</p>
+            </div>
+            
+            <div class="audience-card">
+                <div class="audience-icon">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <h5>Service Provider</h5>
+                <p>Register business, manage listings, and handle bookings</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Technical Specifications Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-badge">
+                <i class="fas fa-server me-2"></i>Technical Specifications
+            </span>
+            <h2 class="hook-title">Robust Technology Stack</h2>
+            <p class="hook-text">Built with modern, scalable, and secure technologies</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="tech-card">
+                    <h5><i class="fas fa-code text-primary me-2"></i>Frontend Technologies</h5>
+                    <ul class="tech-list">
+                        <li>HTML5, CSS3, JavaScript</li>
+                        <li>Bootstrap 5 Framework</li>
+                        <li>Font Awesome Icons</li>
+                        <li>Responsive Design</li>
+                        <li>Cross-browser Compatibility</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="tech-card">
+                    <h5><i class="fas fa-server text-success me-2"></i>Backend Technologies</h5>
+                    <ul class="tech-list">
+                        <li>Python Flask Framework</li>
+                        <li>Supabase Database</li>
+                        <li>RESTful API Architecture</li>
+                        <li>JWT Authentication</li>
+                        <li>Role-based Access Control</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="tech-card">
+                    <h5><i class="fas fa-shield-alt text-warning me-2"></i>Security Features</h5>
+                    <ul class="tech-list">
+                        <li>Encrypted Data Transmission</li>
+                        <li>Secure User Authentication</li>
+                        <li>Role-based Permissions</li>
+                        <li>Data Privacy Compliance</li>
+                        <li>Regular Security Updates</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="tech-card">
+                    <h5><i class="fas fa-cloud text-info me-2"></i>Deployment & Infrastructure</h5>
+                    <ul class="tech-list">
+                        <li>Cloud-based Deployment</li>
+                        <li>Auto-scaling Architecture</li>
+                        <li>Load Balancing</li>
+                        <li>Automated Backups</li>
+                        <li>24/7 Monitoring</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Integration Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-badge">
+                <i class="fas fa-plug me-2"></i>System Integrations
+            </span>
+            <h2 class="hook-title">Seamless Third-Party Integrations</h2>
+            <p class="hook-text">Connect with popular services and platforms for enhanced functionality</p>
+        </div>
+        
+        <div class="integration-grid">
+            <div class="integration-item">
+                <div class="integration-icon">
+                    <i class="fab fa-google"></i>
+                </div>
+                <h5>Google Services</h5>
+                <p>Maps, Analytics, and Authentication integration</p>
+            </div>
+            
+            <div class="integration-item">
+                <div class="integration-icon">
+                    <i class="fab fa-facebook"></i>
+                </div>
+                <h5>Social Media</h5>
+                <p>Facebook, Instagram, and Twitter integration</p>
+            </div>
+            
+            <div class="integration-item">
+                <div class="integration-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <h5>Payment Gateways</h5>
+                <p>Multiple payment provider support</p>
+            </div>
+            
+            <div class="integration-item">
+                <div class="integration-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h5>Email Services</h5>
+                <p>Automated notifications and communications</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Support Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-badge">
+                <i class="fas fa-headset me-2"></i>Support & Maintenance
+            </span>
+            <h2 class="hook-title">Comprehensive Support Services</h2>
+            <p class="hook-text">We're here to help you succeed every step of the way</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="support-card text-center">
+                    <div class="support-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h5>24/7 Availability</h5>
+                    <p>Round-the-clock system monitoring and emergency support</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="support-card text-center">
+                    <div class="support-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h5>Training Programs</h5>
+                    <p>Comprehensive training for all user roles and system administrators</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="support-card text-center">
+                    <div class="support-icon">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <h5>Regular Updates</h5>
+                    <p>Continuous improvements and feature enhancements</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+  <div class="container">
+    <div class="row text-center g-4">
+      <div class="col-md-3 col-6">
+        <div class="stat-item">
+          <div class="stat-number">5+</div>
+          <div class="text-white-50 fw-semibold text-uppercase tracking-wide small">Platform Modules</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-item">
+          <div class="stat-number">24/7</div>
+          <div class="text-white-50 fw-semibold text-uppercase tracking-wide small">System Support</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-item">
+          <div class="stat-number">100%</div>
+          <div class="text-white-50 fw-semibold text-uppercase tracking-wide small">Cloud-Based</div>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-item">
+          <div class="stat-number">AI</div>
+          <div class="text-white-50 fw-semibold text-uppercase tracking-wide small">Powered</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="container">
+    <div class="bg-light p-5 rounded-4 border border-2 text-center" style="max-width: 800px; margin: 0 auto;">
+        <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mb-4" style="width: 80px; height: 80px;">
+            <i class="ph ph-rocket-launch text-primary fs-1"></i>
+        </div>
+        <h2 class="display-6 fw-bold mb-3">Ready to Transform Your Tourism Management?</h2>
+        <p class="text-muted fs-5 mb-4">Join the growing number of LGUs and tourism providers using LTCATO</p>
+        <a href="/register" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm fw-bold">Get Started Today</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

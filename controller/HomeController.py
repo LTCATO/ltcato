@@ -3,12 +3,12 @@ from flask import render_template, request, abort
 from supabase_client import supabase, service_supabase
 
 def home():
-    # Check if the domain has 'admin' in it
-    if 'admin-ltcato' in request.host:
-        return render_template('views/admin_landing.html')
+    # # Check if the domain has 'admin' in it
+    # if 'admin-ltcato' in request.host:
+    #     return render_template('views/admin_landing.html')
     
-    # Otherwise, serve the normal user landing page
-    return render_template('views/client/home.html')
+    # # Otherwise, serve the normal user landing page
+    return render_template('views/admin_landing.html')
 
 
 def explore_map():
@@ -139,3 +139,15 @@ def test_uploader():
 
     # Render form on GET request
     return render_template('views/admin/upload_mockup.html')
+
+def platform_features():
+    """Route to display the platform features page"""
+    return render_template('views/platform-features.html')
+
+def security():
+    """Route to display the security page"""
+    return render_template('views/security.html')
+
+def lgu_support():
+    """Route to display the LGU support citizen charter page"""
+    return render_template('views/lgu-support.html')
