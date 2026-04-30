@@ -39,46 +39,11 @@
 <!-- Main Grid Section -->
 <div class="container pb-5">
     <div class="destinations-grid" id="municipalitiesGrid">
-        <!-- Municipality 1: Calamba -->
-        <div class="destination-card municipality-item">
+        {% for municipality in municipalities %}
+        <a href="/lgu/{{ municipality.id }}" class="destination-card municipality-item">
             <div class="card-background">
                 <img src="https://images.unsplash.com/photo-1548625361-ec8464673327?auto=format&fit=crop&w=600&q=80"
-                     alt="Calamba City">
-                <div class="card-overlay"></div>
-                
-                <!-- Top Badges -->
-                <div class="card-badges">
-                    <div class="badge-glass category-city">
-                        <i class="ph ph-buildings"></i>
-                        <span>City</span>
-                    </div>
-                    <div class="badge-glass rating">
-                        <i class="ph ph-map-pin"></i>
-                        <span>12 Spots</span>
-                    </div>
-                </div>
-                
-                <!-- Bottom Content -->
-                <div class="card-content">
-                    <div class="card-location">
-                        <i class="ph ph-map-pin"></i>
-                        <span>Laguna</span>
-                    </div>
-                    <h3 class="card-title">Calamba City</h3>
-                    <p class="card-description">Known as the Resort Capital of the Philippines and the historic birthplace of Dr. Jose Rizal.</p>
-                    <button class="card-cta">
-                        <span>Explore Municipality</span>
-                        <i class="ph ph-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Municipality 2: Los Baños -->
-        <div class="destination-card municipality-item">
-            <div class="card-background">
-                <img src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=600&q=80"
-                     alt="Los Baños">
+                     alt="{{ municipality.name }}">
                 <div class="card-overlay"></div>
                 
                 <!-- Top Badges -->
@@ -89,7 +54,7 @@
                     </div>
                     <div class="badge-glass rating">
                         <i class="ph ph-map-pin"></i>
-                        <span>8 Spots</span>
+                        <span>{{ municipality.spot_count or 0 }} Spots</span>
                     </div>
                 </div>
                 
@@ -99,51 +64,16 @@
                         <i class="ph ph-map-pin"></i>
                         <span>Laguna</span>
                     </div>
-                    <h3 class="card-title">Los Baños</h3>
-                    <p class="card-description">The Special Science and Nature City, home to the majestic Mount Makiling and therapeutic hot springs.</p>
+                    <h3 class="card-title">{{ municipality.name }}</h3>
+                    <p class="card-description">Discover the beautiful destinations and attractions in {{ municipality.name }}.</p>
                     <button class="card-cta">
                         <span>Explore Municipality</span>
                         <i class="ph ph-arrow-right"></i>
                     </button>
                 </div>
             </div>
-        </div>
-
-        <!-- Municipality 3: Pagsanjan -->
-        <div class="destination-card municipality-item">
-            <div class="card-background">
-                <img src="https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=600&q=80"
-                     alt="Pagsanjan">
-                <div class="card-overlay"></div>
-                
-                <!-- Top Badges -->
-                <div class="card-badges">
-                    <div class="badge-glass category-tourist">
-                        <i class="ph ph-drop"></i>
-                        <span>Tourist Hub</span>
-                    </div>
-                    <div class="badge-glass rating">
-                        <i class="ph ph-map-pin"></i>
-                        <span>5 Spots</span>
-                    </div>
-                </div>
-                
-                <!-- Bottom Content -->
-                <div class="card-content">
-                    <div class="card-location">
-                        <i class="ph ph-map-pin"></i>
-                        <span>Laguna</span>
-                    </div>
-                    <h3 class="card-title">Pagsanjan</h3>
-                    <p class="card-description">The Tourist Capital of Laguna, world-renowned for shooting the rapids to the spectacular Pagsanjan Falls.</p>
-                    <button class="card-cta">
-                        <span>Explore Municipality</span>
-                        <i class="ph ph-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
+        </a>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
@@ -244,13 +174,12 @@
                     ripple.remove();
                 }, 600);
                 
-                // Navigate to municipality (you can customize this)
+                // Navigate to municipality details page
                 const card = cta.closest('.destination-card');
-                const municipalityName = card.querySelector('.card-title').textContent;
-                console.log(`Navigating to ${municipalityName}...`);
-                
-                // For now, just log it. In a real app, you'd navigate to the municipality page
-                // window.location.href = `/municipalities/${municipalityName.toLowerCase().replace(' ', '-')}`;
+                const href = card.getAttribute('href');
+                if (href) {
+                    window.location.href = href;
+                }
             });
         });
     }

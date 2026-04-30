@@ -18,11 +18,11 @@ def register_routes(app):
     def destination_details_page(spot_id):
         return destination_details(spot_id)
 
-    @app.route('/municipalities')
-    def municipalities_page():
+    @app.route('/lgu')
+    def lgu_listing_page():
         return municipalities()
 
-    @app.route('/municipalities/<municipality_id>')
+    @app.route('/lgu/<municipality_id>')
     def municipality_details_page(municipality_id):
         return municipality_details(municipality_id)
     

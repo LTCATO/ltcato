@@ -33,8 +33,31 @@ def destination_details(spot_id):
         return abort(500, description="Internal Server Error while fetching data")
 
 def municipalities():
-    # In production, query your database for all municipalities
-    return render_template('views/client/municipalities.html')
+    try:
+        # Fetch all municipalities
+        municipalities_response = supabase.table('municipalities').select('*').order('name').execute()
+        municipalities = municipalities_response.data
+        
+        # Fetch tourist spots to count them per municipality
+        spots_response = supabase.table('tourist_spots').select('municipality_id', 'status').eq('status', 'approved').execute()
+        spots = spots_response.data
+        
+        # Count spots per municipality
+        spot_counts = {}
+        for spot in spots:
+            municipality_id = spot['municipality_id']
+            if municipality_id:
+                spot_counts[municipality_id] = spot_counts.get(municipality_id, 0) + 1
+        
+        # Attach spot counts to municipalities
+        for municipality in municipalities:
+            municipality['spot_count'] = spot_counts.get(municipality['id'], 0)
+            
+    except Exception as e:
+        print(f"Error fetching municipalities: {e}")
+        municipalities = []
+        
+    return render_template('views/client/municipalities.html', municipalities=municipalities)
 
 def municipality_details(municipality_id):
     # In production, query your database for the specific municipality
