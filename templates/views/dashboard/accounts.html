@@ -412,10 +412,10 @@
        ==================================================== */
     function toggleMunicipalityField(selectElement, containerId, dropdownId) {
       const selectedOption = $(selectElement).find('option:selected');
-      // If role name is 'municipality_admin' show the field
+      // If role name is 'lgu_admin' show the field
       const roleName = selectedOption.data('rolename'); 
       
-      if (roleName === 'municipality_admin') {
+      if (roleName === 'lgu_admin') {
         $(containerId).slideDown(300);
         $(dropdownId).prop('required', true);
       } else {
