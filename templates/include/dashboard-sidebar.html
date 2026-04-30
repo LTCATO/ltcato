@@ -2,7 +2,7 @@
     <div class="app-brand demo d-flex align-items-center px-4 py-4 mb-2">
       {% if session.role_name == 'super_admin' %}
       <a href="/dashboard" class="app-brand-link d-flex align-items-center gap-3 text-decoration-none w-100">
-      {% elif session.role_name == 'municipality_admin' %}
+      {% elif session.role_name == 'lgu_admin' %}
       <a href="/dashboard/lgu" class="app-brand-link d-flex align-items-center gap-3 text-decoration-none w-100">
       {% endif %}
         <img src="{{ url_for('static', filename='images/ltcato-logo.png') }}" alt="LTCATO Logo" height="45" class="img-fluid rounded">
@@ -66,7 +66,7 @@
       {% endif %}
 
       <!-- MUNICIPALITY ADMIN MENU ITEMS -->
-      {% if session.role_name == 'municipality_admin' %}
+      {% if session.role_name == 'lgu_admin' %}
       <!-- LGU Dashboard -->
       <li class="menu-item {% if 'lgu' in menu %}active{% endif %}">
         <a href="/dashboard/lgu" class="menu-link">

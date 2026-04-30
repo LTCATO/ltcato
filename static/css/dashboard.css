@@ -3625,7 +3625,7 @@ body {
   color: var(--primary);
 }
 
-.role-badge.municipality_admin {
+.role-badge.lgu_admin {
   background: rgba(59, 130, 246, 0.1);
   color: #3b82f6;
 }
