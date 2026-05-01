@@ -127,6 +127,12 @@ def register_routes(app):
         from flask import render_template
         return render_template('views/dashboard/lgu/feedbacks.html')
 
+# API ROUTES
+    @app.route('/api/lara-chat', methods=['POST'])
+    def lara_chat_api():
+        from controller.HomeController import lara_chat
+        return lara_chat()
+
 # AUTH ROUTES
     @app.route("/login", methods=["GET", "POST"])
     def login_page():

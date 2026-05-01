@@ -1,443 +1,393 @@
-{% extends 'base.html' %}
+<!-- LARA AI Chatbot Floating Widget -->
+<div id="lara-chatbot-widget">
+    <!-- Chat Widget Container -->
+    <div id="lara-chat-container" class="lara-hidden">
+        <div class="lara-header">
+            <div class="lara-header-info">
+                <div class="lara-avatar">L</div>
+                <div>
+                    <h4>LARA AI</h4>
+                    <p>Laguna Tourism Assistant</p>
+                </div>
+            </div>
+            <button id="lara-close-btn">&times;</button>
+        </div>
+        
+        <div id="lara-chat-messages">
+            <div class="lara-message lara-ai">
+                <div class="lara-bubble">
+                    Mabuhay! I am LARA, your Laguna Artificial Resident Assistant. How can I help you explore Laguna today?
+                </div>
+            </div>
+        </div>
 
-{% block title %}Ask Lara AI | LTCATO{% endblock %}
+        <div class="lara-input-area">
+            <input type="text" id="lara-user-input" placeholder="Ask me about Laguna..." autocomplete="off">
+            <button id="lara-send-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+        </div>
+    </div>
 
-{% block style %}
+    <!-- Floating Action Button -->
+    <button id="lara-fab" class="lara-fab-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+    </button>
+</div>
+
 <style>
-    body {
-        background-color: var(--background, #faf7f5);
+    /* Scoped CSS for the Chatbot Modal to avoid conflict with existing styles */
+    #lara-chatbot-widget {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 99999;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* Chat Container */
-    .chat-layout {
-        display: flex;
-        height: calc(100vh - 76px); /* Full height minus navbar */
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 1.5rem;
-    }
-
-    .chat-container {
-        background-color: white;
-        border-radius: 1.25rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        border: 1px solid #e2e8f0;
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        overflow: hidden;
-    }
-
-    /* Chat Header */
-    .chat-header {
-        padding: 1.25rem 1.5rem;
-        border-bottom: 1px solid #e2e8f0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background-color: white;
-    }
-
-    .ai-avatar {
-        width: 45px;
-        height: 45px;
-        background: linear-gradient(135deg, var(--primary) 0%, #7f1d1d 100%);
-        color: white;
+    .lara-fab-btn {
+        width: 60px;
+        height: 60px;
         border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        box-shadow: 0 4px 10px rgba(155, 44, 44, 0.2);
-    }
-
-    /* Chat Messages Area */
-    .chat-messages {
-        flex-grow: 1;
-        padding: 1.5rem;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-        background-color: #f8fafc;
-    }
-
-    .message {
-        display: flex;
-        gap: 1rem;
-        max-width: 85%;
-    }
-
-    .message.user {
-        margin-left: auto;
-        flex-direction: row-reverse;
-    }
-
-    .message-avatar {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        font-size: 1.2rem;
-    }
-
-    .message.ai .message-avatar {
-        background-color: var(--primary);
-        color: white;
-    }
-
-    .message.user .message-avatar {
-        background-color: #e2e8f0;
-        color: #475569;
-    }
-
-    .message-bubble {
-        padding: 1rem 1.25rem;
-        border-radius: 1rem;
-        font-size: 0.95rem;
-        line-height: 1.5;
-    }
-
-    .message.ai .message-bubble {
-        background-color: white;
-        border: 1px solid #e2e8f0;
-        color: #1e293b;
-        border-top-left-radius: 0.25rem;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-    }
-
-    .message.user .message-bubble {
-        background-color: var(--primary);
-        color: white;
-        border-top-right-radius: 0.25rem;
-        box-shadow: 0 2px 10px rgba(155, 44, 44, 0.15);
-    }
-
-    /* Suggested Prompts */
-    .suggested-prompts {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        margin-top: 1rem;
-    }
-
-    .prompt-chip {
-        background-color: white;
-        border: 1px solid var(--primary);
-        color: var(--primary);
-        padding: 0.4rem 1rem;
-        border-radius: 99px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .prompt-chip:hover {
-        background-color: var(--primary);
-        color: white;
-    }
-
-    /* Typing Indicator */
-    .typing-indicator {
-        display: flex;
-        gap: 0.3rem;
-        padding: 0.5rem 1rem;
-        background: white;
-        border: 1px solid #e2e8f0;
-        border-radius: 1rem;
-        border-top-left-radius: 0.25rem;
-        width: fit-content;
-        align-items: center;
-    }
-
-    .typing-dot {
-        width: 6px;
-        height: 6px;
-        background-color: #94a3b8;
-        border-radius: 50%;
-        animation: typing 1.4s infinite ease-in-out;
-    }
-
-    .typing-dot:nth-child(1) { animation-delay: 0s; }
-    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes typing {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-4px); }
-    }
-
-    /* Input Area */
-    .chat-input-container {
-        padding: 1.25rem 1.5rem;
-        background-color: white;
-        border-top: 1px solid #e2e8f0;
-    }
-
-    .chat-input-wrapper {
-        display: flex;
-        align-items: flex-end;
-        background-color: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 1rem;
-        padding: 0.5rem;
-        transition: border-color 0.2s;
-    }
-
-    .chat-input-wrapper:focus-within {
-        border-color: var(--primary);
-        background-color: white;
-        box-shadow: 0 0 0 3px rgba(155, 44, 44, 0.05);
-    }
-
-    .chat-input {
-        flex-grow: 1;
-        border: none;
-        background: transparent;
-        padding: 0.75rem 1rem;
-        font-size: 0.95rem;
-        resize: none;
-        max-height: 120px;
-        color: #1e293b;
-    }
-
-    .chat-input:focus {
-        outline: none;
-    }
-
-    .btn-send {
-        background-color: var(--primary);
+        background-color: #2563eb;
         color: white;
         border: none;
-        width: 42px;
-        height: 42px;
-        border-radius: 0.75rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.25rem;
-        cursor: pointer;
-        transition: all 0.2s;
-        margin-bottom: 0.25rem;
-        margin-right: 0.25rem;
+        transition: transform 0.2s;
     }
 
-    .btn-send:hover:not(:disabled) {
-        background-color: #7f1d1d;
+    .lara-fab-btn:hover {
         transform: scale(1.05);
     }
 
-    .btn-send:disabled {
-        background-color: #cbd5e1;
-        cursor: not-allowed;
+    .lara-fab-btn svg {
+        width: 28px;
+        height: 28px;
     }
 
-    /* Mobile Adjustments */
-    @media (max-width: 768px) {
-        .chat-layout {
-            padding: 0;
-            height: calc(100vh - 60px);
-        }
-        .chat-container {
+    #lara-chat-container {
+        position: absolute;
+        bottom: 80px;
+        right: 0;
+        width: 350px;
+        height: 500px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: opacity 0.3s, transform 0.3s;
+        transform-origin: bottom right;
+    }
+
+    .lara-hidden {
+        opacity: 0;
+        transform: scale(0.5);
+        pointer-events: none;
+    }
+
+    .lara-header {
+        background: #2563eb;
+        color: white;
+        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .lara-header-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .lara-header h4 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .lara-header p {
+        margin: 0;
+        font-size: 12px;
+        opacity: 0.8;
+    }
+
+    .lara-avatar {
+        width: 36px;
+        height: 36px;
+        background: white;
+        color: #2563eb;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    #lara-close-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 0 4px;
+    }
+
+    #lara-chat-messages {
+        flex: 1;
+        padding: 16px;
+        overflow-y: auto;
+        background: #f8fafc;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .lara-message {
+        display: flex;
+        max-width: 85%;
+    }
+
+    .lara-message.lara-user {
+        align-self: flex-end;
+    }
+
+    .lara-message.lara-ai {
+        align-self: flex-start;
+    }
+
+    .lara-bubble {
+        padding: 12px 16px;
+        border-radius: 16px;
+        font-size: 14px;
+        line-height: 1.4;
+        word-wrap: break-word;
+    }
+
+    .lara-user .lara-bubble {
+        background: #2563eb;
+        color: white;
+        border-bottom-right-radius: 4px;
+    }
+
+    .lara-ai .lara-bubble {
+        background: white;
+        color: #333;
+        border: 1px solid #e2e8f0;
+        border-bottom-left-radius: 4px;
+    }
+
+    .lara-input-area {
+        padding: 16px;
+        background: white;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        gap: 8px;
+    }
+
+    #lara-user-input {
+        flex: 1;
+        padding: 10px 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 20px;
+        outline: none;
+        font-size: 14px;
+    }
+
+    #lara-user-input:focus {
+        border-color: #2563eb;
+    }
+
+    #lara-send-btn {
+        background: #2563eb;
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    #lara-send-btn:hover {
+        background: #1d4ed8;
+    }
+
+    #lara-send-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .lara-typing {
+        font-style: italic;
+        color: #64748b;
+        font-size: 13px;
+        padding-left: 8px;
+        display: none;
+    }
+    
+    @media (max-width: 480px) {
+        #lara-chat-container {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 100vw;
+            height: 100vh;
             border-radius: 0;
-            border: none;
-        }
-        .message {
-            max-width: 95%;
+            z-index: 100000;
         }
     }
 </style>
-{% endblock %}
 
-{% block content %}
-<div class="chat-layout">
-    <div class="chat-container">
-        
-        <!-- Header -->
-        <div class="chat-header">
-            <div class="d-flex align-items-center gap-3">
-                <div class="ai-avatar">
-                    <i class="ph-fill ph-sparkle"></i>
-                </div>
-                <div>
-                    <h5 class="fw-bold mb-0 text-dark">Lara AI</h5>
-                    <span class="text-success small fw-medium d-flex align-items-center gap-1">
-                        <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block;"></span> 
-                        Online • Ready to help
-                    </span>
-                </div>
-            </div>
-            <div>
-                <button class="btn btn-light rounded-circle p-2 text-muted shadow-sm" title="Clear Chat" onclick="location.reload()">
-                    <i class="ph ph-arrows-clockwise fs-5"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Chat Area -->
-        <div class="chat-messages" id="chatMessages">
-            
-            <!-- Welcome Message from AI -->
-            <div class="message ai">
-                <div class="message-avatar">
-                    <i class="ph-fill ph-sparkle"></i>
-                </div>
-                <div>
-                    <div class="message-bubble">
-                        Mabuhay! I am <strong>Lara</strong>, your intelligent assistant for exploring the beautiful province of Laguna. 🌴<br><br>
-                        Whether you are looking for relaxing hot springs, historical shrines, or the best nature trails, I can help you plan the perfect itinerary. How can I assist you today?
-                    </div>
-                    
-                    <!-- Suggested Prompts -->
-                    <div class="suggested-prompts">
-                        <button class="prompt-chip" onclick="sendSuggested('Recommend a relaxing hot spring in Calamba.')">Relaxing hot springs</button>
-                        <button class="prompt-chip" onclick="sendSuggested('What are the best historical sites to visit?')">Historical sites</button>
-                        <button class="prompt-chip" onclick="sendSuggested('Help me plan a 1-day itinerary in Los Baños.')">1-day itinerary</button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Input Area -->
-        <div class="chat-input-container">
-            <div class="chat-input-wrapper">
-                <button class="btn text-muted p-2" title="Attach Image/Document" style="margin-bottom: 0.25rem;">
-                    <i class="ph ph-paperclip fs-5"></i>
-                </button>
-                <textarea class="chat-input" id="userInput" rows="1" placeholder="Ask Lara anything about Laguna..." oninput="autoResize(this)" onkeypress="handleKeyPress(event)"></textarea>
-                <button class="btn-send" id="sendBtn" onclick="sendMessage()" disabled>
-                    <i class="ph-fill ph-paper-plane-right"></i>
-                </button>
-            </div>
-            <div class="text-center mt-2">
-                <span class="small text-muted" style="font-size: 0.7rem;">Lara AI can make mistakes. Please verify important destination details.</span>
-            </div>
-        </div>
-
-    </div>
-</div>
-{% endblock %}
-
-{% block script %}
 <script>
-    const chatMessages = document.getElementById('chatMessages');
-    const userInput = document.getElementById('userInput');
-    const sendBtn = document.getElementById('sendBtn');
+document.addEventListener('DOMContentLoaded', () => {
+    // UI Elements
+    const fab = document.getElementById('lara-fab');
+    const container = document.getElementById('lara-chat-container');
+    const closeBtn = document.getElementById('lara-close-btn');
+    const input = document.getElementById('lara-user-input');
+    const sendBtn = document.getElementById('lara-send-btn');
+    const messagesDiv = document.getElementById('lara-chat-messages');
 
-    // Auto-resize textarea
-    function autoResize(textarea) {
-        textarea.style.height = 'auto';
-        textarea.style.height = (textarea.scrollHeight < 120 ? textarea.scrollHeight : 120) + 'px';
+    // Chat History
+    let chatHistory = [];
+
+    // Toggle widget
+    fab.addEventListener('click', () => {
+        container.classList.remove('lara-hidden');
+        fab.style.display = 'none';
+        input.focus();
+    });
+
+    closeBtn.addEventListener('click', () => {
+        container.classList.add('lara-hidden');
+        setTimeout(() => { fab.style.display = 'flex'; }, 300);
+    });
+
+    // Helper: Add Message to UI
+    function appendMessage(text, sender) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `lara-message lara-${sender}`;
         
-        // Enable/Disable send button
-        if(textarea.value.trim().length > 0) {
-            sendBtn.removeAttribute('disabled');
-        } else {
-            sendBtn.setAttribute('disabled', 'true');
+        const bubble = document.createElement('div');
+        bubble.className = 'lara-bubble';
+        
+        // Simple markdown parsing for bold text
+        let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        formattedText = formattedText.replace(/\n/g, '<br>');
+        
+        bubble.innerHTML = formattedText;
+        msgDiv.appendChild(bubble);
+        messagesDiv.appendChild(msgDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    // Helper: Add Typing Indicator
+    function showTyping() {
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'lara-message lara-ai lara-typing-indicator';
+        typingDiv.id = 'lara-typing-indicator';
+        
+        const bubble = document.createElement('div');
+        bubble.className = 'lara-bubble';
+        bubble.innerHTML = '<em>LARA is typing...</em>';
+        
+        typingDiv.appendChild(bubble);
+        messagesDiv.appendChild(typingDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function removeTyping() {
+        const indicator = document.getElementById('lara-typing-indicator');
+        if (indicator) indicator.remove();
+    }
+
+    // Exponential Backoff Fetch
+    async function fetchWithBackoff(url, options, retries = 5) {
+        const delays = [1000, 2000, 4000, 8000, 16000];
+        for (let i = 0; i < retries; i++) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    if (i === retries - 1) throw new Error(`API Error: ${response.status}`);
+                    await new Promise(res => setTimeout(res, delays[i]));
+                    continue;
+                }
+                return await response.json();
+            } catch (err) {
+                if (i === retries - 1) throw err;
+                await new Promise(res => setTimeout(res, delays[i]));
+            }
         }
     }
 
-    // Handle Enter key to send
-    function handleKeyPress(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            if(!sendBtn.disabled) sendMessage();
-        }
-    }
-
-    // Send suggested prompt
-    function sendSuggested(text) {
-        userInput.value = text;
-        sendBtn.removeAttribute('disabled');
-        sendMessage();
-    }
-
-    // Main send message function
-    function sendMessage() {
-        const text = userInput.value.trim();
+    // Send Message Logic
+    async function sendMessage() {
+        const text = input.value.trim();
         if (!text) return;
 
-        // 1. Add User Message to UI
-        const userHtml = `
-            <div class="message user">
-                <div class="message-avatar">
-                    <i class="ph-fill ph-user"></i>
-                </div>
-                <div class="message-bubble">
-                    ${escapeHtml(text)}
-                </div>
-            </div>
-        `;
-        chatMessages.insertAdjacentHTML('beforeend', userHtml);
-        
-        // Reset input
-        userInput.value = '';
-        userInput.style.height = 'auto';
-        sendBtn.setAttribute('disabled', 'true');
-        scrollToBottom();
+        // UI Updates
+        appendMessage(text, 'user');
+        input.value = '';
+        showTyping();
 
-        // 2. Add Typing Indicator
-        const typingId = 'typing-' + Date.now();
-        const typingHtml = `
-            <div class="message ai" id="${typingId}">
-                <div class="message-avatar">
-                    <i class="ph-fill ph-sparkle"></i>
-                </div>
-                <div class="typing-indicator">
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                </div>
-            </div>
-        `;
-        chatMessages.insertAdjacentHTML('beforeend', typingHtml);
-        scrollToBottom();
+        // Add to history
+        chatHistory.push({
+            role: "user",
+            content: text
+        });
 
-        // 3. Simulate AI Response (In production, replace this with an AJAX call to your Flask backend / Gemini API)
-        setTimeout(() => {
-            document.getElementById(typingId).remove(); // Remove typing indicator
-            
-            // Mock Response Logic
-            let aiResponse = "That sounds like a great plan! Laguna has so much to offer. Let me find the best recommendations for you.";
-            
-            if (text.toLowerCase().includes('hot spring') || text.toLowerCase().includes('calamba')) {
-                aiResponse = "Calamba is known as the Resort Capital of the Philippines! Based on top guest reviews, I highly recommend visiting <strong>Wonderland Hot Spring</strong>. It features therapeutic mineral pools perfect for relaxation. <br><br>Would you like me to show you how to get there?";
-            } else if (text.toLowerCase().includes('historical') || text.toLowerCase().includes('rizal')) {
-                aiResponse = "Laguna is rich in history! A must-visit is the <strong>Rizal Shrine</strong> in Calamba, which is a reproduction of the house where our national hero Dr. Jose Rizal was born. Another great spot is the <strong>St. John the Baptist Parish</strong> just nearby.";
+        // Call backend endpoint instead of Google API directly
+        const url = '/api/lara-chat';
+        const payload = {
+            message: text,
+            history: chatHistory
+        };
+
+        try {
+            const data = await fetchWithBackoff(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            removeTyping();
+
+            // Extract Response
+            if (data.success && data.reply) {
+                const aiText = data.reply;
+                appendMessage(aiText, 'ai');
+                
+                // Add AI response to history
+                chatHistory.push({
+                    role: "assistant",
+                    content: aiText
+                });
+            } else {
+                appendMessage(data.error || "I'm sorry, I'm having a little trouble connecting right now. Please try again!", 'ai');
             }
 
-            const aiHtml = `
-                <div class="message ai">
-                    <div class="message-avatar">
-                        <i class="ph-fill ph-sparkle"></i>
-                    </div>
-                    <div class="message-bubble">
-                        ${aiResponse}
-                    </div>
-                </div>
-            `;
-            chatMessages.insertAdjacentHTML('beforeend', aiHtml);
-            scrollToBottom();
-
-        }, 1500); // 1.5 second simulated delay
+        } catch (error) {
+            removeTyping();
+            console.error('Error:', error);
+            appendMessage("Whoops! It seems I cannot reach my servers. Please try again later.", 'ai');
+        }
     }
 
-    function scrollToBottom() {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    function escapeHtml(unsafe) {
-        return unsafe
-             .replace(/&/g, "&amp;")
-             .replace(/</g, "&lt;")
-             .replace(/>/g, "&gt;")
-             .replace(/"/g, "&quot;")
-             .replace(/'/g, "&#039;");
-    }
+    // Event Listeners for sending
+    sendBtn.addEventListener('click', sendMessage);
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+});
 </script>
-{% endblock %}
