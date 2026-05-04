@@ -4,7 +4,7 @@ from supabase_client import supabase, service_supabase
 
 def home():
     # # Check if the domain has 'admin' in it
-    # if 'admin-ltcato' in request.host:
+    #if 'admin-ltcato' in request.host:
     return render_template('views/admin_landing.html')
     
     # Otherwise, serve the normal user landing page
