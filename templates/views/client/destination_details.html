@@ -4,347 +4,1788 @@
 
 {% block style %}
 <style>
-    /* Dynamically set the hero background image from the database */
-    .destination-hero {
-        background-image: url('{{ spot.main_image_url | default("https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1920&q=80") }}');
+    /* LTCATO destination — premium surface system (palette: --primary, --background, warm neutrals, accent gold) */
+    .destination-details-page {
+        --dd-primary: var(--primary, #9b2c2c);
+        --dd-primary-deep: #7f1d1d;
+        --dd-gold: #fde68a;
+        --dd-gold-rich: #f59e0b;
+        --dd-cream: var(--accent, #fef3c7);
+        --dd-surface: #ffffff;
+        --dd-surface-2: #faf7f5;
+        --dd-ink: var(--foreground, #1a1a1a);
+        --dd-muted: var(--muted-foreground, #57534e);
+        --dd-radius-xl: 1.75rem;
+        --dd-radius-lg: 1.25rem;
+        --dd-radius-md: 1rem;
+        --dd-font-display: var(--font-sans, "Nunito", "Segoe UI", system-ui, sans-serif);
+        --dd-font-body: "Open Sans", var(--font-sans, "Nunito"), system-ui, sans-serif;
+        --dd-shadow-1: 0 1px 2px rgba(26, 26, 26, 0.04);
+        --dd-shadow-2: 0 8px 30px rgba(26, 26, 26, 0.06);
+        --dd-shadow-3: 0 24px 64px rgba(155, 44, 44, 0.14);
+        --dd-shadow-lift: 0 20px 50px rgba(26, 26, 26, 0.08);
+        --dd-border-soft: rgba(155, 44, 44, 0.09);
+        --dd-glass: rgba(255, 255, 255, 0.14);
+        --dd-glass-strong: rgba(255, 255, 255, 0.22);
+        --dd-section-y: clamp(2.75rem, 6.5vw, 4.5rem);
+        --dd-inset: clamp(1.35rem, 4.2vw, 2.65rem);
+        --dd-ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+        --dd-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        --dd-duration: 0.45s;
+    }
+
+    .destination-details-page {
+        font-family: var(--dd-font-body);
+        color: var(--dd-ink);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    .destination-details-page .hero-title,
+    .destination-details-page .hook-title,
+    .destination-details-page .dd-heading,
+    .destination-details-page .dd-quick-facts-title,
+    .destination-details-page .info-title,
+    .destination-details-page .stat-number,
+    .destination-details-page .dd-sidebar-card h5 {
+        font-family: var(--dd-font-display);
+    }
+
+    @keyframes ddFadeUp {
+        from {
+            opacity: 0;
+            transform: translate3d(0, 1.25rem, 0);
+        }
+        to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+    @keyframes ddWaveShift {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(-2%); }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .destination-details-page .dd-hero-wave svg {
+            animation: ddWaveShift 18s ease-in-out infinite;
+        }
+
+        .destination-details-page .dd-hero-enter {
+            opacity: 0;
+            animation: ddFadeUp 0.85s var(--dd-ease-smooth) forwards;
+        }
+
+        .destination-details-page .dd-hero-enter--1 { animation-delay: 0.08s; }
+        .destination-details-page .dd-hero-enter--2 { animation-delay: 0.18s; }
+        .destination-details-page .dd-hero-enter--3 { animation-delay: 0.3s; }
+        .destination-details-page .dd-hero-enter--4 { animation-delay: 0.42s; }
+        .destination-details-page .dd-hero-enter--5 { animation-delay: 0.54s; }
+
+        .destination-details-page .dd-reveal-scroll {
+            opacity: 0;
+            transform: translate3d(0, 28px, 0);
+            transition:
+                opacity 0.75s var(--dd-ease-smooth),
+                transform 0.75s var(--dd-ease-smooth),
+                box-shadow 0.35s ease;
+        }
+
+        .destination-details-page .dd-reveal-scroll.dd-is-visible {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .destination-details-page .dd-reveal-scroll {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    .destination-details-page :where(a, button, .gallery-item, .info-card):focus-visible {
+        outline: 3px solid rgba(155, 44, 44, 0.55);
+        outline-offset: 3px;
+    }
+
+    /* —— Hero —— */
+    .destination-details-page .destination-hero {
+        position: relative;
+        min-height: clamp(26rem, 72vh, 44rem);
         background-size: cover;
         background-position: center;
+        display: flex;
+        align-items: flex-end;
+        overflow: hidden;
+        isolation: isolate;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .destination-details-page .destination-hero {
+            background-attachment: fixed;
+        }
+    }
+
+    .destination-details-page .dd-hero-overlay {
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(ellipse 100% 80% at 50% 120%, rgba(155, 44, 44, 0.35) 0%, transparent 55%),
+            linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.45) 45%, rgba(10, 8, 8, 0.88) 100%);
+        z-index: 1;
+    }
+
+    .destination-details-page .dd-hero-accent {
+        position: absolute;
+        inset: 0;
+        background-image:
+            radial-gradient(circle at 12% 25%, rgba(253, 230, 138, 0.12) 0%, transparent 42%),
+            radial-gradient(circle at 88% 18%, rgba(254, 243, 199, 0.08) 0%, transparent 38%),
+            radial-gradient(circle at 70% 85%, rgba(155, 44, 44, 0.2) 0%, transparent 45%);
+        z-index: 2;
+        pointer-events: none;
+        mix-blend-mode: screen;
+    }
+
+    .destination-details-page .dd-hero-grain {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        opacity: 0.07;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .destination-details-page .dd-hero-vignette {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.55);
+    }
+
+    .destination-details-page .dd-hero-wave {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 4;
+        line-height: 0;
+        color: var(--dd-surface);
+        pointer-events: none;
+    }
+
+    .destination-details-page .dd-hero-wave svg {
+        display: block;
+        width: 100%;
+        height: clamp(2.5rem, 8vw, 4.5rem);
+    }
+
+    .destination-details-page .hero-content {
         position: relative;
+        z-index: 5;
+        padding-top: clamp(3rem, 10vh, 5rem);
+        padding-bottom: clamp(3rem, 8vh, 5rem);
+        width: 100%;
+    }
+
+    .destination-details-page .dd-hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.6875rem;
+        font-weight: 800;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.78);
+        margin-bottom: 1.25rem;
+        padding: 0.35rem 0;
+        border-bottom: 1px solid rgba(253, 230, 138, 0.35);
+    }
+
+    .destination-details-page .dd-hero-eyebrow::before {
+        content: "";
+        width: 1.5rem;
+        height: 2px;
+        background: linear-gradient(90deg, var(--dd-gold), transparent);
+        border-radius: 2px;
+    }
+
+    .destination-details-page .hero-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .destination-details-page .dd-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem 0.5rem 0.85rem;
+        font-size: 0.8125rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+        transition:
+            transform var(--dd-duration) var(--dd-ease-smooth),
+            box-shadow var(--dd-duration) ease,
+            border-color 0.25s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .destination-details-page .dd-badge:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.24);
+        }
+    }
+
+    .destination-details-page .dd-badge--category {
+        background: linear-gradient(135deg, rgba(254, 243, 199, 0.95) 0%, rgba(253, 230, 138, 0.88) 100%);
+        color: #78350f;
+    }
+
+    .destination-details-page .dd-badge--live {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.35) 0%, rgba(22, 163, 74, 0.5) 100%);
+        color: #ecfdf5;
+        border-color: rgba(167, 243, 208, 0.45);
+    }
+
+    .destination-details-page .hero-title {
+        font-size: clamp(2.25rem, 6vw, 3.75rem);
+        font-weight: 800;
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+        margin-bottom: 1.125rem;
+        max-width: 18ch;
+        text-wrap: balance;
+        color: #ffffff;
+        background-image: linear-gradient(180deg, #ffffff 30%, rgba(255, 255, 255, 0.88) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.4));
+    }
+
+    @supports not (background-clip: text) {
+        .destination-details-page .hero-title {
+            -webkit-text-fill-color: unset;
+            background-image: none;
+        }
+    }
+
+    .destination-details-page .hero-subtitle {
+        font-size: clamp(1.02rem, 2.1vw, 1.28rem);
+        line-height: 1.55;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.9) !important;
+        margin-bottom: 2rem;
+        max-width: 36rem;
+        padding-left: 0.15rem;
+    }
+
+    .destination-details-page .hero-subtitle .ph {
+        color: var(--dd-gold);
+        opacity: 0.95;
+    }
+
+    .destination-details-page .dd-hero-stats {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 0.65rem 0.75rem;
+        padding-top: 1.25rem;
+        margin-top: 0.35rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .destination-details-page .dd-stat-item {
+        flex: 0 1 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 0.28rem;
+        min-width: 5.25rem;
+        max-width: 9.5rem;
+        padding: 0.58rem 0.85rem 0.62rem;
+        border-radius: 12px;
+        background: linear-gradient(
+            165deg,
+            rgba(255, 255, 255, 0.16) 0%,
+            rgba(255, 255, 255, 0.09) 100%
+        );
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.22),
+            0 4px 16px rgba(0, 0, 0, 0.12);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        transition:
+            transform var(--dd-duration) var(--dd-ease-smooth),
+            box-shadow var(--dd-duration) ease,
+            border-color 0.25s ease,
+            background-color 0.25s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .destination-details-page .dd-stat-item:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(
+                165deg,
+                rgba(255, 255, 255, 0.24) 0%,
+                rgba(255, 255, 255, 0.12) 100%
+            );
+            border-color: rgba(253, 230, 138, 0.42);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.28),
+                0 8px 28px rgba(0, 0, 0, 0.18);
+        }
+    }
+
+    .destination-details-page .stat-number {
+        font-size: clamp(1.38rem, 2.75vw, 2rem);
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -0.03em;
+        color: var(--dd-gold);
+        background-image: linear-gradient(135deg, var(--dd-gold) 0%, #fff8e7 90%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1.05;
+        margin-bottom: 0;
+    }
+
+    @supports not (background-clip: text) {
+        .destination-details-page .stat-number {
+            -webkit-text-fill-color: unset;
+            background-image: none;
+        }
+    }
+
+    .destination-details-page .stat-label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.2rem;
+        font-size: 0.625rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.76);
+        line-height: 1.25;
+        margin: 0;
+        padding-top: 0.05rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.14);
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .destination-details-page .stat-label .ph {
+        font-size: 0.7rem;
+        opacity: 0.95;
+        flex-shrink: 0;
+    }
+
+    /* —— Quick facts —— */
+    .destination-details-page .dd-quick-facts {
+        position: relative;
+        z-index: 10;
+        margin-top: -3rem;
+        padding: 0 0 var(--dd-section-y);
+        background: transparent;
+        border: none;
+        box-shadow: none;
+    }
+
+    .destination-details-page .dd-quick-facts-inner {
+        background: var(--dd-surface);
+        border-radius: var(--dd-radius-xl);
+        padding: clamp(1.75rem, 4vw, 2.5rem);
+        box-shadow:
+            var(--dd-shadow-2),
+            0 0 0 1px var(--dd-border-soft),
+            0 -24px 56px rgba(155, 44, 44, 0.1),
+            0 12px 40px rgba(26, 26, 26, 0.04);
+    }
+
+    .destination-details-page .dd-quick-facts-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.75rem;
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid rgba(155, 44, 44, 0.08);
+    }
+
+    .destination-details-page .dd-quick-facts-label {
+        font-size: 0.6875rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--dd-primary);
+        margin-bottom: 0.35rem;
+    }
+
+    .destination-details-page .dd-quick-facts-title {
+        font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: var(--dd-ink);
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .destination-details-page .dd-quick-facts-hint {
+        font-size: 0.875rem;
+        color: var(--dd-muted);
+        max-width: 16rem;
+        line-height: 1.45;
+        margin: 0;
+    }
+
+    .destination-details-page .info-card {
+        position: relative;
+        display: block;
+        padding: 1.5rem 1.1rem;
+        border-radius: var(--dd-radius-lg);
+        background: linear-gradient(165deg, #fffefb 0%, #ffffff 50%, #faf8f6 100%);
+        border: 1px solid var(--dd-border-soft);
+        box-shadow: var(--dd-shadow-1);
+        transition:
+            transform 0.4s var(--dd-ease-spring),
+            box-shadow 0.35s var(--dd-ease-smooth),
+            border-color 0.3s ease;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .destination-details-page .info-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--dd-primary), var(--dd-gold-rich));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .destination-details-page .info-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--dd-shadow-3);
+        border-color: rgba(155, 44, 44, 0.18);
+    }
+
+    .destination-details-page .info-card:hover::before {
+        opacity: 1;
+    }
+
+    .destination-details-page .info-icon {
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(145deg, var(--dd-primary) 0%, var(--dd-primary-deep) 100%);
+        color: #fff;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.45rem;
+        margin: 0 auto 1rem;
+        box-shadow:
+            0 8px 24px rgba(155, 44, 44, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        transition: transform 0.45s var(--dd-ease-spring), box-shadow 0.35s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .destination-details-page .info-card:hover .info-icon {
+            transform: scale(1.08) rotate(-3deg);
+            box-shadow: 0 12px 32px rgba(155, 44, 44, 0.42);
+        }
+    }
+
+    .destination-details-page .info-title {
+        font-size: 0.6875rem;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--dd-muted);
+        margin-bottom: 0.5rem;
+    }
+
+    .destination-details-page .info-text {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: var(--dd-ink);
+        margin: 0;
+        line-height: 1.45;
+    }
+
+    .destination-details-page .dd-link-map {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.45rem 1rem !important;
+        font-weight: 700 !important;
+        font-size: 0.8125rem !important;
+        border-width: 2px !important;
+        border-radius: 999px !important;
+        border-color: rgba(155, 44, 44, 0.38) !important;
+        color: var(--dd-primary) !important;
+        box-shadow: 0 2px 12px rgba(155, 44, 44, 0.12);
+        transition:
+            transform 0.3s var(--dd-ease-spring),
+            box-shadow 0.3s ease,
+            background 0.25s ease,
+            border-color 0.25s ease,
+            color 0.25s ease !important;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .destination-details-page .dd-link-map:hover {
+            transform: translateY(-2px);
+            background: var(--dd-primary) !important;
+            border-color: var(--dd-primary) !important;
+            color: #fff !important;
+            box-shadow: 0 8px 22px rgba(155, 44, 44, 0.32);
+        }
+    }
+
+    .destination-details-page .info-card .btn-outline-primary:not(.dd-link-map) {
+        border-width: 2px;
+        font-weight: 700;
+        border-color: rgba(155, 44, 44, 0.35);
+        color: var(--dd-primary);
+        transition: all 0.2s ease;
+    }
+
+    .destination-details-page .info-card .btn-outline-primary:not(.dd-link-map):hover {
+        background: var(--dd-primary);
+        border-color: var(--dd-primary);
+        color: #fff;
+    }
+
+    /* —— Main —— */
+    .destination-details-page .dd-main {
+        position: relative;
+        padding-top: 0.5rem;
+        padding-bottom: calc(var(--dd-section-y) * 1.35);
+        background:
+            radial-gradient(ellipse 80% 50% at 50% 0%, rgba(155, 44, 44, 0.06) 0%, transparent 55%),
+            linear-gradient(180deg, var(--dd-surface-2) 0%, #f0ebe6 55%, #ebe4dd 100%);
+    }
+
+    .destination-details-page .dd-main::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(rgba(155, 44, 44, 0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+        opacity: 0.45;
+        pointer-events: none;
+        mask-image: linear-gradient(180deg, black 0%, transparent 85%);
+    }
+
+    .destination-details-page .dd-main-inner {
+        position: relative;
+        z-index: 1;
+        row-gap: var(--dd-section-y);
+    }
+
+    .destination-details-page .dd-panel {
+        position: relative;
+        background: var(--dd-surface);
+        border-radius: var(--dd-radius-xl);
+        padding: var(--dd-inset);
+        box-shadow:
+            var(--dd-shadow-2),
+            0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+        border: 1px solid var(--dd-border-soft);
+        overflow: hidden;
+        transition: box-shadow 0.45s var(--dd-ease-smooth), transform 0.45s var(--dd-ease-smooth);
+    }
+
+    @media (prefers-reduced-motion: no-preference) and (min-width: 992px) {
+        .destination-details-page .dd-panel:hover {
+            box-shadow:
+                var(--dd-shadow-lift),
+                0 0 0 1px rgba(255, 255, 255, 0.9) inset,
+                0 0 0 1px rgba(155, 44, 44, 0.06);
+            transform: translateY(-2px);
+        }
+    }
+
+    .destination-details-page .dd-panel::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--dd-primary) 0%, var(--dd-gold-rich) 50%, var(--dd-primary-deep) 100%);
+        opacity: 0.9;
+    }
+
+    .destination-details-page .dd-panel > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .destination-details-page .dd-panel + .dd-panel {
+        margin-top: var(--dd-section-y);
+    }
+
+    .destination-details-page .dd-section-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1.1rem;
+        border-radius: 999px;
+        font-size: 0.8125rem;
+        font-weight: 700;
+        font-family: var(--dd-font-display);
+        color: var(--dd-primary);
+        background: linear-gradient(135deg, rgba(155, 44, 44, 0.1) 0%, rgba(254, 243, 199, 0.5) 100%);
+        border: 1px solid rgba(155, 44, 44, 0.14);
+        box-shadow: 0 2px 12px rgba(155, 44, 44, 0.08);
+        margin-bottom: 1.25rem;
+        transition: transform 0.35s var(--dd-ease-smooth), box-shadow 0.35s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .destination-details-page .hook-section:hover .dd-section-badge {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(155, 44, 44, 0.12);
+        }
+    }
+
+    .destination-details-page .hook-title {
+        font-size: clamp(1.65rem, 3.5vw, 2.35rem);
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        line-height: 1.18;
+        color: var(--dd-ink);
+        margin-bottom: 1rem;
+    }
+
+    .destination-details-page .hook-text {
+        font-size: clamp(1.05rem, 2vw, 1.2rem);
+        line-height: 1.75;
+        font-weight: 400;
+        letter-spacing: 0.01em;
+        color: var(--dd-muted);
+        margin-bottom: 0;
+        max-width: 52rem;
+    }
+
+    .destination-details-page .dd-divider {
+        height: 1px;
+        margin: clamp(2rem, 5vw, 2.75rem) 0;
+        background: linear-gradient(90deg, transparent, rgba(155, 44, 44, 0.12) 20%, rgba(155, 44, 44, 0.12) 80%, transparent);
+    }
+
+    .destination-details-page .dd-heading {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        font-size: 1.0625rem;
+        font-weight: 800;
+        letter-spacing: -0.015em;
+        color: var(--dd-ink);
+        margin: 0 0 1.25rem;
+        padding: 0;
+        border: none;
+    }
+
+    .destination-details-page .dd-heading-icon {
+        flex-shrink: 0;
+        width: 2.75rem;
+        height: 2.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        background: linear-gradient(145deg, rgba(155, 44, 44, 0.12) 0%, rgba(254, 243, 199, 0.6) 100%);
+        color: var(--dd-primary);
+        font-size: 1.35rem;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        transition: transform 0.4s var(--dd-ease-spring), box-shadow 0.3s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .destination-details-page .dd-heading:hover .dd-heading-icon {
+            transform: scale(1.06);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.75),
+                0 6px 18px rgba(155, 44, 44, 0.15);
+        }
+    }
+
+    .destination-details-page .section-content {
+        font-size: 1.0625rem;
+        line-height: 1.85;
+        letter-spacing: 0.015em;
+        color: var(--dd-muted);
+        margin: 0;
+    }
+
+    .destination-details-page .highlights-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 0;
+    }
+
+    .destination-details-page .highlight-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1.15rem 1.25rem;
+        border-radius: var(--dd-radius-md);
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 247, 245, 0.95) 100%);
+        border: 1px solid var(--dd-border-soft);
+        border-left: 4px solid var(--dd-primary);
+        box-shadow: var(--dd-shadow-1);
+        transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .destination-details-page .highlight-item:hover {
+            box-shadow: var(--dd-shadow-2);
+            transform: translateX(4px);
+        }
+    }
+
+    .destination-details-page .highlight-item i {
+        flex-shrink: 0;
+        margin-top: 0.1rem;
+        font-size: 1.25rem;
+        color: #16a34a;
+    }
+
+    .destination-details-page .highlight-item span {
+        color: var(--dd-muted);
+        line-height: 1.6;
+        font-size: 1rem;
+    }
+
+    .destination-details-page .audience-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+        gap: 1rem;
+        margin-top: 0;
+    }
+
+    .destination-details-page .audience-card {
+        text-align: center;
+        padding: 1.35rem 1rem;
+        border-radius: var(--dd-radius-lg);
+        background: linear-gradient(165deg, #fffbeb 0%, #ffffff 65%);
+        border: 1px solid rgba(245, 158, 11, 0.22);
+        box-shadow: var(--dd-shadow-1);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .destination-details-page .audience-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 36px rgba(180, 83, 9, 0.15);
+        }
+    }
+
+    .destination-details-page .audience-icon {
+        width: 52px;
+        height: 52px;
+        margin: 0 auto 0.85rem;
+        background: linear-gradient(145deg, var(--dd-gold-rich) 0%, #b45309 100%);
+        color: #fff;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        box-shadow: 0 8px 22px rgba(245, 158, 11, 0.35);
+    }
+
+    .destination-details-page .audience-card .h6 {
+        font-size: 0.98rem;
+        font-weight: 700;
+        color: var(--dd-ink);
+    }
+
+    .destination-details-page .details-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 0;
+    }
+
+    .destination-details-page .detail-row {
+        display: grid;
+        grid-template-columns: minmax(9rem, 12rem) 1fr;
+        gap: 1rem 1.75rem;
+        padding: 1.2rem 1.35rem;
+        border-radius: var(--dd-radius-md);
+        background: linear-gradient(135deg, rgba(250, 247, 245, 0.9) 0%, #ffffff 100%);
+        border: 1px solid var(--dd-border-soft);
+        align-items: start;
+        transition:
+            border-color 0.3s ease,
+            box-shadow 0.35s var(--dd-ease-smooth),
+            transform 0.35s var(--dd-ease-smooth);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .destination-details-page .detail-row:hover {
+            border-color: rgba(155, 44, 44, 0.14);
+            box-shadow: 0 8px 28px rgba(155, 44, 44, 0.07);
+            transform: translateX(4px);
+        }
+    }
+
+    .destination-details-page .detail-label {
+        font-weight: 800;
+        font-size: 0.8125rem;
+        letter-spacing: 0.02em;
+        color: var(--dd-ink);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .destination-details-page .detail-label i {
+        color: var(--dd-primary);
+        font-size: 1.1rem;
+    }
+
+    .destination-details-page .detail-value {
+        color: var(--dd-muted);
+        line-height: 1.6;
+        font-size: 0.98rem;
+    }
+
+    .destination-details-page .dd-route-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.15rem;
+    }
+
+    .destination-details-page .dd-route-card {
+        position: relative;
+        padding: 1.5rem 1.4rem 1.4rem;
+        border-radius: var(--dd-radius-lg);
+        background: linear-gradient(180deg, #ffffff 0%, #faf8f6 100%);
+        border: 1px solid var(--dd-border-soft);
+        box-shadow: var(--dd-shadow-1);
+        height: 100%;
+        overflow: hidden;
+        transition:
+            transform 0.4s var(--dd-ease-spring),
+            box-shadow 0.35s var(--dd-ease-smooth),
+            border-color 0.3s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .destination-details-page .dd-route-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--dd-shadow-2);
+            border-color: rgba(155, 44, 44, 0.14);
+        }
+    }
+
+    .destination-details-page .dd-route-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--dd-primary), var(--dd-gold-rich), var(--dd-primary-deep));
+    }
+
+    .destination-details-page .dd-route-card h5 {
+        font-size: 0.9375rem;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        color: var(--dd-primary);
+        margin-bottom: 1.1rem;
+        padding-top: 0.35rem;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .destination-details-page .dd-route-card ol {
+        line-height: 1.75;
+        margin: 0;
+        padding-left: 1.2rem;
+        color: var(--dd-muted);
+        font-size: 0.95rem;
+    }
+
+    /* —— Gallery —— */
+    .destination-details-page .gallery-section.dd-panel::before {
+        background: linear-gradient(90deg, var(--dd-primary-deep) 0%, var(--dd-primary) 40%, var(--dd-gold-rich) 100%);
+    }
+
+    .destination-details-page .dd-gallery-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .destination-details-page .dd-gallery-head .dd-heading {
+        margin-bottom: 0;
+    }
+
+    .destination-details-page .dd-gallery-caption {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        font-family: var(--dd-font-display);
+        color: var(--dd-muted);
+        padding: 0.45rem 1rem;
+        border-radius: 999px;
+        background: rgba(155, 44, 44, 0.06);
+        border: 1px solid var(--dd-border-soft);
+        transition:
+            transform 0.3s var(--dd-ease-smooth),
+            border-color 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .destination-details-page .dd-gallery-head:hover .dd-gallery-caption {
+            transform: translateY(-2px);
+            border-color: rgba(155, 44, 44, 0.18);
+            box-shadow: 0 6px 18px rgba(155, 44, 44, 0.08);
+        }
+    }
+
+    .destination-details-page .gallery-grid {
+        display: grid;
+        grid-template-columns: 1.65fr 1fr 1fr;
+        grid-template-rows: minmax(12rem, 1fr) minmax(10rem, 0.9fr);
+        gap: 0.85rem;
+        margin-top: 1.5rem;
+    }
+
+    .destination-details-page .gallery-item {
+        position: relative;
+        border-radius: var(--dd-radius-lg);
+        overflow: hidden;
+        cursor: pointer;
+        box-shadow: var(--dd-shadow-2);
+        outline: 2px solid transparent;
+        transition: outline-color 0.2s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .destination-details-page .gallery-item:hover {
+            outline-color: rgba(155, 44, 44, 0.45);
+            transform: scale(1.015) translateY(-2px);
+            box-shadow: var(--dd-shadow-3);
+        }
+    }
+
+    .destination-details-page .gallery-item:focus-visible {
+        outline: 3px solid var(--dd-primary);
+        outline-offset: 2px;
+    }
+
+    .destination-details-page .gallery-item.main-image {
+        grid-row: span 2;
+    }
+
+    .destination-details-page .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .destination-details-page .gallery-item:hover img {
+            transform: scale(1.06);
+        }
+    }
+
+    .destination-details-page .gallery-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(26, 26, 26, 0.75) 0%, transparent 50%);
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        padding: 1rem 1.15rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .destination-details-page .gallery-item:hover .gallery-overlay,
+    .destination-details-page .gallery-item:focus-visible .gallery-overlay {
+        opacity: 1;
+    }
+
+    .destination-details-page .gallery-overlay span {
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #fff;
+        padding: 0.35rem 0.65rem;
+        border-radius: 6px;
+        background: rgba(155, 44, 44, 0.9);
+    }
+
+    .destination-details-page .gallery-overlay i {
+        color: #fff;
+        font-size: 1.5rem;
+        opacity: 0.95;
+    }
+
+    /* —— Sidebar —— */
+    .destination-details-page .sidebar-sticky {
+        position: sticky;
+        top: 5.5rem;
+    }
+
+    .destination-details-page .dd-sidebar-card {
+        position: relative;
+        background: var(--dd-surface);
+        border-radius: var(--dd-radius-xl);
+        padding: 1.65rem 1.5rem;
+        margin-bottom: 1.35rem;
+        border: 1px solid var(--dd-border-soft);
+        box-shadow: var(--dd-shadow-2);
+        overflow: hidden;
+    }
+
+    .destination-details-page .dd-sidebar-card::after {
+        content: "";
+        position: absolute;
+        top: -40%;
+        right: -30%;
+        width: 12rem;
+        height: 12rem;
+        background: radial-gradient(circle, rgba(155, 44, 44, 0.09) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .destination-details-page .dd-sidebar-card h5 {
+        position: relative;
+        font-size: 0.6875rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--dd-muted);
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.85rem;
+        border-bottom: 1px solid var(--dd-border-soft);
+    }
+
+    .destination-details-page .dd-btn-primary {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 0;
+        font-family: var(--dd-font-display);
+        font-weight: 800;
+        font-size: 1.02rem;
+        letter-spacing: 0.03em;
+        color: #fff !important;
+        border: none;
+        border-radius: 16px;
+        background: linear-gradient(145deg, var(--dd-primary) 0%, var(--dd-primary-deep) 55%, #5c1515 100%);
+        box-shadow:
+            0 6px 22px rgba(155, 44, 44, 0.38),
+            0 2px 8px rgba(0, 0, 0, 0.12),
+            inset 0 1px 0 rgba(255, 255, 255, 0.22);
+        transition:
+            transform 0.35s var(--dd-ease-spring),
+            box-shadow 0.35s var(--dd-ease-smooth);
+        text-decoration: none;
+        overflow: hidden;
+        min-height: 3.25rem;
+    }
+
+    .destination-details-page .dd-btn-primary-inner {
+        position: relative;
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        width: 100%;
+        padding: 1rem 1.35rem;
+    }
+
+    .destination-details-page .dd-btn-primary::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            115deg,
+            transparent 15%,
+            rgba(255, 255, 255, 0.18) 45%,
+            rgba(254, 243, 199, 0.25) 55%,
+            transparent 85%
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s var(--dd-ease-smooth);
+        pointer-events: none;
+    }
+
+    .destination-details-page .dd-btn-primary-chevron {
+        transition: transform 0.35s var(--dd-ease-spring);
+        font-size: 1.15rem;
+        opacity: 0.95;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .destination-details-page .dd-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 14px 36px rgba(155, 44, 44, 0.48),
+                0 4px 12px rgba(0, 0, 0, 0.14),
+                inset 0 1px 0 rgba(255, 255, 255, 0.28);
+            color: #fff !important;
+        }
+
+        .destination-details-page .dd-btn-primary:hover::before {
+            transform: translateX(100%);
+        }
+
+        .destination-details-page .dd-btn-primary:hover .dd-btn-primary-chevron {
+            transform: translateX(5px);
+        }
+
+        .destination-details-page .dd-btn-primary:active {
+            transform: translateY(-1px);
+        }
+    }
+
+    .destination-details-page .dd-btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 0.95rem 1.25rem;
+        font-family: var(--dd-font-display);
+        font-weight: 700;
+        font-size: 0.95rem;
+        letter-spacing: 0.02em;
+        color: var(--dd-primary) !important;
+        background: linear-gradient(180deg, rgba(155, 44, 44, 0.07) 0%, rgba(254, 243, 199, 0.35) 100%);
+        border: 2px solid rgba(155, 44, 44, 0.22);
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(155, 44, 44, 0.06);
+        cursor: pointer;
+        transition:
+            transform 0.3s var(--dd-ease-spring),
+            background 0.3s ease,
+            border-color 0.3s ease,
+            box-shadow 0.3s ease,
+            color 0.25s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .destination-details-page .dd-btn-ghost:hover {
+            transform: translateY(-2px);
+            background: rgba(155, 44, 44, 0.1);
+            border-color: rgba(155, 44, 44, 0.38);
+            box-shadow: 0 8px 26px rgba(155, 44, 44, 0.14);
+            color: var(--dd-primary-deep) !important;
+        }
+
+        .destination-details-page .dd-btn-ghost:active {
+            transform: scale(0.98);
+        }
+    }
+
+    .destination-details-page .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+    }
+
+    .destination-details-page .facts-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .destination-details-page .fact-item {
+        padding: 1rem 1.1rem;
+        border-radius: var(--dd-radius-md);
+        background: linear-gradient(135deg, rgba(250, 247, 245, 0.95) 0%, #ffffff 100%);
+        border: 1px solid var(--dd-border-soft);
+        margin-bottom: 0 !important;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .destination-details-page .fact-item:hover {
+        border-color: rgba(155, 44, 44, 0.15);
+        box-shadow: var(--dd-shadow-1);
+    }
+
+    .destination-details-page .fact-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: linear-gradient(145deg, rgba(155, 44, 44, 0.14) 0%, rgba(254, 243, 199, 0.5) 100%);
+        color: var(--dd-primary) !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .destination-details-page .fact-value {
+        color: var(--dd-ink);
+        font-weight: 700;
+    }
+
+    /* Modal */
+    .gallery-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1.5rem;
+        cursor: pointer;
+        background: rgba(10, 8, 8, 0.88);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        animation: ddModalIn 0.35s ease;
+    }
+
+    @keyframes ddModalIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes ddModalPop {
+        from {
+            opacity: 0;
+            transform: scale(0.94) translateY(12px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    .gallery-modal .dd-modal-inner {
+        position: relative;
+        max-width: 92vw;
+        max-height: 92vh;
+        cursor: default;
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5);
+        border-radius: var(--dd-radius-lg);
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .gallery-modal .dd-modal-inner {
+            animation: ddModalPop 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+    }
+
+    .gallery-modal .dd-modal-inner img {
+        max-width: 100%;
+        max-height: 88vh;
+        object-fit: contain;
+        display: block;
+        background: #0a0a0a;
+    }
+
+    .gallery-modal .modal-close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        background: rgba(0, 0, 0, 0.45);
+        color: #fff;
+        font-size: 1.5rem;
+        line-height: 1;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s ease;
+    }
+
+    .gallery-modal .modal-close:hover {
+        background: rgba(155, 44, 44, 0.85);
+    }
+
+    @media (max-width: 991px) {
+        .destination-details-page .sidebar-sticky {
+            position: static;
+        }
+
+        .destination-details-page .detail-row {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+
+        .destination-details-page .dd-route-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .destination-details-page .gallery-grid {
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: minmax(13rem, auto) repeat(2, minmax(9rem, auto));
+        }
+
+        .destination-details-page .gallery-item.main-image {
+            grid-column: span 2;
+            grid-row: span 1;
+            min-height: 15rem;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .destination-details-page .dd-quick-facts {
+            margin-top: -2rem;
+        }
+
+        .destination-details-page .dd-quick-facts-inner {
+            border-radius: var(--dd-radius-lg);
+            padding: 1.35rem;
+        }
+
+        .destination-details-page .dd-hero-stats {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 0.55rem 0.65rem;
+        }
+
+        .destination-details-page .dd-stat-item {
+            flex: 1 1 calc(50% - 0.35rem);
+            min-width: 0;
+            max-width: none;
+        }
+
+        .destination-details-page .gallery-grid {
+            grid-template-columns: 1fr;
+            grid-template-rows: repeat(auto-fill, minmax(12rem, 1fr));
+        }
+
+        .destination-details-page .gallery-item.main-image {
+            grid-column: span 1;
+            min-height: 14rem;
+        }
+
+        .destination-details-page .hero-title {
+            max-width: none;
+        }
+    }
+</style>
+<style>
+    .destination-details-page .destination-hero {
+        background-image: url('{{ spot.main_image_url | default("https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1920&q=80") }}');
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Enhanced Hero Section -->
-<div class="destination-hero">
-    <div class="hero-overlay"></div>
-    <div class="hero-particles"></div>
-    <div class="container hero-content">
-        <div class="row">
-            <div class="col-lg-10 text-white">
-                <div class="hero-badges mb-3">
-                    <span class="badge bg-warning text-dark px-3 py-2 rounded-pill mb-2 fw-bold shadow-sm">
-                        <i class="ph ph-swimming-pool me-1"></i> {{ spot.category | default('Tourist Spot') }}
-                    </span>
-                    <span class="badge bg-success text-white px-3 py-2 rounded-pill mb-2 fw-bold shadow-sm">
-                        <i class="ph ph-check-circle me-1"></i> Open Now
-                    </span>
-                </div>
-                <h1 class="display-3 fw-bold mb-3 hero-title">{{ spot.name }}</h1>
-                <p class="fs-4 mb-4 text-white-50 hero-subtitle">
-                    <i class="ph ph-map-pin me-2"></i>{{ spot.address | default('Laguna, Philippines') }}
-                </p>
-                <div class="hero-stats d-flex gap-4 flex-wrap">
-                    <div class="stat-item">
-                        <div class="stat-number">{{ spot.rating | default('0.0') }}</div>
-                        <div class="stat-label">
-                            <i class="ph-fill ph-star"></i> Rating
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">{{ spot.reviews_count | default('0') }}</div>
-                        <div class="stat-label">Reviews</div>
-                    </div>
-                </div>
-            </div>
+<div class="destination-details-page">
+    <header class="destination-hero" aria-label="Destination hero">
+        <div class="dd-hero-overlay"></div>
+        <div class="dd-hero-accent"></div>
+        <div class="dd-hero-grain" aria-hidden="true"></div>
+        <div class="dd-hero-vignette" aria-hidden="true"></div>
+        <div class="dd-hero-wave" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 48" preserveAspectRatio="none">
+                <path fill="currentColor" d="M0,24 C240,80 480,0 720,24 C960,48 1200,8 1440,32 L1440,48 L0,48 Z"/>
+            </svg>
         </div>
-    </div>
-</div>
-
-<!-- Basic Info Section -->
-<section class="basic-info-section py-4 bg-white ">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-2">
-                <div class="info-card text-center">
-                    <div class="info-icon">
-                        <i class="ph ph-map-pin-line"></i>
+        <div class="container hero-content">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-xl-9">
+                    <p class="dd-hero-eyebrow dd-hero-enter dd-hero-enter--1 mb-0">Laguna · LTCATO</p>
+                    <div class="hero-badges dd-hero-enter dd-hero-enter--2">
+                        <span class="dd-badge dd-badge--category">
+                            <i class="ph ph-swimming-pool me-2" aria-hidden="true"></i>{{ spot.category | default('Tourist Spot') }}
+                        </span>
+                        <span class="dd-badge dd-badge--live">
+                            <i class="ph ph-check-circle me-2" aria-hidden="true"></i>Open now
+                        </span>
                     </div>
-                    <h6 class="info-title">Location</h6>
-                    <p class="info-text">{{ spot.address.split(',')[0] if spot.address else 'N/A' }}</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-2">
-                <div class="info-card text-center">
-                    <div class="info-icon">
-                        <i class="ph ph-clock"></i>
-                    </div>
-                    <h6 class="info-title">Opening Hours</h6>
-                    <p class="info-text">{{ spot.opening_hours | default('Not specified') }}</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-2">
-                <div class="info-card text-center">
-                    <div class="info-icon">
-                        <i class="ph ph-sun"></i>
-                    </div>
-                    <h6 class="info-title">Best Time</h6>
-                    <p class="info-text">{{ spot.best_time_to_visit | default('Anytime') }}</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-2">
-                <div class="info-card text-center">
-                    <div class="info-icon">
-                        <i class="ph ph-tag"></i>
-                    </div>
-                    <h6 class="info-title">Category</h6>
-                    <p class="info-text">{{ spot.category | default('General') }}</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-2">
-                <div class="info-card text-center">
-                    <div class="info-icon">
-                        <i class="ph ph-map-trifold"></i>
-                    </div>
-                    <h6 class="info-title">Map</h6>
-                    <p class="info-text">
-                        <a href="/explore_map?lat={{ spot.latitude }}&lng={{ spot.longitude }}" class="btn btn-sm btn-outline-primary rounded-pill">View Map</a>
+                    <h1 class="hero-title text-white dd-hero-enter dd-hero-enter--3">{{ spot.name }}</h1>
+                    <p class="hero-subtitle mb-0 dd-hero-enter dd-hero-enter--4">
+                        <i class="ph ph-map-pin me-2" aria-hidden="true"></i>{{ spot.address | default('Laguna, Philippines') }}
                     </p>
+                    <div class="dd-hero-stats hero-stats dd-hero-enter dd-hero-enter--5" role="group" aria-label="Quick stats">
+                        <div class="dd-stat-item stat-item">
+                            <div class="stat-number">{{ spot.rating | default('0.0') }}</div>
+                            <div class="stat-label"><i class="ph-fill ph-star me-1" aria-hidden="true"></i>Rating</div>
+                        </div>
+                        <div class="dd-stat-item stat-item">
+                            <div class="stat-number">{{ spot.reviews_count | default('0') }}</div>
+                            <div class="stat-label">Reviews</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </header>
 
-<!-- Main Content -->
-<section class="content-section">
-    <div class="container">
-        <div class="row g-5">
-            
-            <!-- Left Column: Enhanced Content -->
-            <div class="col-lg-8">
-                
-                <!-- Enhanced Description Section -->
-                <div class="description-section mb-5">
-                    <!-- Hook Section -->
-                    <div class="hook-section mb-4">
-                        <div class="section-badge mb-3">
-                            <i class="ph ph-sparkle me-2"></i>Why You'll Love It
-                        </div>
-                        <h2 class="hook-title mb-3">{{ spot.hook_title | default('Discover Something Amazing') }}</h2>
-                        <p class="hook-text fs-5 text-muted">
-                            {{ spot.hook_text | default('Experience the beauty and culture of Laguna.') }}
-                        </p>
+    <section class="dd-quick-facts basic-info-section" aria-labelledby="quick-facts-heading">
+        <h2 id="quick-facts-heading" class="visually-hidden">At a glance</h2>
+        <div class="container px-3 px-lg-4">
+            <div class="dd-quick-facts-inner dd-reveal-scroll">
+                <div class="dd-quick-facts-head">
+                    <div>
+                        <div class="dd-quick-facts-label">Before you go</div>
+                        <p class="dd-quick-facts-title mb-0">Everything you need at a glance</p>
                     </div>
-
-                    <!-- Overview Section -->
-                    <div class="overview-section mb-4">
-                        <h3 class="section-title mb-3">
-                            <i class="ph ph-info me-2"></i>What It Is
-                        </h3>
-                        <p class="section-content">
-                            {{ spot.description | default('Description not available yet.') }}
-                        </p>
-                    </div>
-
-                    <!-- Highlights Section -->
-                    <div class="highlights-section mb-4">
-                        <h3 class="section-title mb-3">
-                            <i class="ph ph-star me-2"></i>What Makes It Special
-                        </h3>
-                        <div class="highlights-list">
-                            {% if spot.highlights and spot.highlights|length > 0 %}
-                                {% for highlight in spot.highlights %}
-                                <div class="highlight-item">
-                                    <i class="ph ph-check-circle text-success"></i>
-                                    <span>{{ highlight }}</span>
-                                </div>
-                                {% endfor %}
-                            {% else %}
-                                <div class="highlight-item text-muted">Highlights not specified.</div>
-                            {% endif %}
+                    <p class="dd-quick-facts-hint">Hours, best season, and quick links—curated for a smooth visit.</p>
+                </div>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3 g-lg-4 justify-content-center">
+                    <div class="col">
+                        <div class="info-card text-center h-100">
+                            <div class="info-icon"><i class="ph ph-map-pin-line" aria-hidden="true"></i></div>
+                            <h6 class="info-title">Location</h6>
+                            <p class="info-text">{{ spot.address.split(',')[0] if spot.address else 'N/A' }}</p>
                         </div>
                     </div>
+                    <div class="col">
+                        <div class="info-card text-center h-100">
+                            <div class="info-icon"><i class="ph ph-clock" aria-hidden="true"></i></div>
+                            <h6 class="info-title">Opening Hours</h6>
+                            <p class="info-text">{{ spot.opening_hours | default('Not specified') }}</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="info-card text-center h-100">
+                            <div class="info-icon"><i class="ph ph-sun" aria-hidden="true"></i></div>
+                            <h6 class="info-title">Best Time</h6>
+                            <p class="info-text">{{ spot.best_time_to_visit | default('Anytime') }}</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="info-card text-center h-100">
+                            <div class="info-icon"><i class="ph ph-tag" aria-hidden="true"></i></div>
+                            <h6 class="info-title">Category</h6>
+                            <p class="info-text">{{ spot.category | default('General') }}</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="info-card text-center h-100">
+                            <div class="info-icon"><i class="ph ph-map-trifold" aria-hidden="true"></i></div>
+                            <h6 class="info-title">Map</h6>
+                            <p class="info-text mb-0">
+                                <a href="/explore_map?lat={{ spot.latitude }}&lng={{ spot.longitude }}" class="btn btn-sm btn-outline-primary dd-link-map rounded-pill"><i class="ph ph-arrow-square-out me-1" aria-hidden="true"></i>View map</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                    <!-- Target Audience Section -->
-                    <div class="audience-section mb-4">
-                        <h3 class="section-title mb-3">
-                            <i class="ph ph-users me-2"></i>Perfect For
-                        </h3>
-                        <div class="audience-grid">
-                            {% if spot.target_audience and spot.target_audience|length > 0 %}
-                                {% for audience in spot.target_audience %}
-                                <div class="audience-card p-3 border rounded mb-2">
-                                    <div class="audience-icon mb-2 text-primary">
-                                        <i class="ph ph-users-three fs-4"></i>
+    <div class="dd-main content-section">
+        <div class="container px-3 px-lg-4 py-lg-1">
+            <div class="row dd-main-inner g-4 g-xl-5 align-items-start">
+                <div class="col-lg-8">
+                    <article class="description-section dd-panel dd-reveal-scroll mb-0">
+                        <header class="hook-section">
+                            <div class="dd-section-badge section-badge">
+                                <i class="ph ph-sparkle" aria-hidden="true"></i>Why you'll love it
+                            </div>
+                            <h2 class="hook-title">{{ spot.hook_title | default('Discover Something Amazing') }}</h2>
+                            <p class="hook-text">{{ spot.hook_text | default('Experience the beauty and culture of Laguna.') }}</p>
+                        </header>
+
+                        <div class="dd-divider" role="presentation"></div>
+
+                        <section class="overview-section" aria-labelledby="what-it-is">
+                            <h3 id="what-it-is" class="dd-heading section-title mb-0">
+                                <span class="dd-heading-icon"><i class="ph ph-info" aria-hidden="true"></i></span>
+                                What it is
+                            </h3>
+                            <p class="section-content mt-3">{{ spot.description | default('Description not available yet.') }}</p>
+                        </section>
+
+                        <div class="dd-divider" role="presentation"></div>
+
+                        <section class="highlights-section" aria-labelledby="highlights-heading">
+                            <h3 id="highlights-heading" class="dd-heading section-title mb-0">
+                                <span class="dd-heading-icon"><i class="ph ph-star" aria-hidden="true"></i></span>
+                                What makes it special
+                            </h3>
+                            <div class="highlights-list mt-3">
+                                {% if spot.highlights and spot.highlights|length > 0 %}
+                                    {% for highlight in spot.highlights %}
+                                    <div class="highlight-item">
+                                        <i class="ph ph-check-circle" aria-hidden="true"></i>
+                                        <span>{{ highlight }}</span>
                                     </div>
-                                    <h5 class="m-0">{{ audience }}</h5>
-                                </div>
-                                {% endfor %}
-                            {% else %}
-                                <p class="text-muted">Everyone!</p>
-                            {% endif %}
-                        </div>
-                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="highlight-item text-muted"><span>Highlights not specified.</span></div>
+                                {% endif %}
+                            </div>
+                        </section>
 
-                    <!-- Extra Details Section -->
-                    <div class="extra-details-section mb-4">
-                        <h3 class="section-title mb-3">
-                            <i class="ph ph-clipboard-text me-2"></i>Practical Information
-                        </h3>
-                        <div class="details-grid">
-                            <div class="detail-row">
-                                <div class="detail-label">
-                                    <i class="ph ph-clock"></i> Operating Hours
-                                </div>
-                                <div class="detail-value">{{ spot.opening_hours | default('Contact for hours') }}</div>
-                            </div>
-                            <div class="detail-row">
-                                <div class="detail-label">
-                                    <i class="ph ph-currency-php"></i> Entrance Fees
-                                </div>
-                                <div class="detail-value">{{ spot.entrance_fees | default('Free or varies') }}</div>
-                            </div>
-                            <div class="detail-row">
-                                <div class="detail-label">
-                                    <i class="ph ph-bag-simple"></i> What to Bring
-                                </div>
-                                <div class="detail-value">{{ spot.what_to_bring | default('Comfortable clothes') }}</div>
-                            </div>
-                            <div class="detail-row">
-                                <div class="detail-label">
-                                    <i class="ph ph-parking-square"></i> Parking
-                                </div>
-                                <div class="detail-value">{{ spot.parking_info | default('No information provided') }}</div>
-                            </div>
-                        </div>
-                    </div>
+                        <div class="dd-divider" role="presentation"></div>
 
-                    <!-- How to Get There Section -->
-                    <div class="transport-section mb-5">
-                        <h3 class="section-title mb-3">
-                            <i class="ph ph-car-profile me-2"></i>How to Get There
-                        </h3>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="p-4 border rounded h-100 bg-white shadow-sm">
-                                    <h5 class="mb-4 text-primary fw-bold"><i class="ph ph-bus me-2"></i>Commute Route</h5>
+                        <section class="audience-section" aria-labelledby="audience-heading">
+                            <h3 id="audience-heading" class="dd-heading section-title mb-0">
+                                <span class="dd-heading-icon"><i class="ph ph-users" aria-hidden="true"></i></span>
+                                Perfect for
+                            </h3>
+                            <div class="audience-grid mt-3">
+                                {% if spot.target_audience and spot.target_audience|length > 0 %}
+                                    {% for audience in spot.target_audience %}
+                                    <div class="audience-card">
+                                        <div class="audience-icon"><i class="ph ph-users-three" aria-hidden="true"></i></div>
+                                        <h4 class="h6 mb-0">{{ audience }}</h4>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="text-muted mb-0">Everyone!</p>
+                                {% endif %}
+                            </div>
+                        </section>
+
+                        <div class="dd-divider" role="presentation"></div>
+
+                        <section class="extra-details-section" aria-labelledby="practical-heading">
+                            <h3 id="practical-heading" class="dd-heading section-title mb-0">
+                                <span class="dd-heading-icon"><i class="ph ph-clipboard-text" aria-hidden="true"></i></span>
+                                Practical information
+                            </h3>
+                            <div class="details-grid mt-3">
+                                <div class="detail-row">
+                                    <div class="detail-label"><i class="ph ph-clock" aria-hidden="true"></i>Operating hours</div>
+                                    <div class="detail-value">{{ spot.opening_hours | default('Contact for hours') }}</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label"><i class="ph ph-currency-php" aria-hidden="true"></i>Entrance fees</div>
+                                    <div class="detail-value">{{ spot.entrance_fees | default('Free or varies') }}</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label"><i class="ph ph-bag-simple" aria-hidden="true"></i>What to bring</div>
+                                    <div class="detail-value">{{ spot.what_to_bring | default('Comfortable clothes') }}</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label"><i class="ph ph-parking-square" aria-hidden="true"></i>Parking</div>
+                                    <div class="detail-value">{{ spot.parking_info | default('No information provided') }}</div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <div class="dd-divider" role="presentation"></div>
+
+                        <section class="transport-section mb-0" aria-labelledby="transport-heading">
+                            <h3 id="transport-heading" class="dd-heading section-title mb-0">
+                                <span class="dd-heading-icon"><i class="ph ph-car-profile" aria-hidden="true"></i></span>
+                                How to get there
+                            </h3>
+                            <div class="dd-route-grid mt-3">
+                                <div class="dd-route-card">
+                                    <h5><i class="ph ph-bus" aria-hidden="true"></i> Commute route</h5>
                                     {% if spot.commute_guide and spot.commute_guide|length > 0 %}
-                                        <ol class="text-muted ps-3 mb-0" style="line-height: 1.8;">
+                                        <ol class="mb-0">
                                             {% for step in spot.commute_guide %}
                                             <li>{{ step }}</li>
                                             {% endfor %}
                                         </ol>
                                     {% else %}
-                                        <p class="text-muted m-0"><i class="ph ph-info me-2"></i>Commute information is not yet available.</p>
+                                        <p class="text-muted mb-0 small"><i class="ph ph-info me-2" aria-hidden="true"></i>Commute information is not yet available.</p>
                                     {% endif %}
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="p-4 border rounded h-100 bg-white shadow-sm">
-                                    <h5 class="mb-4 text-primary fw-bold"><i class="ph ph-steering-wheel me-2"></i>Driving Route</h5>
+                                <div class="dd-route-card">
+                                    <h5><i class="ph ph-steering-wheel" aria-hidden="true"></i> Driving route</h5>
                                     {% if spot.driving_guide and spot.driving_guide|length > 0 %}
-                                        <ol class="text-muted ps-3 mb-0" style="line-height: 1.8;">
+                                        <ol class="mb-0">
                                             {% for step in spot.driving_guide %}
                                             <li>{{ step }}</li>
                                             {% endfor %}
                                         </ol>
                                     {% else %}
-                                        <p class="text-muted m-0"><i class="ph ph-info me-2"></i>Driving information is not yet available.</p>
+                                        <p class="text-muted mb-0 small"><i class="ph ph-info me-2" aria-hidden="true"></i>Driving information is not yet available.</p>
                                     {% endif %}
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
+                        </section>
+                    </article>
 
-                <!-- Image Gallery Section -->
-                <div class="gallery-section mb-5">
-                    <h3 class="section-title mb-4">
-                        <i class="ph ph-images me-2"></i>Photo Gallery
-                    </h3>
-                    <div class="gallery-grid">
-                        <div class="gallery-item main-image">
-                            <img src="{{ spot.main_image_url }}" alt="Main Area">
-                            <div class="gallery-overlay"><i class="ph ph-arrow-up-right"></i></div>
+                    <section class="gallery-section dd-panel dd-reveal-scroll" aria-labelledby="gallery-heading">
+                        <div class="dd-gallery-head">
+                            <h3 id="gallery-heading" class="dd-heading section-title mb-0">
+                                <span class="dd-heading-icon"><i class="ph ph-images" aria-hidden="true"></i></span>
+                                Photo gallery
+                            </h3>
+                            <span class="dd-gallery-caption">Tap an image to enlarge</span>
                         </div>
-                        
-                        {% if spot.gallery_images %}
-                            {% for img_url in spot.gallery_images %}
-                            <div class="gallery-item">
-                                <img src="{{ img_url }}" alt="Gallery Image">
-                                <div class="gallery-overlay"><i class="ph ph-arrow-up-right"></i></div>
-                            </div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column: Enhanced Sidebar -->
-            <div class="col-lg-4">
-                <div class="sidebar-sticky">
-                    <!-- Quick Actions Card -->
-                    <div class="action-card mb-4 border p-4 rounded shadow-sm bg-white">
-                        <h5 class="card-title mb-3">Quick Actions</h5>
-                        <div class="action-buttons">
-                            <a href="/explore_map" class="btn btn-primary btn-lg w-100 mb-3">
-                                <i class="ph ph-map-trifold me-2"></i>View on Map
-                            </a>
-                            <button class="btn btn-outline-primary w-100 mb-3" onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied!');">
-                                <i class="ph ph-share-network me-2"></i>Share
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Quick Facts Card -->
-                    <div class="info-sidebar-card mb-4 border p-4 rounded shadow-sm bg-white">
-                        <h5 class="card-title mb-3">Quick Facts</h5>
-                        <div class="facts-list">
-                            <div class="fact-item d-flex mb-3">
-                                <div class="fact-icon me-3 text-primary"><i class="ph ph-map-pin-line fs-4"></i></div>
-                                <div class="fact-content">
-                                    <div class="fact-label text-muted small">Location</div>
-                                    <div class="fact-value fw-bold">{{ spot.address.split(',')[0] if spot.address else 'N/A' }}</div>
+                        <div class="gallery-grid">
+                            <div class="gallery-item main-image" role="button" tabindex="0" aria-label="Open main photo">
+                                <img src="{{ spot.main_image_url | default('https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1200&q=80') }}" alt="{{ spot.name }} — main photo">
+                                <div class="gallery-overlay">
+                                    <span>Featured</span>
+                                    <i class="ph ph-arrow-up-right" aria-hidden="true"></i>
                                 </div>
                             </div>
-                            <div class="fact-item d-flex mb-3">
-                                <div class="fact-icon me-3 text-primary"><i class="ph ph-swimming-pool fs-4"></i></div>
-                                <div class="fact-content">
-                                    <div class="fact-label text-muted small">Category</div>
-                                    <div class="fact-value fw-bold">{{ spot.category | default('Tourist Spot') }}</div>
+                            {% if spot.gallery_images %}
+                                {% for img_url in spot.gallery_images %}
+                                <div class="gallery-item" role="button" tabindex="0" aria-label="Open gallery photo {{ loop.index }}">
+                                    <img src="{{ img_url }}" alt="{{ spot.name }} — gallery {{ loop.index }}">
+                                    <div class="gallery-overlay">
+                                        <span>View</span>
+                                        <i class="ph ph-arrow-up-right" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="col-lg-4">
+                    <div class="sidebar-sticky">
+                        <div class="dd-sidebar-card action-card dd-reveal-scroll">
+                            <h5>Quick actions</h5>
+                            <div class="action-buttons">
+                                <a href="/explore_map" class="dd-btn-primary">
+                                    <span class="dd-btn-primary-inner">
+                                        <i class="ph ph-map-trifold" aria-hidden="true"></i>
+                                        <span>View on map</span>
+                                        <i class="ph ph-arrow-right dd-btn-primary-chevron" aria-hidden="true"></i>
+                                    </span>
+                                </a>
+                                <button type="button" class="dd-btn-ghost" id="dd-share-btn">
+                                    <i class="ph ph-share-network me-2" aria-hidden="true"></i>Share this place
+                                </button>
+                            </div>
+                        </div>
+                        <div class="dd-sidebar-card info-sidebar-card dd-reveal-scroll mb-0">
+                            <h5>Quick facts</h5>
+                            <div class="facts-list">
+                                <div class="fact-item d-flex">
+                                    <div class="fact-icon me-3"><i class="ph ph-map-pin-line fs-5" aria-hidden="true"></i></div>
+                                    <div class="fact-content">
+                                        <div class="fact-label text-muted small">Location</div>
+                                        <div class="fact-value">{{ spot.address.split(',')[0] if spot.address else 'N/A' }}</div>
+                                    </div>
+                                </div>
+                                <div class="fact-item d-flex">
+                                    <div class="fact-icon me-3"><i class="ph ph-swimming-pool fs-5" aria-hidden="true"></i></div>
+                                    <div class="fact-content">
+                                        <div class="fact-label text-muted small">Category</div>
+                                        <div class="fact-value">{{ spot.category | default('Tourist Spot') }}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </aside>
             </div>
-
         </div>
     </div>
-</section>
+</div>
 {% endblock %}
 
 {% block script %}
 <script>
-    // Gallery lightbox functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const galleryItems = document.querySelectorAll('.gallery-item');
-        
-        galleryItems.forEach(item => {
-            item.addEventListener('click', function() {
-                const img = this.querySelector('img');
-                const modal = document.createElement('div');
-                modal.className = 'gallery-modal';
-                // Simple inline styling for the injected modal for the mockup test
-                modal.style.position = 'fixed';
-                modal.style.top = '0'; modal.style.left = '0'; modal.style.width = '100%'; modal.style.height = '100%';
-                modal.style.backgroundColor = 'rgba(0,0,0,0.9)'; modal.style.zIndex = '9999';
-                modal.style.display = 'flex'; modal.style.justifyContent = 'center'; modal.style.alignItems = 'center';
-                
-                modal.innerHTML = `
-                    <div style="position: relative; max-width: 90%; max-height: 90%;">
-                        <img src="${img.src}" alt="${img.alt}" style="max-width: 100%; max-height: 90vh; object-fit: contain;">
-                        <button class="modal-close" style="position: absolute; top: -40px; right: 0; background: none; border: none; color: white; font-size: 30px; cursor: pointer;">&times;</button>
-                    </div>
-                `;
-                document.body.appendChild(modal);
-                
-                modal.addEventListener('click', function() {
-                    this.remove();
-                });
+    document.addEventListener('DOMContentLoaded', function () {
+        function openGalleryModal(img) {
+            if (!img) return;
+            var modal = document.createElement('div');
+            modal.className = 'gallery-modal';
+            modal.innerHTML =
+                '<div class="dd-modal-inner">' +
+                '<img src="' + img.src.replace(/"/g, '&quot;') + '" alt="' + (img.alt || '').replace(/"/g, '&quot;') + '">' +
+                '<button type="button" class="modal-close" aria-label="Close">&times;</button>' +
+                '</div>';
+            document.body.appendChild(modal);
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) modal.remove();
+            });
+            modal.querySelector('.modal-close').addEventListener('click', function (e) {
+                e.stopPropagation();
+                modal.remove();
+            });
+            modal.querySelector('.dd-modal-inner').addEventListener('click', function (e) {
+                e.stopPropagation();
+            });
+        }
+
+        var revealNodes = document.querySelectorAll('.destination-details-page .dd-reveal-scroll');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            revealNodes.forEach(function (el) {
+                el.classList.add('dd-is-visible');
+            });
+        } else if ('IntersectionObserver' in window) {
+            var revealIo = new IntersectionObserver(
+                function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('dd-is-visible');
+                            revealIo.unobserve(entry.target);
+                        }
+                    });
+                },
+                { threshold: 0.08, rootMargin: '0px 0px -36px 0px' }
+            );
+            revealNodes.forEach(function (el) {
+                revealIo.observe(el);
+            });
+        } else {
+            revealNodes.forEach(function (el) {
+                el.classList.add('dd-is-visible');
+            });
+        }
+
+        document.querySelectorAll('.destination-details-page .gallery-item').forEach(function (item) {
+            item.addEventListener('click', function () {
+                openGalleryModal(item.querySelector('img'));
+            });
+            item.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openGalleryModal(item.querySelector('img'));
+                }
             });
         });
+
+        var shareBtn = document.getElementById('dd-share-btn');
+        if (shareBtn && navigator.clipboard && navigator.clipboard.writeText) {
+            shareBtn.addEventListener('click', function () {
+                navigator.clipboard.writeText(window.location.href).then(function () {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Link copied', showConfirmButton: false, timer: 2000 });
+                    } else {
+                        alert('Link copied!');
+                    }
+                });
+            });
+        }
     });
 </script>
 {% endblock %}

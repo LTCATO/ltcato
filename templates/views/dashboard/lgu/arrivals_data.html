@@ -4,6 +4,288 @@
 
 {% block style %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<style>
+  .arrival-modal .modal-dialog {
+    max-width: min(1600px, 97vw);
+    margin: 1rem auto;
+  }
+
+  .arrival-modal .modal-content {
+    border: 0;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.16);
+  }
+
+  .arrival-modal .modal-header {
+    border-bottom: 1px solid #eef1f4;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(180deg, #fff 0%, #fbfcfd 100%);
+  }
+
+  .arrival-modal .modal-body {
+    padding: 1.15rem 1.25rem;
+    background: #f8fafc;
+  }
+
+  .arrival-modal .modal-footer {
+    border-top: 1px solid #eef1f4;
+    background: #fff;
+    padding: .9rem 1.25rem;
+    gap: .5rem;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .arrival-footer-left,
+  .arrival-footer-right {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    flex-wrap: wrap;
+  }
+
+  .arrival-stepper {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: .55rem;
+    margin-bottom: 1.05rem;
+  }
+
+  .arrival-step {
+    font-size: .75rem;
+    padding: .55rem .4rem;
+    border: 1px solid #e5e7eb;
+    border-radius: .6rem;
+    background: #fff;
+    color: #6b7280;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .arrival-step.active {
+    border-color: var(--primary);
+    color: var(--primary);
+    font-weight: 700;
+    box-shadow: 0 0 0 .1rem rgba(155, 44, 44, 0.12);
+  }
+
+  .arrival-step.done {
+    background: rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.35);
+    color: #047857;
+  }
+
+  .arrival-progress {
+    height: .45rem;
+    background: #eceff3;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 1.2rem;
+  }
+
+  .arrival-progress-bar {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--primary), #7f1d1d);
+    transition: width .3s ease;
+  }
+
+  .arrival-step-page {
+    display: none;
+  }
+
+  .arrival-step-page.active {
+    display: block;
+  }
+
+  .arrival-section-panel {
+    border: 1px solid #e7ecf1;
+    border-radius: .85rem;
+    background: #fff;
+    padding: .95rem;
+    margin-bottom: .8rem;
+  }
+
+  .arrival-step-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: .75rem;
+    margin-bottom: .7rem;
+    padding-bottom: .55rem;
+    border-bottom: 1px dashed #e5e7eb;
+  }
+
+  .arrival-step-title {
+    margin: 0;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  .arrival-step-subtitle {
+    margin: .2rem 0 0;
+    color: #6b7280;
+    font-size: .86rem;
+  }
+
+  .arrival-grid-shell {
+    border: 1px solid #e5e7eb;
+    border-radius: .7rem;
+    overflow: auto;
+    max-height: min(58vh, 560px);
+    background: #fff;
+  }
+
+  .arrival-grid-table th,
+  .arrival-grid-table td {
+    vertical-align: middle;
+    white-space: nowrap;
+    font-size: .82rem;
+  }
+
+  /* If any global DataTable init touches step tables, hide its controls */
+  .arrival-step-page .dataTables_length,
+  .arrival-step-page .dataTables_paginate,
+  .arrival-step-page .dataTables_info {
+    display: none !important;
+  }
+
+  .arrival-grid-table thead th {
+    position: sticky;
+    top: 0;
+    background: #f3f6fa;
+    z-index: 1;
+  }
+
+  .arrival-grid-table tbody tr:nth-child(even) {
+    background: #fcfdff;
+  }
+
+  .arrival-grid-table .form-control-sm {
+    min-width: 92px;
+    border-radius: .45rem;
+  }
+
+  .arrival-grid-table .readonly-total {
+    background: #f3f4f6;
+    font-weight: 700;
+  }
+
+  .arrival-summary-card {
+    border: 1px solid #e5e7eb;
+    border-radius: .75rem;
+    background: #fff;
+    padding: .85rem;
+    height: 100%;
+  }
+
+  .arrival-summary-label {
+    font-size: .78rem;
+    color: #6b7280;
+    margin-bottom: .25rem;
+  }
+
+  .arrival-summary-value {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 0;
+  }
+
+  .arrival-review-block {
+    border: 1px solid #e5e7eb;
+    border-radius: .75rem;
+    padding: .9rem;
+    margin-bottom: .85rem;
+    background: #fff;
+  }
+
+  .arrival-review-title {
+    font-weight: 700;
+    margin-bottom: .55rem;
+  }
+
+  .arrival-review-line {
+    display: flex;
+    justify-content: space-between;
+    gap: .75rem;
+    font-size: .9rem;
+    padding: .22rem 0;
+    border-bottom: 1px dashed #f0f2f5;
+  }
+
+  .arrival-review-line:last-child {
+    border-bottom: 0;
+  }
+
+  .arrival-basic-group {
+    border: 1px solid #e7ecf1;
+    border-radius: .75rem;
+    background: #fff;
+    padding: .9rem;
+    height: 100%;
+  }
+
+  .arrival-basic-group-title {
+    font-size: .78rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: .5rem;
+  }
+
+  .arrival-required {
+    color: #dc2626;
+    font-weight: 700;
+  }
+
+  .arrival-modal .form-label {
+    font-size: .86rem;
+    margin-bottom: .35rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .arrival-modal .form-control,
+  .arrival-modal .form-select {
+    border-radius: .5rem;
+    min-height: 40px;
+  }
+
+  .arrival-modal .btn {
+    border-radius: .55rem;
+    min-height: 38px;
+    padding-inline: .95rem;
+  }
+
+  @media (max-width: 991px) {
+    .arrival-modal .modal-dialog {
+      max-width: 99vw;
+      margin: .5rem auto;
+    }
+
+    .arrival-stepper {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 767px) {
+    .arrival-modal .modal-body {
+      padding: .9rem;
+    }
+
+    .arrival-stepper {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .arrival-step-head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -16,7 +298,7 @@
         <span class="dashboard-subtitle">Manage and analyze visitor statistics and trends</span>
       </div>
       <div class="d-flex align-items-center gap-3">
-        <button class="btn btn-dashboard-action d-flex align-items-center gap-2 shadow-sm" onclick="openAddArrivalModal()">
+        <button class="btn btn-dashboard-action d-flex align-items-center gap-2 shadow-sm" onclick="openTouristArrivalModal()">
           <i class="bx bx-plus fs-5"></i> Add Arrival Data
         </button>
         <button class="btn btn-dashboard-action d-flex align-items-center gap-2 shadow-sm" onclick="exportData()">
@@ -355,68 +637,244 @@
   </div>
 </div>
 
-<!-- Add/Edit Arrival Modal -->
-<div class="modal fade" id="addArrivalModal" tabindex="-1">
-  <div class="modal-dialog modal-lg">
+<!-- Tourist Arrival Submission Modal -->
+<div class="modal fade arrival-modal" id="touristArrivalModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen-lg-down modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add Arrival Data</h5>
+        <h5 class="modal-title">Tourist Arrival Submission</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <form id="arrivalForm">
-          <div class="row">
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label class="form-label">Date</label>
-                <input type="date" class="form-control" required>
+        <div class="arrival-stepper" id="arrivalStepper">
+          <div class="arrival-step active">1. Basic Info</div>
+          <div class="arrival-step">2. This City/Municipality</div>
+          <div class="arrival-step">3. Other Local Areas</div>
+          <div class="arrival-step">4. Foreign Residence</div>
+          <div class="arrival-step">5. Totals & Summary</div>
+          <div class="arrival-step">6. Review & Submit</div>
+        </div>
+        <div class="arrival-progress">
+          <div class="arrival-progress-bar" id="arrivalProgressBar"></div>
+        </div>
+
+        <form id="touristArrivalForm" novalidate>
+          <div class="arrival-step-page active" data-step="1">
+            <div class="arrival-section-panel">
+              <div class="arrival-step-head">
+                <div>
+                  <h6 class="arrival-step-title">Basic Information</h6>
+                  <p class="arrival-step-subtitle">Fill out core details first. These fields are required before continuing.</p>
+                </div>
               </div>
-            </div>
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label class="form-label">Time</label>
-                <input type="time" class="form-control" required>
-              </div>
-            </div>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Tourist Spot</label>
-            <select class="form-control" required>
-              <option value="">Select Tourist Spot</option>
-              <option value="beach-resort">Beach Resort</option>
-              <option value="mountain-view">Mountain View</option>
-              <option value="historical-site">Historical Site</option>
-            </select>
-          </div>
-          <div class="row">
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label class="form-label">Local Tourists</label>
-                <input type="number" class="form-control" min="0" required>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label class="form-label">Foreign Tourists</label>
-                <input type="number" class="form-control" min="0" required>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="mb-3">
-                <label class="form-label">Outsiders</label>
-                <input type="number" class="form-control" min="0" required>
+              <div class="row g-3">
+                <div class="col-12">
+                  <div class="arrival-basic-group">
+                    <div class="arrival-basic-group-title">Date & Location</div>
+                    <div class="row g-3">
+                      <div class="col-md-6">
+                        <label class="form-label">Month/Year <span class="arrival-required">*</span></label>
+                        <input type="month" id="arrivalMonthYear" class="form-control" required>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">City/Municipality <span class="arrival-required">*</span></label>
+                        <input type="text" id="arrivalMunicipality" class="form-control" required placeholder="e.g. Calamba City">
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="mb-3">
-            <label class="form-label">Notes</label>
-            <textarea class="form-control" rows="3" placeholder="Additional notes..."></textarea>
+
+          <div class="arrival-step-page" data-step="2">
+            <div class="arrival-section-panel">
+            <div class="arrival-step-head">
+              <div>
+                <h6 class="arrival-step-title">Daily Local Visitors (This City/Municipality)</h6>
+                <p class="arrival-step-subtitle">Enter daily local visitor counts. Totals update automatically.</p>
+              </div>
+              <small class="text-muted">Rows are based on selected month/year.</small>
+            </div>
+            <div class="arrival-grid-shell">
+              <table class="table table-sm mb-0 arrival-grid-table">
+                <thead>
+                  <tr>
+                    <th>Day</th>
+                    <th>Weekday</th>
+                    <th>Male</th>
+                    <th>Female</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody id="step2Body"></tbody>
+              </table>
+            </div>
+            </div>
+          </div>
+
+          <div class="arrival-step-page" data-step="3">
+            <div class="arrival-section-panel">
+            <div class="arrival-step-head">
+              <div>
+                <h6 class="arrival-step-title">Visitors from Other City/Municipality and Other Province</h6>
+                <p class="arrival-step-subtitle">Record domestic visitors outside the selected city/municipality.</p>
+              </div>
+              <small class="text-muted">Auto totals are read-only.</small>
+            </div>
+            <div class="arrival-grid-shell">
+              <table class="table table-sm mb-0 arrival-grid-table">
+                <thead>
+                  <tr>
+                    <th rowspan="2">Day</th>
+                    <th rowspan="2">Weekday</th>
+                    <th colspan="3">Other City/Municipality</th>
+                    <th colspan="3">Other Province</th>
+                  </tr>
+                  <tr>
+                    <th>Male</th><th>Female</th><th>Total</th>
+                    <th>Male</th><th>Female</th><th>Total</th>
+                  </tr>
+                </thead>
+                <tbody id="step3Body"></tbody>
+              </table>
+            </div>
+            </div>
+          </div>
+
+          <div class="arrival-step-page" data-step="4">
+            <div class="arrival-section-panel">
+            <div class="arrival-step-head">
+              <div>
+                <h6 class="arrival-step-title">Daily Foreign Country Residence</h6>
+                <p class="arrival-step-subtitle">Enter daily foreign visitor counts.</p>
+              </div>
+              <small class="text-muted">Totals are auto-computed.</small>
+            </div>
+            <div class="arrival-grid-shell">
+              <table class="table table-sm mb-0 arrival-grid-table">
+                <thead>
+                  <tr>
+                    <th>Day</th>
+                    <th>Weekday</th>
+                    <th>Male</th>
+                    <th>Female</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody id="step4Body"></tbody>
+              </table>
+            </div>
+            </div>
+          </div>
+
+          <div class="arrival-step-page" data-step="5">
+            <div class="arrival-section-panel">
+            <div class="arrival-step-head">
+              <div>
+                <h6 class="arrival-step-title">Daily Grand Totals</h6>
+                <p class="arrival-step-subtitle">Review daily male/female totals and overall totals.</p>
+              </div>
+              <small class="text-muted">Auto-calculated from previous steps.</small>
+            </div>
+            <div class="arrival-grid-shell mb-3">
+              <table class="table table-sm mb-0 arrival-grid-table">
+                <thead>
+                  <tr>
+                    <th>Day</th>
+                    <th>Weekday</th>
+                    <th>Total Male</th>
+                    <th>Total Female</th>
+                    <th>Overall Total</th>
+                  </tr>
+                </thead>
+                <tbody id="step5Body"></tbody>
+              </table>
+            </div>
+
+            <h6 class="fw-bold mb-2">Monthly Summary</h6>
+            <div class="row g-2" id="monthlySummaryCards">
+              <div class="col-md-4 col-6">
+                <div class="arrival-summary-card">
+                  <div class="arrival-summary-label">Total Male Visitors</div>
+                  <p class="arrival-summary-value" id="sumMale">0</p>
+                </div>
+              </div>
+              <div class="col-md-4 col-6">
+                <div class="arrival-summary-card">
+                  <div class="arrival-summary-label">Total Female Visitors</div>
+                  <p class="arrival-summary-value" id="sumFemale">0</p>
+                </div>
+              </div>
+              <div class="col-md-4 col-6">
+                <div class="arrival-summary-card">
+                  <div class="arrival-summary-label">Total Local Visitors</div>
+                  <p class="arrival-summary-value" id="sumLocal">0</p>
+                </div>
+              </div>
+              <div class="col-md-4 col-6">
+                <div class="arrival-summary-card">
+                  <div class="arrival-summary-label">Total Domestic Visitors (Other City/Province)</div>
+                  <p class="arrival-summary-value" id="sumDomesticOther">0</p>
+                </div>
+              </div>
+              <div class="col-md-4 col-6">
+                <div class="arrival-summary-card">
+                  <div class="arrival-summary-label">Total Foreign Visitors</div>
+                  <p class="arrival-summary-value" id="sumForeign">0</p>
+                </div>
+              </div>
+              <div class="col-md-4 col-6">
+                <div class="arrival-summary-card">
+                  <div class="arrival-summary-label">Grand Total Visitors</div>
+                  <p class="arrival-summary-value" id="sumGrand">0</p>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+
+          <div class="arrival-step-page" data-step="6">
+            <div class="arrival-section-panel">
+            <div class="arrival-step-head">
+              <div>
+                <h6 class="arrival-step-title">Review and Submit</h6>
+                <p class="arrival-step-subtitle">Please check all information before final submission.</p>
+              </div>
+            </div>
+            <div class="arrival-review-block" id="reviewBasic"></div>
+            <div class="arrival-review-block" id="reviewSummary"></div>
+            <div class="arrival-review-block">
+              <div class="arrival-review-title">Daily Total Preview</div>
+              <div class="arrival-grid-shell">
+                <table class="table table-sm mb-0">
+                  <thead>
+                    <tr>
+                      <th>Day</th>
+                      <th>Weekday</th>
+                      <th>Total Male</th>
+                      <th>Total Female</th>
+                      <th>Overall Total</th>
+                    </tr>
+                  </thead>
+                  <tbody id="reviewDailyTotals"></tbody>
+                </table>
+              </div>
+            </div>
+            </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-dashboard-action" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-dashboard-action" onclick="saveArrival()">Save Arrival Data</button>
+        <div class="arrival-footer-left">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-warning" id="btnSaveDraft">Save as Draft</button>
+        </div>
+        <div class="arrival-footer-right">
+          <button type="button" class="btn btn-dashboard-action" id="btnPrevStep">Previous</button>
+          <button type="button" class="btn btn-dashboard-action" id="btnNextStep">Next</button>
+          <button type="button" class="btn btn-success" id="btnSubmitArrival" style="display:none;">Submit</button>
+        </div>
       </div>
     </div>
   </div>
@@ -427,53 +885,327 @@
 {% block script %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    // Initialize DataTable
-    if ($('#arrivalsDataTable').length) {
-      $('#arrivalsDataTable').DataTable({
-        responsive: true,
-        order: [[0, 'desc']],
-        pageLength: 10,
-        language: {
-          search: "Search arrivals:",
-          lengthMenu: "Show _MENU_ entries",
-          info: "Showing _START_ to _END_ of _TOTAL_ arrivals",
-          paginate: {
-            first: "First",
-            last: "Last",
-            next: "Next",
-            previous: "Previous"
-          }
+  (function () {
+    const STEP_COUNT = 6;
+    let currentStep = 1;
+
+    const monthInput = () => document.getElementById('arrivalMonthYear');
+    const stepPages = () => document.querySelectorAll('.arrival-step-page');
+    const stepPills = () => document.querySelectorAll('#arrivalStepper .arrival-step');
+    const progressBar = () => document.getElementById('arrivalProgressBar');
+    const btnPrev = () => document.getElementById('btnPrevStep');
+    const btnNext = () => document.getElementById('btnNextStep');
+    const btnSubmit = () => document.getElementById('btnSubmitArrival');
+    const modalEl = () => document.getElementById('touristArrivalModal');
+
+    function daysInMonthFromInput() {
+      const val = monthInput().value;
+      if (!val) return 31;
+      const parts = val.split('-');
+      const year = Number(parts[0]);
+      const month = Number(parts[1]);
+      return new Date(year, month, 0).getDate();
+    }
+
+    function getWeekdayName(year, monthIndex, day) {
+      return new Date(year, monthIndex, day).toLocaleDateString('en-US', { weekday: 'short' });
+    }
+
+    function parseMonthYear() {
+      const val = monthInput().value;
+      if (!val) {
+        const now = new Date();
+        return { year: now.getFullYear(), monthIndex: now.getMonth() };
+      }
+      const [yearStr, monthStr] = val.split('-');
+      return { year: Number(yearStr), monthIndex: Number(monthStr) - 1 };
+    }
+
+    function num(v) {
+      const n = Number(v);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+
+    function renderRows() {
+      const count = daysInMonthFromInput();
+      const { year, monthIndex } = parseMonthYear();
+      const targets = [
+        document.getElementById('step2Body'),
+        document.getElementById('step3Body'),
+        document.getElementById('step4Body'),
+        document.getElementById('step5Body')
+      ];
+      targets.forEach((t) => { if (t) t.innerHTML = ''; });
+
+      for (let day = 1; day <= count; day += 1) {
+        const weekday = getWeekdayName(year, monthIndex, day);
+
+        document.getElementById('step2Body').insertAdjacentHTML('beforeend', `
+          <tr data-day="${day}">
+            <td>${day}</td>
+            <td>${weekday}</td>
+            <td><input type="number" min="0" step="1" class="form-control form-control-sm inp this-city-male" value="0"></td>
+            <td><input type="number" min="0" step="1" class="form-control form-control-sm inp this-city-female" value="0"></td>
+            <td><input type="number" readonly class="form-control form-control-sm readonly-total this-city-total" value="0"></td>
+          </tr>
+        `);
+
+        document.getElementById('step3Body').insertAdjacentHTML('beforeend', `
+          <tr data-day="${day}">
+            <td>${day}</td>
+            <td>${weekday}</td>
+            <td><input type="number" min="0" step="1" class="form-control form-control-sm inp other-city-male" value="0"></td>
+            <td><input type="number" min="0" step="1" class="form-control form-control-sm inp other-city-female" value="0"></td>
+            <td><input type="number" readonly class="form-control form-control-sm readonly-total other-city-total" value="0"></td>
+            <td><input type="number" min="0" step="1" class="form-control form-control-sm inp other-prov-male" value="0"></td>
+            <td><input type="number" min="0" step="1" class="form-control form-control-sm inp other-prov-female" value="0"></td>
+            <td><input type="number" readonly class="form-control form-control-sm readonly-total other-prov-total" value="0"></td>
+          </tr>
+        `);
+
+        document.getElementById('step4Body').insertAdjacentHTML('beforeend', `
+          <tr data-day="${day}">
+            <td>${day}</td>
+            <td>${weekday}</td>
+            <td><input type="number" min="0" step="1" class="form-control form-control-sm inp foreign-male" value="0"></td>
+            <td><input type="number" min="0" step="1" class="form-control form-control-sm inp foreign-female" value="0"></td>
+            <td><input type="number" readonly class="form-control form-control-sm readonly-total foreign-total" value="0"></td>
+          </tr>
+        `);
+
+        document.getElementById('step5Body').insertAdjacentHTML('beforeend', `
+          <tr data-day="${day}">
+            <td>${day}</td>
+            <td>${weekday}</td>
+            <td><input type="number" readonly class="form-control form-control-sm readonly-total grand-male" value="0"></td>
+            <td><input type="number" readonly class="form-control form-control-sm readonly-total grand-female" value="0"></td>
+            <td><input type="number" readonly class="form-control form-control-sm readonly-total grand-total" value="0"></td>
+          </tr>
+        `);
+      }
+
+      recalcAll();
+    }
+
+    function recalcAll() {
+      const rows = document.querySelectorAll('#step5Body tr[data-day]');
+      let monthMale = 0;
+      let monthFemale = 0;
+      let monthLocal = 0;
+      let monthDomesticOther = 0;
+      let monthForeign = 0;
+      let monthGrand = 0;
+
+      rows.forEach((row) => {
+        const day = row.getAttribute('data-day');
+        const r2 = document.querySelector(`#step2Body tr[data-day="${day}"]`);
+        const r3 = document.querySelector(`#step3Body tr[data-day="${day}"]`);
+        const r4 = document.querySelector(`#step4Body tr[data-day="${day}"]`);
+
+        const thisCityMale = num(r2.querySelector('.this-city-male').value);
+        const thisCityFemale = num(r2.querySelector('.this-city-female').value);
+        const thisCityTotal = thisCityMale + thisCityFemale;
+        r2.querySelector('.this-city-total').value = thisCityTotal;
+
+        const otherCityMale = num(r3.querySelector('.other-city-male').value);
+        const otherCityFemale = num(r3.querySelector('.other-city-female').value);
+        const otherCityTotal = otherCityMale + otherCityFemale;
+        r3.querySelector('.other-city-total').value = otherCityTotal;
+
+        const otherProvMale = num(r3.querySelector('.other-prov-male').value);
+        const otherProvFemale = num(r3.querySelector('.other-prov-female').value);
+        const otherProvTotal = otherProvMale + otherProvFemale;
+        r3.querySelector('.other-prov-total').value = otherProvTotal;
+
+        const foreignMale = num(r4.querySelector('.foreign-male').value);
+        const foreignFemale = num(r4.querySelector('.foreign-female').value);
+        const foreignTotal = foreignMale + foreignFemale;
+        r4.querySelector('.foreign-total').value = foreignTotal;
+
+        const grandMale = thisCityMale + otherCityMale + otherProvMale + foreignMale;
+        const grandFemale = thisCityFemale + otherCityFemale + otherProvFemale + foreignFemale;
+        const grandTotal = grandMale + grandFemale;
+
+        row.querySelector('.grand-male').value = grandMale;
+        row.querySelector('.grand-female').value = grandFemale;
+        row.querySelector('.grand-total').value = grandTotal;
+
+        monthMale += grandMale;
+        monthFemale += grandFemale;
+        monthLocal += thisCityTotal;
+        monthDomesticOther += (otherCityTotal + otherProvTotal);
+        monthForeign += foreignTotal;
+        monthGrand += grandTotal;
+      });
+
+      document.getElementById('sumMale').textContent = monthMale;
+      document.getElementById('sumFemale').textContent = monthFemale;
+      document.getElementById('sumLocal').textContent = monthLocal;
+      document.getElementById('sumDomesticOther').textContent = monthDomesticOther;
+      document.getElementById('sumForeign').textContent = monthForeign;
+      document.getElementById('sumGrand').textContent = monthGrand;
+    }
+
+    function disableStepTableDataTables() {
+      if (!window.jQuery || !jQuery.fn || !jQuery.fn.DataTable) return;
+      document.querySelectorAll('.arrival-step-page table').forEach((tbl) => {
+        if (jQuery.fn.DataTable.isDataTable(tbl)) {
+          jQuery(tbl).DataTable().destroy();
         }
       });
     }
 
-    function openAddArrivalModal() {
-      $('#addArrivalModal').modal('show');
+    function sanitizeNumberInput(e) {
+      if (!(e.target instanceof HTMLInputElement)) return;
+      if (!e.target.classList.contains('inp')) return;
+      if (e.target.value === '') return;
+      let v = Number(e.target.value);
+      if (!Number.isFinite(v) || v < 0) v = 0;
+      e.target.value = String(Math.floor(v));
+      recalcAll();
     }
 
-    function viewArrivalDetails(id) {
-      $('#viewArrivalModal').modal('show');
-    }
-
-    function editArrival(id) {
-      $('#viewArrivalModal').modal('hide');
-      $('#addArrivalModal').modal('show');
-    }
-
-    function saveArrival() {
-      // Placeholder for save functionality
+    function validateStep(step) {
+      if (step !== 1) return true;
+      const requiredIds = ['arrivalMonthYear', 'arrivalMunicipality'];
+      const missing = requiredIds.filter((id) => !document.getElementById(id).value.trim());
+      if (!missing.length) return true;
       Swal.fire({
-        title: 'Success!',
-        text: 'Arrival data has been saved successfully.',
-        icon: 'success',
-        confirmButtonText: 'OK'
+        icon: 'warning',
+        title: 'Required fields missing',
+        text: 'Please complete all required Basic Information fields before proceeding.'
       });
-      $('#addArrivalModal').modal('hide');
+      return false;
     }
 
-    function exportData() {
-      // Placeholder for export functionality
+    function setStep(step) {
+      currentStep = Math.min(Math.max(step, 1), STEP_COUNT);
+      stepPages().forEach((p) => p.classList.toggle('active', Number(p.dataset.step) === currentStep));
+      stepPills().forEach((pill, idx) => {
+        const n = idx + 1;
+        pill.classList.toggle('active', n === currentStep);
+        pill.classList.toggle('done', n < currentStep);
+      });
+      progressBar().style.width = `${(currentStep / STEP_COUNT) * 100}%`;
+
+      btnPrev().style.display = currentStep === 1 ? 'none' : 'inline-block';
+      btnNext().style.display = currentStep === STEP_COUNT ? 'none' : 'inline-block';
+      btnSubmit().style.display = currentStep === STEP_COUNT ? 'inline-block' : 'none';
+
+      if (currentStep === 6) buildReview();
+    }
+
+    function buildReview() {
+      const monthYear = document.getElementById('arrivalMonthYear').value || '-';
+      const muni = document.getElementById('arrivalMunicipality').value || '-';
+
+      document.getElementById('reviewBasic').innerHTML = `
+        <div class="arrival-review-title">Basic Information</div>
+        <div class="arrival-review-line"><span>Month/Year</span><strong>${monthYear}</strong></div>
+        <div class="arrival-review-line"><span>City/Municipality</span><strong>${muni}</strong></div>
+      `;
+
+      document.getElementById('reviewSummary').innerHTML = `
+        <div class="arrival-review-title">Monthly Summary</div>
+        <div class="arrival-review-line"><span>Total Male Visitors</span><strong>${document.getElementById('sumMale').textContent}</strong></div>
+        <div class="arrival-review-line"><span>Total Female Visitors</span><strong>${document.getElementById('sumFemale').textContent}</strong></div>
+        <div class="arrival-review-line"><span>Total Local Visitors</span><strong>${document.getElementById('sumLocal').textContent}</strong></div>
+        <div class="arrival-review-line"><span>Total Domestic Other</span><strong>${document.getElementById('sumDomesticOther').textContent}</strong></div>
+        <div class="arrival-review-line"><span>Total Foreign Visitors</span><strong>${document.getElementById('sumForeign').textContent}</strong></div>
+        <div class="arrival-review-line"><span>Grand Total</span><strong>${document.getElementById('sumGrand').textContent}</strong></div>
+      `;
+
+      const reviewBody = document.getElementById('reviewDailyTotals');
+      reviewBody.innerHTML = '';
+      document.querySelectorAll('#step5Body tr').forEach((row) => {
+        const day = row.children[0].textContent;
+        const weekday = row.children[1].textContent;
+        const male = row.querySelector('.grand-male').value;
+        const female = row.querySelector('.grand-female').value;
+        const total = row.querySelector('.grand-total').value;
+        reviewBody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td>${day}</td>
+            <td>${weekday}</td>
+            <td>${male}</td>
+            <td>${female}</td>
+            <td><strong>${total}</strong></td>
+          </tr>
+        `);
+      });
+    }
+
+    function resetForm() {
+      document.getElementById('touristArrivalForm').reset();
+      const now = new Date();
+      monthInput().value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      renderRows();
+      disableStepTableDataTables();
+      setStep(1);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      if ($('#arrivalsDataTable').length) {
+        $('#arrivalsDataTable').DataTable({
+          responsive: true,
+          order: [[0, 'desc']],
+          pageLength: 10,
+          language: {
+            search: "Search arrivals:",
+            lengthMenu: "Show _MENU_ entries",
+            info: "Showing _START_ to _END_ of _TOTAL_ arrivals",
+            paginate: { first: "First", last: "Last", next: "Next", previous: "Previous" }
+          }
+        });
+      }
+
+      resetForm();
+      document.getElementById('touristArrivalForm').addEventListener('input', sanitizeNumberInput);
+      monthInput().addEventListener('change', renderRows);
+      monthInput().addEventListener('change', disableStepTableDataTables);
+      btnPrev().addEventListener('click', () => setStep(currentStep - 1));
+      btnNext().addEventListener('click', () => {
+        if (!validateStep(currentStep)) return;
+        setStep(currentStep + 1);
+      });
+
+      document.getElementById('btnSaveDraft').addEventListener('click', function () {
+        recalcAll();
+        Swal.fire({
+          icon: 'info',
+          title: 'Draft saved',
+          text: 'Tourist arrival form has been saved as draft.'
+        });
+      });
+
+      btnSubmit().addEventListener('click', function () {
+        recalcAll();
+        Swal.fire({
+          icon: 'success',
+          title: 'Submitted successfully',
+          text: 'Tourist Arrival Submission has been submitted.'
+        });
+        $('#touristArrivalModal').modal('hide');
+      });
+
+      modalEl().addEventListener('hidden.bs.modal', resetForm);
+    });
+
+    window.openTouristArrivalModal = function openTouristArrivalModal() {
+      resetForm();
+      $('#touristArrivalModal').modal('show');
+    };
+
+    window.viewArrivalDetails = function viewArrivalDetails(id) {
+      $('#viewArrivalModal').modal('show');
+    };
+
+    window.editArrival = function editArrival(id) {
+      $('#viewArrivalModal').modal('hide');
+      window.openTouristArrivalModal();
+    };
+
+    window.exportData = function exportData() {
       Swal.fire({
         title: 'Export Data',
         html: '<p>Select export format:</p>',
@@ -492,7 +1224,7 @@
           Swal.fire('Exported!', 'Data exported as CSV file.', 'success');
         }
       });
-    }
-  });
+    };
+  })();
 </script>
 {% endblock %}
