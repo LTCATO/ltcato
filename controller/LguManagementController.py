@@ -67,8 +67,19 @@ def update_spot_status(spot_id):
         return jsonify({"success": False, "message": "Invalid status."}), 400
         
     try:
+        # Get the current user ID from session
+        from flask import session
+        user_id = session.get('user')
+        
+        # Prepare update payload
+        update_data = {"status": new_status}
+        
+        # Set approved_by field when status is approved
+        if new_status == 'approved':
+            update_data["approved_by"] = user_id
+        
         # Update the status using service_supabase (admin privileges)
-        service_supabase.table('tourist_spots').update({"status": new_status}).eq('id', spot_id).execute()
+        service_supabase.table('tourist_spots').update(update_data).eq('id', spot_id).execute()
         return jsonify({"success": True, "message": f"Spot status updated to {new_status}."})
     except Exception as e:
         print(f"Error updating spot status: {e}")

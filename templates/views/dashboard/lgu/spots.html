@@ -461,6 +461,8 @@
                     <th>Status</th>
                     <th>Rating</th>
                     <th>Address</th>
+                    <th>Created By</th>
+                    <th>Approved By</th>
                     <th>Created</th>
                     <th>Actions</th>
                   </tr>
@@ -505,6 +507,24 @@
                       <div class="d-flex align-items-center">
                         <i class="bx bx-map me-2 text-muted"></i>
                         <div class="small">{{ spot.address or '—' }}</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="small">
+                        {% if spot.created_by_profile %}
+                          {{ spot.created_by_profile.first_name }} {{ spot.created_by_profile.last_name }}
+                        {% else %}
+                          —
+                        {% endif %}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="small">
+                        {% if spot.approved_by_profile %}
+                          {{ spot.approved_by_profile.first_name }} {{ spot.approved_by_profile.last_name }}
+                        {% else %}
+                          —
+                        {% endif %}
                       </div>
                     </td>
                     <td class="createdAt small text-muted">
@@ -826,6 +846,14 @@
             <div class="col-12">
               <label class="form-label fw-medium">Address</label>
               <input type="text" name="address" id="editAddress" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-medium">Latitude</label>
+              <input type="number" step="any" name="latitude" id="editLatitude" class="form-control" placeholder="e.g., 14.2079">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-medium">Longitude</label>
+              <input type="number" step="any" name="longitude" id="editLongitude" class="form-control" placeholder="e.g., 121.4478">
             </div>
             <div class="col-md-6">
               <label class="form-label fw-medium">Hook Title</label>
@@ -1310,6 +1338,8 @@
         document.getElementById('editName').value = spot.name || '';
         document.getElementById('editCategory').value = spot.category || 'other';
         document.getElementById('editAddress').value = spot.address || '';
+        document.getElementById('editLatitude').value = spot.latitude || '';
+        document.getElementById('editLongitude').value = spot.longitude || '';
         document.getElementById('editHookTitle').value = spot.hook_title || '';
         document.getElementById('editHookText').value = spot.hook_text || '';
         document.getElementById('editDescription').value = spot.description || '';

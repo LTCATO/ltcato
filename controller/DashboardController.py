@@ -251,6 +251,27 @@ def tourist_spots():
         spots_response = supabase.table('tourist_spots').select('*').eq('municipality_id', municipality_id).execute()
         tourist_spots = spots_response.data
         
+        # Fetch user profiles for created_by and approved_by fields
+        user_ids = set()
+        for spot in tourist_spots:
+            if spot.get('created_by'):
+                user_ids.add(spot['created_by'])
+            if spot.get('approved_by'):
+                user_ids.add(spot['approved_by'])
+        
+        user_profiles = {}
+        if user_ids:
+            profiles_response = supabase.table('profiles').select('id, first_name, last_name').in_('id', list(user_ids)).execute()
+            for profile in profiles_response.data:
+                user_profiles[profile['id']] = profile
+        
+        # Attach user profiles to spots
+        for spot in tourist_spots:
+            if spot.get('created_by') and spot['created_by'] in user_profiles:
+                spot['created_by_profile'] = user_profiles[spot['created_by']]
+            if spot.get('approved_by') and spot['approved_by'] in user_profiles:
+                spot['approved_by_profile'] = user_profiles[spot['approved_by']]
+        
         # Calculate tourist spots statistics
         total_spots = len(tourist_spots)
         active_spots = len([spot for spot in tourist_spots if spot.get('status') == 'approved'])
@@ -364,8 +385,9 @@ def lgu_add_spot():
         audience_str = request.form.get('target_audience', '')
         target_audience = [t.strip() for t in audience_str.split(',') if t.strip()]
 
-        # 4. Get municipality ID from logged-in LGU session
+        # 4. Get municipality ID and user ID from logged-in LGU session
         municipality_id = session.get('municipality_id')
+        user_id = session.get('user')
 
         # 5. Construct payload
         payload = {
@@ -384,6 +406,9 @@ def lgu_add_spot():
             "target_audience": target_audience,
             "main_image_url": main_image_url,
             "gallery_images": gallery_urls,
+            "latitude": float(request.form.get('latitude')) if request.form.get('latitude') else None,
+            "longitude": float(request.form.get('longitude')) if request.form.get('longitude') else None,
+            "created_by": user_id,
             "status": "pending"
         }
 
@@ -448,6 +473,8 @@ def lgu_edit_spot(spot_id):
             "parking_info": request.form.get('parking_info'),
             "highlights": highlights,
             "target_audience": target_audience,
+            "latitude": float(request.form.get('latitude')) if request.form.get('latitude') else None,
+            "longitude": float(request.form.get('longitude')) if request.form.get('longitude') else None,
         }
 
         # Optional: replace main image if a new file was uploaded

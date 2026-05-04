@@ -3,9 +3,9 @@ from flask import render_template, request, abort
 from supabase_client import supabase, service_supabase
 
 def home():
-    # # Check if the domain has 'admin' in it
-    # if 'admin-ltcato' in request.host:
-    return render_template('views/admin_landing.html')
+    # Check if the domain has 'admin' in it
+    if 'admin-ltcato' in request.host:
+        return render_template('views/admin_landing.html')
     
     # Otherwise, serve the normal user landing page
     return render_template('views/client/home.html')
