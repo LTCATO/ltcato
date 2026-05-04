@@ -4,8 +4,8 @@ from supabase_client import supabase, service_supabase
 
 def home():
     # # Check if the domain has 'admin' in it
-    #if 'admin-ltcato' in request.host:
-    return render_template('views/admin_landing.html')
+    if 'admin-ltcato' in request.host:
+        return render_template('views/admin_landing.html')
     
     # Otherwise, serve the normal user landing page
     return render_template('views/client/home.html')
@@ -13,6 +13,9 @@ def home():
 
 def explore_map():
     return render_template('views/client/explore_map.html')
+
+def login_signup():
+    return render_template('views/client/login_signup.html')
 
 def destination_details(spot_id):
     """Route to view a dynamic destination detail page"""
