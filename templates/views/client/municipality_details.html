@@ -144,6 +144,33 @@
         padding: clamp(2.5rem, 8vw, 4rem) 0 clamp(3.75rem, 10vh, 5.75rem);
     }
 
+    .municipality-details-page .md-hero-card {
+        position: relative;
+        margin: 0 auto;
+        max-width: 52rem;
+        padding: clamp(1.25rem, 3.2vw, 1.9rem) clamp(1.15rem, 3vw, 1.75rem);
+        border-radius: 1.25rem;
+        background:
+            radial-gradient(circle at 20% 20%, rgba(253, 230, 138, 0.12) 0%, transparent 45%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.06) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow:
+            0 18px 60px rgba(0, 0, 0, 0.28),
+            inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+    }
+
+    .municipality-details-page .md-hero-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+        opacity: 0.9;
+    }
+
     .municipality-details-page .md-eyebrow {
         display: inline-flex;
         align-items: center;
@@ -153,27 +180,35 @@
         letter-spacing: 0.18em;
         text-transform: uppercase;
         color: rgba(255, 255, 255, 0.76);
-        margin-bottom: 1rem;
-        padding-bottom: 0.65rem;
+        margin-bottom: 0.85rem;
+        padding-bottom: 0.6rem;
         border-bottom: 1px solid rgba(253, 230, 138, 0.35);
     }
 
     .municipality-details-page .md-chip {
         display: inline-flex;
         align-items: center;
-        padding: 0.45rem 1rem;
+        gap: 0.45rem;
+        padding: 0.48rem 1.05rem;
         font-size: 0.8125rem;
-        font-weight: 700;
-        letter-spacing: 0.02em;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
         border-radius: 999px;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(254, 243, 199, 0.9) 100%);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(254, 243, 199, 0.88) 100%);
         color: var(--md-primary-deep);
-        border: 1px solid rgba(255, 255, 255, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.4);
         box-shadow: 0 6px 28px rgba(0, 0, 0, 0.2);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        margin-bottom: 1.35rem;
+        margin-bottom: 1.05rem;
         transition: transform 0.35s var(--md-ease), box-shadow 0.35s ease;
+    }
+
+    .municipality-details-page .md-chip i {
+        color: var(--md-primary);
+        font-size: 1.05rem;
+        filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.18));
     }
 
     @media (prefers-reduced-motion: no-preference) {
@@ -188,7 +223,7 @@
         font-weight: 800;
         line-height: 1.06;
         letter-spacing: -0.035em;
-        margin-bottom: 0.85rem;
+        margin-bottom: 0.75rem;
         text-wrap: balance;
         color: #fff;
         text-shadow: 0 4px 32px rgba(0, 0, 0, 0.35);
@@ -209,10 +244,10 @@
     .municipality-details-page .md-hero-tagline {
         font-size: clamp(1.05rem, 2.2vw, 1.35rem);
         font-weight: 500;
-        line-height: 1.55;
+        line-height: 1.6;
         color: rgba(255, 255, 255, 0.92);
         margin: 0 auto;
-        max-width: 36rem;
+        max-width: 40rem;
     }
 
     .municipality-details-page .md-hero-tagline .ph {
@@ -666,14 +701,16 @@
         <div class="container md-hero-inner">
             <div class="row justify-content-center text-center">
                 <div class="col-lg-9 col-xl-8">
-                    <p class="md-eyebrow md-hero-enter md-hero-enter--1 mb-0">Laguna · LTCATO</p>
-                    <span class="md-chip md-hero-enter md-hero-enter--2">
-                        <i class="ph ph-buildings" aria-hidden="true"></i> {{ muni_type }}
-                    </span>
-                    <h1 class="md-hero-title md-hero-enter md-hero-enter--3">{{ muni_name }}</h1>
-                    <p class="md-hero-tagline md-hero-enter md-hero-enter--4 mb-0">
-                        <i class="ph ph-sparkle me-2" aria-hidden="true"></i>{{ muni_tagline }}
-                    </p>
+                    <div class="md-hero-card">
+                        <p class="md-eyebrow md-hero-enter md-hero-enter--1 mb-0">Laguna · LTCATO</p>
+                        <span class="md-chip md-hero-enter md-hero-enter--2">
+                            <i class="ph ph-buildings" aria-hidden="true"></i> {{ muni_type }}
+                        </span>
+                        <h1 class="md-hero-title md-hero-enter md-hero-enter--3">{{ muni_name }}</h1>
+                        <p class="md-hero-tagline md-hero-enter md-hero-enter--4 mb-0">
+                            <i class="ph ph-sparkle me-2" aria-hidden="true"></i>{{ muni_tagline }}
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

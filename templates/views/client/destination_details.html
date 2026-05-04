@@ -495,24 +495,34 @@
     .destination-details-page .info-icon {
         width: 56px;
         height: 56px;
-        background: linear-gradient(145deg, var(--dd-primary) 0%, var(--dd-primary-deep) 100%);
-        color: #fff;
+        background:
+            radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.32) 0%, transparent 42%),
+            linear-gradient(145deg, var(--dd-primary) 0%, var(--dd-primary-deep) 100%);
+        color: #ffffff;
         border-radius: 18px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.45rem;
+        font-size: 1.55rem;
         margin: 0 auto 1rem;
         box-shadow:
-            0 8px 24px rgba(155, 44, 44, 0.35),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            0 10px 28px rgba(155, 44, 44, 0.45),
+            0 2px 8px rgba(0, 0, 0, 0.18),
+            inset 0 1px 0 rgba(255, 255, 255, 0.28);
         transition: transform 0.45s var(--dd-ease-spring), box-shadow 0.35s ease;
+    }
+
+    .destination-details-page .info-icon i {
+        color: #ffffff !important;
+        filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.28));
     }
 
     @media (prefers-reduced-motion: no-preference) {
         .destination-details-page .info-card:hover .info-icon {
-            transform: scale(1.08) rotate(-3deg);
-            box-shadow: 0 12px 32px rgba(155, 44, 44, 0.42);
+            transform: scale(1.1) rotate(-3deg);
+            box-shadow:
+                0 16px 44px rgba(155, 44, 44, 0.55),
+                0 6px 16px rgba(0, 0, 0, 0.22);
         }
     }
 

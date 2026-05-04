@@ -9,6 +9,9 @@
         --mu-ease: cubic-bezier(0.22, 1, 0.36, 1);
         --mu-shadow: 0 8px 28px rgba(26, 26, 26, 0.08);
         --mu-shadow-hover: 0 22px 48px rgba(155, 44, 44, 0.18), 0 12px 28px rgba(0, 0, 0, 0.14);
+        --mu-shadow-soft: 0 10px 30px rgba(26, 26, 26, 0.12);
+        --mu-primary: var(--primary, #9b2c2c);
+        --mu-cream: var(--accent, #fef3c7);
         /* Stop global cinematic ::before layers from enlarging scrollable overflow past the footer */
         overflow-x: clip;
     }
@@ -34,17 +37,20 @@
         max-height: 440px;
         border-radius: var(--mu-radius) !important;
         overflow: hidden;
-        background: #111;
-        border: 1px solid rgba(155, 44, 44, 0.1);
+        background: #0b0b0b;
+        border: 1px solid rgba(155, 44, 44, 0.12);
         box-shadow: var(--mu-shadow);
         transition:
             transform 0.45s var(--mu-ease),
             box-shadow 0.45s var(--mu-ease),
             border-color 0.35s ease;
+        text-decoration: none;
+        color: inherit;
+        position: relative;
     }
 
     .municipalities-page .destination-card:focus-visible {
-        outline: 3px solid rgba(155, 44, 44, 0.45);
+        outline: 3px solid rgba(155, 44, 44, 0.55);
         outline-offset: 4px;
     }
 
@@ -53,6 +59,23 @@
             transform: translateY(-10px) scale(1.015) !important;
             box-shadow: var(--mu-shadow-hover) !important;
             border-color: rgba(155, 44, 44, 0.22);
+        }
+    }
+
+    .municipalities-page .destination-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        background: radial-gradient(circle at 15% 10%, rgba(253, 230, 138, 0.12) 0%, transparent 45%);
+        opacity: 0;
+        transition: opacity 0.45s var(--mu-ease);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .municipalities-page .destination-card:hover::after {
+            opacity: 1;
         }
     }
 
@@ -105,6 +128,10 @@
         right: 1rem;
         gap: 0.5rem;
         flex-wrap: wrap;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        pointer-events: none;
     }
 
     .municipalities-page .badge-glass {
@@ -118,6 +145,7 @@
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+        pointer-events: none;
     }
 
     .municipalities-page .badge-glass.category-municipality {
@@ -144,8 +172,8 @@
     }
 
     .municipalities-page .card-content {
-        padding: 1.35rem 1.4rem 1.5rem;
-        gap: 0.55rem;
+        padding: 1.35rem 1.35rem 1.25rem;
+        gap: 0.6rem;
         background: linear-gradient(
             180deg,
             transparent 0%,
@@ -153,6 +181,9 @@
             rgba(0, 0, 0, 0.55) 100%
         );
         border-top: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        flex-direction: column;
+        min-height: 44%;
     }
 
     .municipalities-page .card-location {
@@ -162,6 +193,8 @@
         text-transform: uppercase;
         color: rgba(254, 243, 199, 0.95);
         gap: 0.4rem;
+        display: inline-flex;
+        align-items: center;
     }
 
     .municipalities-page .card-location i {
@@ -170,39 +203,68 @@
     }
 
     .municipalities-page .card-title {
-        font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+        font-size: clamp(1.22rem, 2.6vw, 1.62rem);
         font-weight: 800;
         letter-spacing: -0.03em;
         line-height: 1.2;
         text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+        margin: 0;
     }
 
     .municipalities-page .card-description {
-        font-size: 0.875rem;
-        line-height: 1.55;
+        font-size: 0.92rem;
+        line-height: 1.6;
         color: rgba(255, 255, 255, 0.88);
+        margin: 0;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
         line-clamp: 2;
+        overflow: hidden;
     }
 
     .municipalities-page .card-cta {
-        margin-top: 0.5rem;
-        padding: 0.65rem 1.25rem;
+        margin-top: auto;
+        padding: 0.7rem 1.1rem;
         border-radius: 999px;
-        font-size: 0.8125rem;
-        font-weight: 800;
-        letter-spacing: 0.04em;
+        font-size: 0.78rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
         align-self: stretch;
         justify-content: center;
-        box-shadow: 0 6px 20px rgba(155, 44, 44, 0.35);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        display: inline-flex;
+        align-items: center;
+        gap: .55rem;
+        color: #fff;
+        background: linear-gradient(135deg, rgba(155, 44, 44, 0.92) 0%, rgba(127, 29, 29, 0.98) 100%);
+        box-shadow: 0 10px 26px rgba(155, 44, 44, 0.35);
+        border: 1px solid rgba(254, 243, 199, 0.18);
     }
 
     @media (prefers-reduced-motion: no-preference) {
         .municipalities-page .card-cta:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 28px rgba(155, 44, 44, 0.45);
+            box-shadow: 0 16px 36px rgba(155, 44, 44, 0.48);
+        }
+    }
+
+    .municipalities-page .card-cta i {
+        transition: transform 0.35s var(--mu-ease);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .municipalities-page .destination-card:hover .card-cta i {
+            transform: translateX(4px);
+        }
+    }
+
+    @media (max-width: 575px) {
+        .municipalities-page .destination-card {
+            min-height: 340px;
+        }
+        .municipalities-page .card-content {
+            padding: 1.15rem 1.1rem 1.05rem;
         }
     }
 </style>
