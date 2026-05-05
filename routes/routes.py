@@ -1,4 +1,4 @@
-from controller.HomeController import home, explore_map, destination_details, municipalities, municipality_details, tourist_spots, lara_ai, test_uploader
+from controller.HomeController import home, explore_map, login_signup, destination_details, municipalities, municipality_details, tourist_spots, lara_ai, test_uploader, platform_features, security, lgu_support
 from controller.LoginController import login, register, logout
 from controller.DashboardController import dashboardIndex, accounts, create_account, update_account, delete_account, lgu_dashboard, tourist_spots as lgu_tourist_spots, lgu_add_spot, lgu_get_spot_data, lgu_edit_spot, lgu_delete_spot
 from controller.ArrivalsController import arrivals
@@ -13,16 +13,20 @@ def register_routes(app):
     @app.route('/explore-map')
     def explore_map_page():
         return explore_map()
+
+    @app.route('/login-signup')
+    def login_signup_page():
+        return login_signup()
     
     @app.route('/destination/<spot_id>')
     def destination_details_page(spot_id):
         return destination_details(spot_id)
 
-    @app.route('/municipalities')
-    def municipalities_page():
+    @app.route('/lgu')
+    def lgu_listing_page():
         return municipalities()
 
-    @app.route('/municipalities/<municipality_id>')
+    @app.route('/lgu/<municipality_id>')
     def municipality_details_page(municipality_id):
         return municipality_details(municipality_id)
     
@@ -37,6 +41,18 @@ def register_routes(app):
     @app.route('/test-uploader', methods=["GET", "POST"])
     def test_uploader_page():
         return test_uploader()
+
+    @app.route('/platform-features')
+    def platform_features_page():
+        return platform_features()
+
+    @app.route('/security')
+    def security_page():
+        return security()
+
+    @app.route('/lgu-support')
+    def lgu_support_page():
+        return lgu_support()
 
 # SUPERADMIN DASHBOARD ROUTES
     
@@ -55,6 +71,16 @@ def register_routes(app):
     @app.route('/dashboard/decision')
     def decision_page():
         return decision()
+    
+    @app.route('/dashboard/promoton')
+    def promoton_page():
+        from flask import render_template
+        return render_template('views/dashboard/promoton.html')
+    
+    @app.route('/dashboard/chatbot-config')
+    def chatbot_config_page():
+        from flask import render_template
+        return render_template('views/dashboard/chatbot-config.html')
     
     @app.route('/dashboard/lgu')
     def lgu_page():
@@ -104,6 +130,12 @@ def register_routes(app):
     def lgu_feedbacks_page():
         from flask import render_template
         return render_template('views/dashboard/lgu/feedbacks.html')
+
+# API ROUTES
+    @app.route('/api/lara-chat', methods=['POST'])
+    def lara_chat_api():
+        from controller.HomeController import lara_chat
+        return lara_chat()
 
 # AUTH ROUTES
     @app.route("/login", methods=["GET", "POST"])

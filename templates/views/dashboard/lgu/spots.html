@@ -4,6 +4,9 @@
 
 {% block style %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<!-- Leaflet Map CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-control-geocoder/1.13.0/Control.Geocoder.min.css">
 <style>
 /* Additional fixes for spots page */
 .table-controls {
@@ -245,6 +248,103 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Interactive Map Styles */
+.location-search-container {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.location-search-container input {
+  flex: 1;
+  padding: 0.625rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.location-search-container input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(127, 29, 29, 0.1);
+}
+
+.location-search-container button {
+  padding: 0.625rem 1.25rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.location-search-container button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.map-container {
+  width: 100%;
+  height: 350px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  overflow: hidden;
+  background: var(--card);
+}
+
+.map-container #spotMap {
+  width: 100%;
+  height: 100%;
+}
+
+.location-info {
+  padding: 1rem;
+  background: rgba(127, 29, 29, 0.05);
+  border-radius: var(--radius);
+  border: 1px solid rgba(127, 29, 29, 0.2);
+  margin-top: 1rem;
+}
+
+.location-info .info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(127, 29, 29, 0.1);
+  font-size: 0.875rem;
+}
+
+.location-info .info-item:last-child {
+  border-bottom: none;
+}
+
+.location-info .label {
+  font-weight: 600;
+  color: var(--foreground);
+  min-width: 100px;
+}
+
+.location-info .value {
+  color: var(--muted-foreground);
+  text-align: right;
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.leaflet-control-geocoder-form input {
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  border-color: var(--border) !important;
+}
+
 </style>
 {% endblock %}
 
@@ -545,18 +645,57 @@
                     <div class="col-md-6">
                       <label class="form-label">Category</label>
                       <select name="category" class="form-control">
-                        <option value="beach">Beach</option>
-                        <option value="mountain">Mountain</option>
-                        <option value="historical">Historical</option>
-                        <option value="religious">Religious</option>
-                        <option value="park">Park</option>
-                        <option value="waterfall">Waterfall</option>
-                        <option value="other">Other</option>
+                        <option value="resort">Resort</option>
+                        <option value="nature">Nature</option>
+                        <option value="heritage">Heritage</option>
+                        <option value="pilgrimage">Pilgrimage</option>
                       </select>
                     </div>
-                    <div class="col-md-6">
+                  </div>
+                </div>
+
+                <!-- Location Section with Interactive Map -->
+                <div class="mb-4">
+                  <h6 class="fw-bold mb-3">Location & Coordinates</h6>
+                  
+                  <!-- Search Location -->
+                  <div class="location-search-container">
+                    <input type="text" id="locationSearch" class="form-control" placeholder="Search for a place (e.g., Calamba, Laguna)">
+                    <button type="button" id="searchBtn" class="btn btn-primary">
+                      <i class="bx bx-search"></i> Search
+                    </button>
+                  </div>
+
+                  <!-- Map Container -->
+                  <div class="map-container">
+                    <div id="spotMap"></div>
+                  </div>
+
+                  <!-- Hidden Inputs for Coordinates -->
+                  <input type="hidden" name="latitude" id="latitude" value="">
+                  <input type="hidden" name="longitude" id="longitude" value="">
+
+                  <!-- Address Display -->
+                  <div class="row g-3">
+                    <div class="col-12">
                       <label class="form-label">Address</label>
-                      <input type="text" name="address" class="form-control" placeholder="e.g. Calamba City, Laguna">
+                      <input type="text" name="address" id="addressInput" class="form-control" placeholder="e.g. Calamba City, Laguna">
+                    </div>
+                  </div>
+
+                  <!-- Location Info Display -->
+                  <div class="location-info" id="locationInfo" style="display: none;">
+                    <div class="info-item">
+                      <span class="label">Latitude:</span>
+                      <span class="value" id="infoLatitude">—</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="label">Longitude:</span>
+                      <span class="value" id="infoLongitude">—</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="label">Address:</span>
+                      <span class="value" id="infoAddress">—</span>
                     </div>
                   </div>
                 </div>
@@ -748,7 +887,129 @@
 {% endblock %}
 
 {% block script %}
+<!-- Leaflet Map JavaScript Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-control-geocoder/1.13.0/Control.Geocoder.min.js"></script>
+
 <script>
+  // Map variables
+  let spotMap = null;
+  let mapMarker = null;
+  let defaultCenter = [14.3995, 121.0283]; // Default to Philippines (Laguna region)
+
+  // Initialize map when modal opens
+  function initializeMap() {
+    if (spotMap) {
+      spotMap.invalidateSize();
+      return;
+    }
+
+    // Create map
+    spotMap = L.map('spotMap').setView(defaultCenter, 13);
+
+    // Add OSM tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(spotMap);
+
+    // Add click event to map
+    spotMap.on('click', function(e) {
+      setMarkerAndCoordinates(e.latlng.lat, e.latlng.lng);
+    });
+
+    // Add search button listener
+    document.getElementById('searchBtn').addEventListener('click', searchLocation);
+    document.getElementById('locationSearch').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        searchLocation();
+      }
+    });
+  }
+
+  // Function to set marker and update coordinates
+  function setMarkerAndCoordinates(lat, lng) {
+    const lat_rounded = parseFloat(lat).toFixed(6);
+    const lng_rounded = parseFloat(lng).toFixed(6);
+
+    // Remove old marker
+    if (mapMarker) {
+      spotMap.removeLayer(mapMarker);
+    }
+
+    // Add new marker
+    mapMarker = L.marker([lat_rounded, lng_rounded]).addTo(spotMap)
+      .bindPopup(`<b>Location Selected</b><br>Lat: ${lat_rounded}<br>Lng: ${lng_rounded}`)
+      .openPopup();
+
+    // Pan to marker
+    spotMap.setView([lat_rounded, lng_rounded], 15);
+
+    // Update hidden inputs
+    document.getElementById('latitude').value = lat_rounded;
+    document.getElementById('longitude').value = lng_rounded;
+
+    // Update display info
+    document.getElementById('infoLatitude').textContent = lat_rounded;
+    document.getElementById('infoLongitude').textContent = lng_rounded;
+    document.getElementById('locationInfo').style.display = 'block';
+
+    // Reverse geocode to get address
+    reverseGeocode(lat_rounded, lng_rounded);
+  }
+
+  // Function to search for location by name
+  function searchLocation() {
+    const searchTerm = document.getElementById('locationSearch').value.trim();
+    if (!searchTerm) {
+      showToast('Please enter a location to search', 'warning');
+      return;
+    }
+
+    // Use Nominatim API from OpenStreetMap
+    fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchTerm)}&format=json&limit=1`)
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          const result = data[0];
+          const lat = parseFloat(result.lat);
+          const lng = parseFloat(result.lon);
+          setMarkerAndCoordinates(lat, lng);
+          document.getElementById('addressInput').value = result.display_name;
+          document.getElementById('infoAddress').textContent = result.display_name;
+        } else {
+          showToast('Location not found. Please try a different search term.', 'warning');
+        }
+      })
+      .catch(error => {
+        console.error('Search error:', error);
+        showToast('Error searching for location. Please try again.', 'error');
+      });
+  }
+
+  // Function to reverse geocode (get address from coordinates)
+  function reverseGeocode(lat, lng) {
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.address) {
+          const address = data.display_name || data.address.road || '';
+          document.getElementById('addressInput').value = address;
+          document.getElementById('infoAddress').textContent = address;
+        }
+      })
+      .catch(error => console.error('Reverse geocode error:', error));
+  }
+
+  // Update addSpotModal to initialize map when opened
+  const addSpotModalElement = document.getElementById('addSpotModal');
+  if (addSpotModalElement) {
+    addSpotModalElement.addEventListener('show.bs.modal', function() {
+      setTimeout(initializeMap, 300);
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function() {
     // Initialize DataTable
     if ($('#touristSpotsTable').length) {
@@ -794,8 +1055,8 @@
 
     // Category Chart — real data from Supabase via DashboardController
     const categoryData = {
-      labels: {{ category_labels | tojson }},
-      data: {{ category_data | tojson }}
+      labels: '{{ category_labels | tojson }}',
+      data: '{{ category_data | tojson }}'
     };
 
     if (categoryData.labels.length > 0) {
@@ -875,6 +1136,20 @@
     currentStep = 1;
     document.getElementById('addSpotForm').reset();
     
+    // Reset map coordinates and display
+    document.getElementById('latitude').value = '';
+    document.getElementById('longitude').value = '';
+    document.getElementById('addressInput').value = '';
+    document.getElementById('locationSearch').value = '';
+    document.getElementById('locationInfo').style.display = 'none';
+    
+    // Reset map marker
+    if (mapMarker && spotMap) {
+      spotMap.removeLayer(mapMarker);
+      mapMarker = null;
+      spotMap.setView(defaultCenter, 13);
+    }
+    
     // Reset all steps
     document.querySelectorAll('.form-step').forEach(step => {
       step.classList.remove('active');
@@ -897,6 +1172,18 @@
     const name = form.querySelector('input[name="name"]').value;
     if (!name) {
       showToast('Please enter a tourist spot name', 'warning');
+      // Go back to step 1
+      while (currentStep > 1) {
+        changeStep(-1);
+      }
+      return;
+    }
+    
+    // Check if location coordinates are set
+    const latitude = form.querySelector('input[name="latitude"]').value;
+    const longitude = form.querySelector('input[name="longitude"]').value;
+    if (!latitude || !longitude) {
+      showToast('Please select a location on the map', 'warning');
       // Go back to step 1
       while (currentStep > 1) {
         changeStep(-1);

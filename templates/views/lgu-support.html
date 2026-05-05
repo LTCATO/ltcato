@@ -1,0 +1,905 @@
+{% extends 'base.html' %}
+{% block title %}LGU Support | Citizen Charter | LTCATO{% endblock %}
+
+{% block content %}
+{% include 'include/admin-navbar.html' %}
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container text-center">
+    <div class="hero-content">
+      <span class="hero-badge"><i class="ph ph-buildings me-1"></i> Citizen Charter Portal</span>
+      <h1 class="hero-title">Local Government Unit Support.</h1>
+      <p class="hero-subtitle">Access comprehensive citizen charter information for all municipalities in Laguna Province with interactive search and detailed service information.</p>
+      
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-number">24</div>
+          <div class="text-white-50 fw-semibold text-uppercase tracking-wide small">Municipalities</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">500+</div>
+          <div class="text-white-50 fw-semibold text-uppercase tracking-wide small">Services</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">24/7</div>
+          <div class="text-white-50 fw-semibold text-uppercase tracking-wide small">Access</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Search and Filter Section -->
+<section class="features-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-6 fw-bold">Find Your Municipality</h2>
+      <p class="text-muted fs-5">Search for citizen charter information and services across all Laguna municipalities.</p>
+    </div>
+    
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="feature-box">
+          <div class="feature-icon-wrapper"><i class="ph ph-magnifying-glass"></i></div>
+          <div class="search-form">
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="ph ph-magnifying-glass"></i>
+              </span>
+              <input type="text" class="form-control" id="municipalitySearch" placeholder="Search for municipality, service, or department...">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="feature-box">
+          <div class="feature-icon-wrapper"><i class="ph ph-funnel"></i></div>
+          <select class="form-select" id="categoryFilter">
+            <option value="">All Categories</option>
+            <option value="business">Business Permits</option>
+            <option value="health">Health Services</option>
+            <option value="education">Education</option>
+            <option value="infrastructure">Infrastructure</option>
+            <option value="social">Social Services</option>
+            <option value="agriculture">Agriculture</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Municipalities Grid -->
+<section class="showcase-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-bold" style="color: var(--primary);">Browse All Municipalities</h2>
+      <p class="text-muted fs-5">Click on any municipality to view their comprehensive citizen charter and service information</p>
+    </div>
+
+    <div class="municipalities-grid" id="municipalitiesGrid">
+      <!-- Municipalities will be dynamically loaded here -->
+    </div>
+  </div>
+</section>
+
+<!-- Services Overview Section -->
+<section class="features-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="display-6 fw-bold">Frequently Accessed Services</h2>
+      <p class="text-muted fs-5">Quick access to the most commonly requested services across all municipalities</p>
+    </div>
+    
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-4 col-sm-6">
+        <div class="feature-box" data-category="business">
+          <div class="feature-icon-wrapper"><i class="ph ph-storefront"></i></div>
+          <h4 class="fw-bold">Business Permit</h4>
+          <p class="text-muted small">Business name registration, permits, and licensing requirements</p>
+          <div class="service-time">
+            <i class="ph ph-clock"></i>
+            <span>3-5 working days</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="feature-box" data-category="health">
+          <div class="feature-icon-wrapper"><i class="ph ph-heart"></i></div>
+          <h4 class="fw-bold">Health Services</h4>
+          <p class="text-muted small">Medical certificates, health permits, and public health services</p>
+          <div class="service-time">
+            <i class="ph ph-clock"></i>
+            <span>1-2 working days</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="feature-box" data-category="infrastructure">
+          <div class="feature-icon-wrapper"><i class="ph ph-hard-hat"></i></div>
+          <h4 class="fw-bold">Building Permit</h4>
+          <p class="text-muted small">Construction permits, building inspections, and zoning clearances</p>
+          <div class="service-time">
+            <i class="ph ph-clock"></i>
+            <span>7-15 working days</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="feature-box" data-category="social">
+          <div class="feature-icon-wrapper"><i class="ph ph-users"></i></div>
+          <h4 class="fw-bold">Social Services</h4>
+          <p class="text-muted small">Financial assistance, livelihood programs, and social welfare</p>
+          <div class="service-time">
+            <i class="ph ph-clock"></i>
+            <span>5-10 working days</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="feature-box" data-category="education">
+          <div class="feature-icon-wrapper"><i class="ph ph-graduation-cap"></i></div>
+          <h4 class="fw-bold">Education Support</h4>
+          <p class="text-muted small">Scholarship programs, school permits, and educational assistance</p>
+          <div class="service-time">
+            <i class="ph ph-clock"></i>
+            <span>3-7 working days</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div class="feature-box" data-category="agriculture">
+          <div class="feature-icon-wrapper"><i class="ph ph-plant"></i></div>
+          <h4 class="fw-bold">Agricultural Services</h4>
+          <p class="text-muted small">Farming permits, agricultural assistance, and veterinary services</p>
+          <div class="service-time">
+            <i class="ph ph-clock"></i>
+            <span>2-4 working days</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Citizen Charter Modal -->
+<div class="modal fade" id="charterModal" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">Citizen Charter</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Charter content will be loaded here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Help Section -->
+<section class="cta-section">
+  <div class="container">
+    <div class="bg-light p-5 rounded-4 border border-2 text-center" style="max-width: 800px; margin: 0 auto;">
+        <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mb-4" style="width: 80px; height: 80px;">
+            <i class="ph ph-headset text-primary fs-1"></i>
+        </div>
+        <h2 class="display-6 fw-bold mb-3">Need Assistance?</h2>
+        <p class="text-muted fs-5 mb-4">Can't find the service you're looking for? Contact our support team for help with citizen charter information and LGU services.</p>
+        <div class="contact-info mb-4">
+          <div class="contact-item">
+            <i class="ph ph-phone"></i>
+            <span>(049) 511-1234</span>
+          </div>
+          <div class="contact-item">
+            <i class="ph ph-envelope"></i>
+            <span>support@ltcato.gov.ph</span>
+          </div>
+          <div class="contact-item">
+            <i class="ph ph-clock"></i>
+            <span>Monday - Friday, 8:00 AM - 5:00 PM</span>
+          </div>
+        </div>
+        <a href="/contact" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm fw-bold">Contact Support</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block script %}
+<script>
+// Municipalities data with citizen charter information
+const municipalities = [
+  {
+    name: "Alaminos",
+    logo: "🏛️",
+    services: 45,
+    population: "51,265",
+    charter: {
+      vision: "A progressive and environmentally sustainable municipality with empowered citizens",
+      mission: "To provide efficient public services and promote sustainable development",
+      departments: [
+        {
+          name: "Office of the Mayor",
+          head: "Mayor Rolando G. Andaya",
+          services: ["Executive Administration", "Public Relations", "Special Projects"]
+        },
+        {
+          name: "Business Permit Office",
+          head: "Engr. Maria Santos",
+          services: ["Business Permit Renewal", "New Business Registration", "Inspection Services"]
+        },
+        {
+          name: "Rural Health Unit",
+          head: "Dr. Juan Cruz",
+          services: ["Medical Consultation", "Health Certificates", "Vaccination Programs"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Bay",
+    logo: "🌊",
+    services: 52,
+    population: "67,182",
+    charter: {
+      vision: "A premier lakeside municipality with vibrant economy and rich cultural heritage",
+      mission: "To deliver quality public services while preserving our natural resources",
+      departments: [
+        {
+          name: "Municipal Planning Office",
+          head: "Arch. Elena Reyes",
+          services: ["Building Permits", "Zoning Clearance", "Development Planning"]
+        },
+        {
+          name: "Social Welfare Office",
+          head: "Ms. Rosa Martinez",
+          services: ["Financial Assistance", "Livelihood Programs", "Senior Citizen Services"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Biñan",
+    logo: "🏭",
+    services: 78,
+    population: "407,437",
+    charter: {
+      vision: "A highly urbanized city with competitive economy and quality public services",
+      mission: "To provide transparent, efficient, and responsive governance",
+      departments: [
+        {
+          name: "Business One Stop Shop",
+          head: "Mr. Antonio Lee",
+          services: ["Business Registration", "Permit Processing", "Investment Promotion"]
+        },
+        {
+          name: "City Health Office",
+          head: "Dr. Patricia Lim",
+          services: ["Health Services", "Sanitation Inspection", "Health Education"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Cabuyao",
+    logo: "🏘️",
+    services: 65,
+    population: "355,330",
+    charter: {
+      vision: "A dynamic industrial city with sustainable urban development",
+      mission: "To foster inclusive growth and excellent public service delivery",
+      departments: [
+        {
+          name: "Engineering Office",
+          head: "Engr. Roberto Tan",
+          services: ["Infrastructure Projects", "Building Inspection", "Road Maintenance"]
+        },
+        {
+          name: "Agriculture Office",
+          head: "Ms. Lourdes Castro",
+          services: ["Farm Support", "Agricultural Training", "Veterinary Services"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Calamba",
+    logo: "🏖️",
+    services: 89,
+    population: "539,671",
+    charter: {
+      vision: "The premier city of Laguna with world-class public services",
+      mission: "To provide excellent governance and sustainable urban development",
+      departments: [
+        {
+          name: "City Mayor's Office",
+          head: "Mayor Justin Marc Chipeco",
+          services: ["Executive Services", "Public Administration", "Citizen Assistance"]
+        },
+        {
+          name: "Business Permits and Licensing Office",
+          head: "Ms. Grace Fernandez",
+          services: ["Business Permit Processing", "License Renewal", "Regulatory Compliance"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Cavinti",
+    logo: "⛰️",
+    services: 38,
+    population: "23,714",
+    charter: {
+      vision: "An eco-tourism destination with sustainable community development",
+      mission: "To preserve natural resources while promoting local economic growth",
+      departments: [
+        {
+          name: "Tourism Office",
+          head: "Mr. Fernando Santos",
+          services: ["Tourism Promotion", "Eco-Tourism Development", "Visitor Assistance"]
+        },
+        {
+          name: "Agricultural Services",
+          head: "Ms. Josephine Reyes",
+          services: ["Farm Support", "Crop Development", "Agricultural Extension"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Famy",
+    logo: "🌾",
+    services: 32,
+    population: "16,587",
+    charter: {
+      vision: "An agricultural municipality with progressive rural development",
+      mission: "To enhance agricultural productivity and rural livelihood",
+      departments: [
+        {
+          name: "Municipal Agriculture Office",
+          head: "Mr. Ricardo Cruz",
+          services: ["Farm Advisory", "Seed Distribution", "Livestock Services"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Kalayaan",
+    logo: "🗽",
+    services: 35,
+    population: "24,851",
+    charter: {
+      vision: "A peaceful and progressive lakeside community",
+      mission: "To provide quality public services and promote sustainable development",
+      departments: [
+        {
+          name: "Municipal Social Welfare",
+          head: "Ms. Anita Garcia",
+          services: ["Social Assistance", "Community Development", "Youth Programs"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Laguna",
+    logo: "🏞️",
+    services: 41,
+    population: "26,460",
+    charter: {
+      vision: "A heritage-rich municipality with sustainable tourism development",
+      mission: "To preserve cultural heritage while promoting economic growth",
+      departments: [
+        {
+          name: "Tourism and Culture Office",
+          head: "Mr. Carlos Mendoza",
+          services: ["Heritage Preservation", "Tourism Services", "Cultural Programs"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Liliw",
+    logo: "👠",
+    services: 43,
+    population: "37,445",
+    charter: {
+      vision: "The footwear capital with thriving cottage industry",
+      mission: "To promote local industries and provide excellent public services",
+      departments: [
+        {
+          name: "MSME Development Office",
+          head: "Ms. Victoria Reyes",
+          services: ["Business Development", "Skills Training", "Market Assistance"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Los Baños",
+    logo: "🎓",
+    services: 71,
+    population: "111,368",
+    charter: {
+      vision: "A science and nature city with premier educational institutions",
+      mission: "To foster innovation and sustainable urban development",
+      departments: [
+        {
+          name: "Municipal Planning Office",
+          head: "Arch. Maria Santos",
+          services: ["Urban Planning", "Development Control", "Environmental Management"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Luisiana",
+    logo: "🌿",
+    services: 34,
+    population: "21,373",
+    charter: {
+      vision: "An eco-friendly municipality with sustainable community development",
+      mission: "To promote environmental conservation and rural development",
+      departments: [
+        {
+          name: "Environment and Natural Resources",
+          head: "Mr. Jose Rodriguez",
+          services: ["Environmental Protection", "Forest Management", "Waste Management"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Lumban",
+    logo: "🧵",
+    services: 46,
+    population: "30,736",
+    charter: {
+      vision: "The embroidery capital with thriving creative industries",
+      mission: "To promote local crafts and provide quality public services",
+      departments: [
+        {
+          name: "Trade and Industry Office",
+          head: "Ms. Cristina Flores",
+          services: ["Business Support", "Skills Training", "Product Development"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Mabitac",
+    logo: "⛪",
+    services: 36,
+    population: "22,072",
+    charter: {
+      vision: "A historically significant municipality with progressive development",
+      mission: "To preserve heritage while promoting sustainable growth",
+      departments: [
+        {
+          name: "Municipal Tourism Office",
+          head: "Mr. Antonio Reyes",
+          services: ["Heritage Tourism", "Cultural Programs", "Visitor Services"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Magdalena",
+    logo: "🏰",
+    services: 39,
+    population: "26,926",
+    charter: {
+      vision: "A historic municipality with vibrant community development",
+      mission: "To preserve cultural heritage and promote local progress",
+      departments: [
+        {
+          name: "Municipal History and Culture",
+          head: "Ms. Elena Cruz",
+          services: ["Heritage Conservation", "Cultural Activities", "Historical Research"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Majayjay",
+    logo: "🌲",
+    services: 42,
+    population: "28,438",
+    charter: {
+      vision: "An eco-tourism destination with sustainable agricultural development",
+      mission: "To promote environmental conservation and rural prosperity",
+      departments: [
+        {
+          name: "Agriculture and Tourism Office",
+          head: "Mr. Roberto Santos",
+          services: ["Farm Development", "Tourism Promotion", "Environmental Protection"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Nagcarlan",
+    logo: "🏛️",
+    services: 48,
+    population: "64,866",
+    charter: {
+      vision: "A historically rich municipality with balanced development",
+      mission: "To preserve heritage while fostering economic growth",
+      departments: [
+        {
+          name: "Municipal Tourism Office",
+          head: "Ms. Lourdes Hernandez",
+          services: ["Historical Tourism", "Cultural Heritage", "Visitor Services"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Paete",
+    logo: "🎨",
+    services: 44,
+    population: "27,363",
+    charter: {
+      vision: "The woodcarving capital with thriving artistic community",
+      mission: "To promote local arts and provide excellent public services",
+      departments: [
+        {
+          name: "Arts and Culture Office",
+          head: "Mr. Fernando Reyes",
+          services: ["Arts Promotion", "Skills Training", "Cultural Development"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Pagsanjan",
+    logo: "🌊",
+    services: 56,
+    population: "44,272",
+    charter: {
+      vision: "The tourist capital with world-class natural attractions",
+      mission: "To promote sustainable tourism and quality public services",
+      departments: [
+        {
+          name: "Tourism Office",
+          head: "Mr. Carlos Mendoza",
+          services: ["Tourism Services", "Falls Management", "Visitor Assistance"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Pakil",
+    logo: "🎭",
+    services: 37,
+    population: "23,580",
+    charter: {
+      vision: "A culturally vibrant municipality with progressive development",
+      mission: "To preserve cultural traditions and promote community growth",
+      departments: [
+        {
+          name: "Cultural Affairs Office",
+          head: "Ms. Anita Cruz",
+          services: ["Cultural Programs", "Festival Management", "Arts Promotion"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Pangil",
+    logo: "🐟",
+    services: 38,
+    population: "26,910",
+    charter: {
+      vision: "A riverside municipality with sustainable fishing industry",
+      mission: "To promote aquatic resources and rural development",
+      departments: [
+        {
+          name: "Fisheries Office",
+          head: "Mr. Jose Santos",
+          services: ["Fisheries Development", "Aquaculture Support", "Fishing Regulation"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Pila",
+    logo: "🏛️",
+    services: 45,
+    population: "50,424",
+    charter: {
+      vision: "A heritage town with balanced urban and rural development",
+      mission: "To preserve historical significance while promoting progress",
+      departments: [
+        {
+          name: "Heritage Conservation Office",
+          head: "Ms. Elena Martinez",
+          services: ["Heritage Preservation", "Historical Research", "Cultural Tourism"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Rizal",
+    logo: "🌾",
+    services: 35,
+    population: "18,582",
+    charter: {
+      vision: "An agricultural municipality with sustainable rural development",
+      mission: "To enhance agricultural productivity and community welfare",
+      departments: [
+        {
+          name: "Agricultural Services Office",
+          head: "Mr. Roberto Cruz",
+          services: ["Farm Support", "Crop Development", "Agricultural Extension"]
+        }
+      ]
+    }
+  },
+  {
+    name: "San Pedro",
+    logo: "🏙️",
+    services: 82,
+    population: "325,809",
+    charter: {
+      vision: "A highly urbanized city with efficient public services",
+      mission: "To provide quality governance and sustainable urban development",
+      departments: [
+        {
+          name: "City Administrator's Office",
+          head: "Ms. Grace Reyes",
+          services: ["Public Administration", "City Management", "Citizen Services"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Santa Cruz",
+    logo: "🏛️",
+    services: 75,
+    population: "123,574",
+    charter: {
+      vision: "The provincial capital with excellent public services",
+      mission: "To provide efficient governance and promote inclusive development",
+      departments: [
+        {
+          name: "Provincial Capitol Office",
+          head: "Gov. Ramil Hernandez",
+          services: ["Provincial Services", "Administrative Support", "Public Assistance"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Santa Maria",
+    logo: "⛪",
+    services: 41,
+    population: "34,876",
+    charter: {
+      vision: "A progressive municipality with strong community values",
+      mission: "To provide quality public services and promote development",
+      departments: [
+        {
+          name: "Municipal Administrator's Office",
+          head: "Mr. Antonio Santos",
+          services: ["Public Administration", "Community Services", "Development Planning"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Siniloan",
+    logo: "🏔️",
+    services: 47,
+    population: "39,460",
+    charter: {
+      vision: "An upland municipality with sustainable development",
+      mission: "To promote environmental conservation and economic growth",
+      departments: [
+        {
+          name: "Environmental Management Office",
+          head: "Ms. Lourdes Cruz",
+          services: ["Environmental Protection", "Waste Management", "Forest Conservation"]
+        }
+      ]
+    }
+  },
+  {
+    name: "Victoria",
+    logo: "🌾",
+    services: 40,
+    population: "46,738",
+    charter: {
+      vision: "An agricultural municipality with modern farming practices",
+      mission: "To promote agricultural innovation and rural development",
+      departments: [
+        {
+          name: "Agricultural Innovation Office",
+          head: "Mr. Fernando Reyes",
+          services: ["Modern Farming", "Agricultural Technology", "Farm Support"]
+        }
+      ]
+    }
+  }
+];
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+  loadMunicipalities();
+  setupSearch();
+  setupFilters();
+});
+
+// Load municipalities grid
+function loadMunicipalities() {
+  const grid = document.getElementById('municipalitiesGrid');
+  grid.innerHTML = municipalities.map(mun => `
+    <div class="municipality-card" data-name="${mun.name.toLowerCase()}" data-services="${mun.services}">
+      <div class="municipality-header">
+        <div class="municipality-logo">${mun.logo}</div>
+        <div class="municipality-info">
+          <h4>${mun.name}</h4>
+          <p class="population">Population: ${mun.population}</p>
+        </div>
+      </div>
+      <div class="municipality-stats">
+        <div class="stat">
+          <span class="stat-number">${mun.services}</span>
+          <span class="stat-label">Services</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">${mun.charter.departments.length}</span>
+          <span class="stat-label">Departments</span>
+        </div>
+      </div>
+      <button class="btn btn-primary w-100" onclick="showCharter('${mun.name}')">
+        <i class="ph ph-file-text me-2"></i>
+        View Citizen Charter
+      </button>
+    </div>
+  `).join('');
+}
+
+// Show citizen charter modal
+function showCharter(municipalityName) {
+  const municipality = municipalities.find(m => m.name === municipalityName);
+  if (!municipality) return;
+
+  const modal = new bootstrap.Modal(document.getElementById('charterModal'));
+  const modalTitle = document.getElementById('modalTitle');
+  const modalBody = document.getElementById('modalBody');
+
+  modalTitle.innerHTML = `
+    <div class="d-flex align-items-center">
+      <span class="me-3">${municipality.logo}</span>
+      <div>
+        <h4 class="mb-1">${municipality.name} Citizen Charter</h4>
+        <small class="text-muted">Population: ${municipality.population} | Services: ${municipality.services}</small>
+      </div>
+    </div>
+  `;
+
+  modalBody.innerHTML = `
+    <div class="charter-content">
+      <div class="charter-section">
+        <h5 class="section-title">
+          <i class="ph ph-eye me-2"></i>
+          Vision
+        </h5>
+        <p class="vision-text">${municipality.charter.vision}</p>
+      </div>
+
+      <div class="charter-section">
+        <h5 class="section-title">
+          <i class="ph ph-target me-2"></i>
+          Mission
+        </h5>
+        <p class="mission-text">${municipality.charter.mission}</p>
+      </div>
+
+      <div class="charter-section">
+        <h5 class="section-title">
+          <i class="ph ph-buildings me-2"></i>
+          Municipal Departments
+        </h5>
+        <div class="departments-grid">
+          ${municipality.charter.departments.map(dept => `
+            <div class="department-card">
+              <div class="department-header">
+                <h6>${dept.name}</h6>
+                <small class="text-muted">Head: ${dept.head}</small>
+              </div>
+              <div class="department-services">
+                <h6>Services:</h6>
+                <ul class="services-list">
+                  ${dept.services.map(service => `<li>${service}</li>`).join('')}
+                </ul>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="charter-section">
+        <h5 class="section-title">
+          <i class="ph ph-info me-2"></i>
+          Service Information
+        </h5>
+        <div class="service-info-grid">
+          <div class="info-card">
+            <i class="ph ph-clock"></i>
+            <div>
+              <h6>Office Hours</h6>
+              <p>Monday - Friday: 8:00 AM - 5:00 PM</p>
+              <p>Saturday: 8:00 AM - 12:00 PM</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <i class="ph ph-phone"></i>
+            <div>
+              <h6>Hotline</h6>
+              <p>(049) XXX-XXXX</p>
+              <p>Emergency: 911</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <i class="ph ph-envelope"></i>
+            <div>
+              <h6>Email</h6>
+              <p>info@${municipalityName.toLowerCase().replace(' ', '')}.gov.ph</p>
+              <p>support@${municipalityName.toLowerCase().replace(' ', '')}.gov.ph</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <i class="ph ph-map-pin"></i>
+            <div>
+              <h6>Address</h6>
+              <p>Municipal Hall</p>
+              <p>${municipalityName}, Laguna</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  modal.show();
+}
+
+// Setup search functionality
+function setupSearch() {
+  const searchInput = document.getElementById('municipalitySearch');
+  searchInput.addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const cards = document.querySelectorAll('.municipality-card');
+    
+    cards.forEach(card => {
+      const name = card.getAttribute('data-name');
+      if (name.includes(searchTerm)) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+}
+
+// Setup category filters
+function setupFilters() {
+  const categoryFilter = document.getElementById('categoryFilter');
+  const serviceCards = document.querySelectorAll('.feature-box[data-category]');
+  
+  categoryFilter.addEventListener('change', function(e) {
+    const category = e.target.value;
+    
+    serviceCards.forEach(card => {
+      if (category === '' || card.getAttribute('data-category') === category) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+}
+</script>
+{% endblock %}

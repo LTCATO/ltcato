@@ -157,7 +157,7 @@ def delete_account(user_id):
         return jsonify({"success": False, "message": str(e)}), 400
 
 @login_required
-@role_required('municipality_admin')
+@role_required('lgu_admin')
 def lgu_dashboard():
     active_menu = ['lgu']
     municipality_id = session.get('municipality_id')
@@ -237,7 +237,7 @@ def lgu_dashboard():
     )
 
 @login_required
-@role_required('municipality_admin')
+@role_required('lgu_admin')
 def tourist_spots():
     active_menu = ['spots']
     municipality_id = session.get('municipality_id')
@@ -316,7 +316,7 @@ def tourist_spots():
     )   
 
 @login_required
-@role_required('municipality_admin')
+@role_required('lgu_admin')
 def lgu_add_spot():
     """Handle tourist spot creation from the LGU dashboard."""
     if request.method != 'POST':
@@ -398,7 +398,7 @@ def lgu_add_spot():
 
 
 @login_required
-@role_required('municipality_admin')
+@role_required('lgu_admin')
 def lgu_get_spot_data(spot_id):
     """Return a single tourist spot's data as JSON (used by the Edit modal)."""
     try:
@@ -422,7 +422,7 @@ def lgu_get_spot_data(spot_id):
 
 
 @login_required
-@role_required('municipality_admin')
+@role_required('lgu_admin')
 def lgu_edit_spot(spot_id):
     """Update an existing tourist spot. Optionally replaces images if new files are supplied."""
     try:
@@ -501,7 +501,7 @@ def lgu_edit_spot(spot_id):
 
 
 @login_required
-@role_required('municipality_admin')
+@role_required('lgu_admin')
 def lgu_delete_spot(spot_id):
     """Delete a tourist spot record. Only deletes from DB; storage files are left intact."""
     try:

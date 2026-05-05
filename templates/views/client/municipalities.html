@@ -2,7 +2,276 @@
 
 {% block title %}Municipalities | LTCATO{% endblock %}
 
+{% block style %}
+<style>
+    .municipalities-page {
+        --mu-radius: 1.35rem;
+        --mu-ease: cubic-bezier(0.22, 1, 0.36, 1);
+        --mu-shadow: 0 8px 28px rgba(26, 26, 26, 0.08);
+        --mu-shadow-hover: 0 22px 48px rgba(155, 44, 44, 0.18), 0 12px 28px rgba(0, 0, 0, 0.14);
+        --mu-shadow-soft: 0 10px 30px rgba(26, 26, 26, 0.12);
+        --mu-primary: var(--primary, #9b2c2c);
+        --mu-cream: var(--accent, #fef3c7);
+        /* Stop global cinematic ::before layers from enlarging scrollable overflow past the footer */
+        overflow-x: clip;
+    }
+
+    .municipalities-page .destinations-grid::before,
+    .municipalities-page .container.pb-5::before {
+        content: none;
+        display: none;
+    }
+
+    .municipalities-page .destinations-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr));
+        gap: clamp(1.25rem, 3vw, 2rem);
+        padding: 1.75rem 0 2.5rem;
+        position: relative;
+    }
+
+    .municipalities-page .destination-card {
+        height: auto !important;
+        min-height: 360px;
+        aspect-ratio: 3 / 4;
+        max-height: 440px;
+        border-radius: var(--mu-radius) !important;
+        overflow: hidden;
+        background: #0b0b0b;
+        border: 1px solid rgba(155, 44, 44, 0.12);
+        box-shadow: var(--mu-shadow);
+        transition:
+            transform 0.45s var(--mu-ease),
+            box-shadow 0.45s var(--mu-ease),
+            border-color 0.35s ease;
+        text-decoration: none;
+        color: inherit;
+        position: relative;
+    }
+
+    .municipalities-page .destination-card:focus-visible {
+        outline: 3px solid rgba(155, 44, 44, 0.55);
+        outline-offset: 4px;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .municipalities-page .destination-card:hover {
+            transform: translateY(-10px) scale(1.015) !important;
+            box-shadow: var(--mu-shadow-hover) !important;
+            border-color: rgba(155, 44, 44, 0.22);
+        }
+    }
+
+    .municipalities-page .destination-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        background: radial-gradient(circle at 15% 10%, rgba(253, 230, 138, 0.12) 0%, transparent 45%);
+        opacity: 0;
+        transition: opacity 0.45s var(--mu-ease);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .municipalities-page .destination-card:hover::after {
+            opacity: 1;
+        }
+    }
+
+    .municipalities-page .destination-card::before {
+        background: linear-gradient(
+            125deg,
+            rgba(255, 255, 255, 0.12) 0%,
+            transparent 45%,
+            rgba(155, 44, 44, 0.08) 100%
+        );
+    }
+
+    .municipalities-page .card-background img {
+        filter: brightness(0.82) contrast(1.08) saturate(1.02);
+        transition: transform 0.65s var(--mu-ease), filter 0.5s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .municipalities-page .destination-card:hover .card-background img {
+            transform: scale(1.08) !important;
+            filter: brightness(0.95) contrast(1.05) saturate(1.05);
+        }
+    }
+
+    .municipalities-page .card-overlay {
+        background: linear-gradient(
+            185deg,
+            rgba(0, 0, 0, 0.12) 0%,
+            transparent 38%,
+            rgba(0, 0, 0, 0.45) 68%,
+            rgba(26, 10, 10, 0.88) 100%
+        );
+        opacity: 0.88;
+    }
+
+    .municipalities-page .destination-card:hover .card-overlay {
+        background: linear-gradient(
+            185deg,
+            rgba(0, 0, 0, 0.2) 0%,
+            transparent 35%,
+            rgba(0, 0, 0, 0.55) 65%,
+            rgba(127, 29, 29, 0.92) 100%
+        );
+        opacity: 1;
+    }
+
+    .municipalities-page .card-badges {
+        top: 1rem;
+        left: 1rem;
+        right: 1rem;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        pointer-events: none;
+    }
+
+    .municipalities-page .badge-glass {
+        padding: 0.45rem 0.85rem;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+        pointer-events: none;
+    }
+
+    .municipalities-page .badge-glass.category-municipality {
+        background: linear-gradient(135deg, rgba(155, 44, 44, 0.92) 0%, rgba(127, 29, 29, 0.95) 100%);
+        border-color: rgba(254, 243, 199, 0.35);
+        color: #fff;
+    }
+
+    .municipalities-page .badge-glass.category-city {
+        background: linear-gradient(135deg, rgba(254, 243, 199, 0.95) 0%, rgba(253, 230, 138, 0.88) 100%);
+        color: #78350f;
+        border-color: rgba(155, 44, 44, 0.2);
+    }
+
+    .municipalities-page .badge-glass.rating {
+        background: rgba(255, 255, 255, 0.94);
+        color: var(--foreground, #1a1a1a);
+        border-color: rgba(255, 255, 255, 0.95);
+        font-weight: 700;
+    }
+
+    .municipalities-page .badge-glass.rating i {
+        color: var(--primary, #9b2c2c);
+    }
+
+    .municipalities-page .card-content {
+        padding: 1.35rem 1.35rem 1.25rem;
+        gap: 0.6rem;
+        background: linear-gradient(
+            180deg,
+            transparent 0%,
+            rgba(0, 0, 0, 0.25) 25%,
+            rgba(0, 0, 0, 0.55) 100%
+        );
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        flex-direction: column;
+        min-height: 44%;
+    }
+
+    .municipalities-page .card-location {
+        font-size: 0.6875rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(254, 243, 199, 0.95);
+        gap: 0.4rem;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .municipalities-page .card-location i {
+        color: rgba(253, 230, 138, 0.95);
+        font-size: 0.9rem;
+    }
+
+    .municipalities-page .card-title {
+        font-size: clamp(1.22rem, 2.6vw, 1.62rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.2;
+        text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+        margin: 0;
+    }
+
+    .municipalities-page .card-description {
+        font-size: 0.92rem;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.88);
+        margin: 0;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        overflow: hidden;
+    }
+
+    .municipalities-page .card-cta {
+        margin-top: auto;
+        padding: 0.7rem 1.1rem;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        align-self: stretch;
+        justify-content: center;
+        display: inline-flex;
+        align-items: center;
+        gap: .55rem;
+        color: #fff;
+        background: linear-gradient(135deg, rgba(155, 44, 44, 0.92) 0%, rgba(127, 29, 29, 0.98) 100%);
+        box-shadow: 0 10px 26px rgba(155, 44, 44, 0.35);
+        border: 1px solid rgba(254, 243, 199, 0.18);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .municipalities-page .card-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 36px rgba(155, 44, 44, 0.48);
+        }
+    }
+
+    .municipalities-page .card-cta i {
+        transition: transform 0.35s var(--mu-ease);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .municipalities-page .destination-card:hover .card-cta i {
+            transform: translateX(4px);
+        }
+    }
+
+    @media (max-width: 575px) {
+        .municipalities-page .destination-card {
+            min-height: 340px;
+        }
+        .municipalities-page .card-content {
+            padding: 1.15rem 1.1rem 1.05rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="municipalities-page">
 <!-- Page Header & Filters -->
 <div class="page-header text-center text-lg-start">
     <div class="container">
@@ -35,224 +304,85 @@
             </div>
         </div>
     </div>
+</div>
 
 <!-- Main Grid Section -->
-<div class="container pb-5">
+<div class="container pb-5 pt-2">
     <div class="destinations-grid" id="municipalitiesGrid">
-        <!-- Municipality 1: Calamba -->
-        <div class="destination-card municipality-item">
+        {% for municipality in municipalities %}
+        <a href="/lgu/{{ municipality.id }}" class="destination-card municipality-item">
             <div class="card-background">
                 <img src="https://images.unsplash.com/photo-1548625361-ec8464673327?auto=format&fit=crop&w=600&q=80"
-                     alt="Calamba City">
+                     alt="{{ municipality.name }}">
                 <div class="card-overlay"></div>
-                
-                <!-- Top Badges -->
+
                 <div class="card-badges">
-                    <div class="badge-glass category-city">
-                        <i class="ph ph-buildings"></i>
+                    {% set mtype = (municipality.type | default(municipality.classification | default('municipality'))) | string | lower %}
+                    <div class="badge-glass municipality-type-badge {% if 'city' in mtype %}category-city{% else %}category-municipality{% endif %}" data-type="{{ mtype }}">
+                        {% if 'city' in mtype %}
+                        <i class="ph ph-buildings" aria-hidden="true"></i>
                         <span>City</span>
-                    </div>
-                    <div class="badge-glass rating">
-                        <i class="ph ph-map-pin"></i>
-                        <span>12 Spots</span>
-                    </div>
-                </div>
-                
-                <!-- Bottom Content -->
-                <div class="card-content">
-                    <div class="card-location">
-                        <i class="ph ph-map-pin"></i>
-                        <span>Laguna</span>
-                    </div>
-                    <h3 class="card-title">Calamba City</h3>
-                    <p class="card-description">Known as the Resort Capital of the Philippines and the historic birthplace of Dr. Jose Rizal.</p>
-                    <button class="card-cta">
-                        <span>Explore Municipality</span>
-                        <i class="ph ph-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Municipality 2: Los Baños -->
-        <div class="destination-card municipality-item">
-            <div class="card-background">
-                <img src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=600&q=80"
-                     alt="Los Baños">
-                <div class="card-overlay"></div>
-                
-                <!-- Top Badges -->
-                <div class="card-badges">
-                    <div class="badge-glass category-municipality">
-                        <i class="ph ph-tree"></i>
+                        {% else %}
+                        <i class="ph ph-tree" aria-hidden="true"></i>
                         <span>Municipality</span>
+                        {% endif %}
                     </div>
                     <div class="badge-glass rating">
-                        <i class="ph ph-map-pin"></i>
-                        <span>8 Spots</span>
+                        <i class="ph ph-map-pin" aria-hidden="true"></i>
+                        <span>{{ municipality.spot_count or 0 }} spots</span>
                     </div>
                 </div>
-                
-                <!-- Bottom Content -->
+
                 <div class="card-content">
                     <div class="card-location">
-                        <i class="ph ph-map-pin"></i>
+                        <i class="ph ph-map-pin" aria-hidden="true"></i>
                         <span>Laguna</span>
                     </div>
-                    <h3 class="card-title">Los Baños</h3>
-                    <p class="card-description">The Special Science and Nature City, home to the majestic Mount Makiling and therapeutic hot springs.</p>
-                    <button class="card-cta">
-                        <span>Explore Municipality</span>
-                        <i class="ph ph-arrow-right"></i>
-                    </button>
+                    <h3 class="card-title">{{ municipality.name }}</h3>
+                    <p class="card-description">Discover the beautiful destinations and attractions in {{ municipality.name }}.</p>
+                    <span class="card-cta" role="presentation">
+                        <span>Explore municipality</span>
+                        <i class="ph ph-arrow-right" aria-hidden="true"></i>
+                    </span>
                 </div>
             </div>
-        </div>
-
-        <!-- Municipality 3: Pagsanjan -->
-        <div class="destination-card municipality-item">
-            <div class="card-background">
-                <img src="https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=600&q=80"
-                     alt="Pagsanjan">
-                <div class="card-overlay"></div>
-                
-                <!-- Top Badges -->
-                <div class="card-badges">
-                    <div class="badge-glass category-tourist">
-                        <i class="ph ph-drop"></i>
-                        <span>Tourist Hub</span>
-                    </div>
-                    <div class="badge-glass rating">
-                        <i class="ph ph-map-pin"></i>
-                        <span>5 Spots</span>
-                    </div>
-                </div>
-                
-                <!-- Bottom Content -->
-                <div class="card-content">
-                    <div class="card-location">
-                        <i class="ph ph-map-pin"></i>
-                        <span>Laguna</span>
-                    </div>
-                    <h3 class="card-title">Pagsanjan</h3>
-                    <p class="card-description">The Tourist Capital of Laguna, world-renowned for shooting the rapids to the spectacular Pagsanjan Falls.</p>
-                    <button class="card-cta">
-                        <span>Explore Municipality</span>
-                        <i class="ph ph-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
+        </a>
+        {% endfor %}
     </div>
+</div>
 </div>
 {% endblock %}
 
 {% block script %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Initialize animations
         initializeAnimations();
-        
-        // Setup card interactions
-        setupCardInteractions();
     });
 
     function initializeAnimations() {
-        // Add sophisticated staggered load animation to cards
-        const cards = document.querySelectorAll('.destination-card');
-        cards.forEach((card, index) => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(40px) scale(0.95)';
-            
-            setTimeout(() => {
-                card.style.transition = 'all 0.8s cubic-bezier(0.23, 1, 0.32, 1)';
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0) scale(1)';
-                
-                // Add subtle entrance animation for badges
-                const badges = card.querySelectorAll('.badge-glass');
-                badges.forEach((badge, badgeIndex) => {
-                    badge.style.opacity = '0';
-                    badge.style.transform = 'translateY(-10px)';
-                    setTimeout(() => {
-                        badge.style.transition = 'all 0.4s ease';
-                        badge.style.opacity = '1';
-                        badge.style.transform = 'translateY(0)';
-                    }, 300 + badgeIndex * 100);
+        const cards = document.querySelectorAll(".municipalities-page .destination-card");
+        cards.forEach(function (card, index) {
+            card.style.opacity = "0";
+            card.style.transform = "translateY(32px) scale(0.97)";
+
+            setTimeout(function () {
+                card.style.transition = "opacity 0.75s cubic-bezier(0.23, 1, 0.32, 1), transform 0.75s cubic-bezier(0.23, 1, 0.32, 1)";
+                card.style.opacity = "1";
+                card.style.transform = "translateY(0) scale(1)";
+
+                const badges = card.querySelectorAll(".badge-glass");
+                badges.forEach(function (badge, badgeIndex) {
+                    badge.style.opacity = "0";
+                    badge.style.transform = "translateY(-8px)";
+                    setTimeout(function () {
+                        badge.style.transition = "opacity 0.45s ease, transform 0.45s ease";
+                        badge.style.opacity = "1";
+                        badge.style.transform = "translateY(0)";
+                    }, 280 + badgeIndex * 90);
                 });
-            }, index * 150);
+            }, index * 110);
         });
     }
 
-    function setupCardInteractions() {
-        const cards = document.querySelectorAll('.destination-card');
-        const ctas = document.querySelectorAll('.card-cta');
-
-        // Card hover effects
-        cards.forEach(card => {
-            const background = card.querySelector('.card-background');
-            const image = card.querySelector('.card-background img');
-            const overlay = card.querySelector('.card-overlay');
-            
-            card.addEventListener('mouseenter', () => {
-                // Lift and scale the entire card
-                card.style.transform = 'translateY(-8px) scale(1.02)';
-                card.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3)';
-                
-                // Zoom image
-                if (image) {
-                    image.style.transform = 'scale(1.1)';
-                }
-                
-                // Darken overlay for better readability
-                if (overlay) {
-                    overlay.style.opacity = '0.4';
-                }
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                // Reset card transform
-                card.style.transform = 'translateY(0) scale(1)';
-                card.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.1)';
-                
-                // Reset image
-                if (image) {
-                    image.style.transform = 'scale(1)';
-                }
-                
-                // Reset overlay
-                if (overlay) {
-                    overlay.style.opacity = '0.3';
-                }
-            });
-        });
-
-        // CTA button interactions
-        ctas.forEach(cta => {
-            cta.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Add ripple effect
-                const ripple = document.createElement('span');
-                ripple.classList.add('cta-ripple');
-                cta.appendChild(ripple);
-                
-                // Remove ripple after animation
-                setTimeout(() => {
-                    ripple.remove();
-                }, 600);
-                
-                // Navigate to municipality (you can customize this)
-                const card = cta.closest('.destination-card');
-                const municipalityName = card.querySelector('.card-title').textContent;
-                console.log(`Navigating to ${municipalityName}...`);
-                
-                // For now, just log it. In a real app, you'd navigate to the municipality page
-                // window.location.href = `/municipalities/${municipalityName.toLowerCase().replace(' ', '-')}`;
-            });
-        });
-    }
 </script>
 {% endblock %}

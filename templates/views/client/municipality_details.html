@@ -1,162 +1,819 @@
 {% extends 'base.html' %}
 
-{% block title %}Calamba City | LTCATO{% endblock %}
+{% block title %}{{ municipality.name if municipality else 'Calamba City' }} | LTCATO{% endblock %}
 
 {% block style %}
 <style>
-    /* Hero Section */
-    .muni-hero {
+    /* Municipality details — scoped; palette: --primary, --background, warm neutrals, gold accent */
+    .municipality-details-page {
+        --md-primary: var(--primary, #9b2c2c);
+        --md-primary-deep: #7f1d1d;
+        --md-gold: #fde68a;
+        --md-gold-rich: #f59e0b;
+        --md-surface: #ffffff;
+        --md-surface-2: var(--background, #faf7f5);
+        --md-ink: var(--foreground, #1a1a1a);
+        --md-muted: var(--muted-foreground, #57534e);
+        --md-radius-xl: 1.75rem;
+        --md-radius-lg: 1.2rem;
+        --md-font-display: var(--font-sans, "Nunito", "Segoe UI", system-ui, sans-serif);
+        --md-font-body: "Open Sans", var(--font-sans, "Nunito"), system-ui, sans-serif;
+        --md-shadow-soft: 0 4px 24px rgba(26, 26, 26, 0.06);
+        --md-shadow-lift: 0 18px 48px rgba(26, 26, 26, 0.09);
+        --md-shadow-brand: 0 12px 40px rgba(155, 44, 44, 0.12);
+        --md-border: rgba(155, 44, 44, 0.09);
+        --md-ease: cubic-bezier(0.22, 1, 0.36, 1);
+        --md-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        color: var(--md-ink);
+        font-family: var(--md-font-body);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    .municipality-details-page h1,
+    .municipality-details-page h2,
+    .municipality-details-page h3,
+    .municipality-details-page h4,
+    .municipality-details-page h5,
+    .municipality-details-page .md-eyebrow,
+    .municipality-details-page .md-chip,
+    .municipality-details-page .md-section-kicker {
+        font-family: var(--md-font-display);
+    }
+
+    @keyframes mdFadeUp {
+        from {
+            opacity: 0;
+            transform: translate3d(0, 1rem, 0);
+        }
+        to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+    @keyframes mdWaveSoft {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(-1.5%); }
+    }
+
+    /* Hero */
+    .municipality-details-page .md-hero {
         position: relative;
-        height: 60vh;
-        min-height: 450px;
-        background-image: url('https://images.unsplash.com/photo-1548625361-ec8464673327?auto=format&fit=crop&w=1920&q=80');
+        min-height: clamp(22rem, 58vh, 40rem);
         background-size: cover;
         background-position: center;
         display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        overflow: hidden;
+        isolation: isolate;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .municipality-details-page .md-hero {
+            background-attachment: fixed;
+        }
+    }
+
+    .municipality-details-page .md-hero-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background:
+            radial-gradient(ellipse 100% 90% at 50% 115%, rgba(155, 44, 44, 0.35) 0%, transparent 50%),
+            linear-gradient(180deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.55) 50%, rgba(10, 8, 8, 0.88) 100%);
+    }
+
+    .municipality-details-page .md-hero-glow {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        background-image:
+            radial-gradient(circle at 18% 22%, rgba(253, 230, 138, 0.12) 0%, transparent 42%),
+            radial-gradient(circle at 82% 20%, rgba(254, 243, 199, 0.08) 0%, transparent 38%);
+        mix-blend-mode: screen;
+    }
+
+    .municipality-details-page .md-hero-vignette {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5);
+    }
+
+    .municipality-details-page .md-hero-wave {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 4;
+        line-height: 0;
+        color: var(--md-surface);
+        pointer-events: none;
+    }
+
+    .municipality-details-page .md-hero-wave svg {
+        display: block;
+        width: 100%;
+        height: clamp(2.25rem, 7vw, 4rem);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .municipality-details-page .md-hero-wave svg {
+            animation: mdWaveSoft 18s ease-in-out infinite;
+        }
+
+        .municipality-details-page .md-hero-enter {
+            opacity: 0;
+            animation: mdFadeUp 0.85s var(--md-ease) forwards;
+        }
+
+        .municipality-details-page .md-hero-enter--1 { animation-delay: 0.06s; }
+        .municipality-details-page .md-hero-enter--2 { animation-delay: 0.16s; }
+        .municipality-details-page .md-hero-enter--3 { animation-delay: 0.26s; }
+        .municipality-details-page .md-hero-enter--4 { animation-delay: 0.38s; }
+    }
+
+    .municipality-details-page .md-hero-inner {
+        position: relative;
+        z-index: 5;
+        width: 100%;
+        padding: clamp(2.5rem, 8vw, 4rem) 0 clamp(3.75rem, 10vh, 5.75rem);
+    }
+
+    .municipality-details-page .md-hero-card {
+        position: relative;
+        margin: 0 auto;
+        max-width: 52rem;
+        padding: clamp(1.25rem, 3.2vw, 1.9rem) clamp(1.15rem, 3vw, 1.75rem);
+        border-radius: 1.25rem;
+        background:
+            radial-gradient(circle at 20% 20%, rgba(253, 230, 138, 0.12) 0%, transparent 45%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.06) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow:
+            0 18px 60px rgba(0, 0, 0, 0.28),
+            inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+    }
+
+    .municipality-details-page .md-hero-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+        opacity: 0.9;
+    }
+
+    .municipality-details-page .md-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.6875rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.76);
+        margin-bottom: 0.85rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 1px solid rgba(253, 230, 138, 0.35);
+    }
+
+    .municipality-details-page .md-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.48rem 1.05rem;
+        font-size: 0.8125rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(254, 243, 199, 0.88) 100%);
+        color: var(--md-primary-deep);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 6px 28px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        margin-bottom: 1.05rem;
+        transition: transform 0.35s var(--md-ease), box-shadow 0.35s ease;
+    }
+
+    .municipality-details-page .md-chip i {
+        color: var(--md-primary);
+        font-size: 1.05rem;
+        filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.18));
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .municipality-details-page .md-chip:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.24);
+        }
+    }
+
+    .municipality-details-page .md-hero-title {
+        font-size: clamp(2.15rem, 5.8vw, 3.65rem);
+        font-weight: 800;
+        line-height: 1.06;
+        letter-spacing: -0.035em;
+        margin-bottom: 0.75rem;
+        text-wrap: balance;
+        color: #fff;
+        text-shadow: 0 4px 32px rgba(0, 0, 0, 0.35);
+        background-image: linear-gradient(185deg, #ffffff 35%, rgba(255, 255, 255, 0.88) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.35));
+    }
+
+    @supports not (background-clip: text) {
+        .municipality-details-page .md-hero-title {
+            -webkit-text-fill-color: unset;
+            background-image: none;
+        }
+    }
+
+    .municipality-details-page .md-hero-tagline {
+        font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+        font-weight: 500;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.92);
+        margin: 0 auto;
+        max-width: 40rem;
+    }
+
+    .municipality-details-page .md-hero-tagline .ph {
+        color: var(--md-gold);
+    }
+
+    /* Main */
+    .municipality-details-page .md-content {
+        position: relative;
+        padding: clamp(0.75rem, 2.5vw, 1.5rem) 0 clamp(3rem, 8vw, 5rem);
+        background:
+            radial-gradient(ellipse 70% 40% at 50% 0%, rgba(155, 44, 44, 0.07) 0%, transparent 55%),
+            linear-gradient(180deg, var(--md-surface-2) 0%, #ebe4dd 100%);
+    }
+
+    .municipality-details-page .md-content::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(rgba(155, 44, 44, 0.05) 1px, transparent 1px);
+        background-size: 22px 22px;
+        opacity: 0.42;
+        pointer-events: none;
+        mask-image: linear-gradient(180deg, black 0%, transparent 88%);
+    }
+
+    .municipality-details-page .md-content .container {
+        position: relative;
+        z-index: 1;
+    }
+
+    .municipality-details-page .md-about-wrap {
+        margin-top: clamp(1rem, 3.5vw, 2rem);
+        margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+    }
+
+    @media (max-width: 767px) {
+        .municipality-details-page .md-about-wrap {
+            margin-top: clamp(0.85rem, 4vw, 1.5rem);
+        }
+    }
+
+    .municipality-details-page .md-about-card {
+        position: relative;
+        background: var(--md-surface);
+        border-radius: var(--md-radius-xl);
+        padding: clamp(1.85rem, 5vw, 3rem);
+        box-shadow:
+            var(--md-shadow-soft),
+            0 0 0 1px var(--md-border),
+            0 -20px 56px rgba(155, 44, 44, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.85);
+        border: 1px solid var(--md-border);
+        overflow: hidden;
+        transition: box-shadow 0.45s var(--md-ease), transform 0.45s var(--md-ease);
+    }
+
+    .municipality-details-page .md-about-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--md-primary) 0%, var(--md-gold-rich) 50%, var(--md-primary-deep) 100%);
+        opacity: 0.92;
+    }
+
+    @media (prefers-reduced-motion: no-preference) and (min-width: 992px) {
+        .municipality-details-page .md-about-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--md-shadow-lift), 0 0 0 1px rgba(155, 44, 44, 0.06);
+        }
+    }
+
+    .municipality-details-page .md-about-card::after {
+        content: "";
+        position: absolute;
+        bottom: -20%;
+        right: -15%;
+        width: 55%;
+        height: 55%;
+        background: radial-gradient(circle, rgba(155, 44, 44, 0.06) 0%, transparent 65%);
+        pointer-events: none;
+    }
+
+    .municipality-details-page .md-about-card > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .municipality-details-page .md-section-kicker {
+        display: block;
+        font-size: 0.6875rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--md-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .municipality-details-page .md-about-title {
+        font-size: clamp(1.45rem, 3vw, 2rem);
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        color: var(--md-ink);
+        margin-bottom: 1.35rem;
+    }
+
+    .municipality-details-page .md-about-title .md-title-icon {
+        display: inline-flex;
         align-items: center;
         justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        margin-right: 0.6rem;
+        border-radius: 12px;
+        background: linear-gradient(145deg, rgba(155, 44, 44, 0.12), rgba(254, 243, 199, 0.65));
+        color: var(--md-primary);
+        font-size: 1.25rem;
+        vertical-align: middle;
     }
 
-    .hero-overlay {
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.5); /* Dark overlay for text readability */
+    .municipality-details-page .md-prose {
+        font-size: clamp(1.03rem, 1.9vw, 1.125rem);
+        line-height: 1.82;
+        letter-spacing: 0.015em;
+        color: var(--md-muted);
+        margin: 0 auto;
+        max-width: 52rem;
     }
 
-    .hero-content {
-        position: relative;
-        z-index: 2;
-        text-align: center;
-        color: white;
+    /* Destinations strip */
+    .municipality-details-page .md-dest-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1.25rem;
+        margin-bottom: clamp(1.75rem, 4vw, 2.25rem);
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid var(--md-border);
     }
 
-    /* Content Layout */
-    .content-section {
-        padding: 5rem 0;
-        background-color: var(--background, #faf7f5);
+    .municipality-details-page .md-dest-title {
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: var(--md-ink);
+        margin-bottom: 0.35rem;
     }
 
-    .about-card {
-        background: white;
-        border-radius: 1rem;
-        padding: 3rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-        margin-top: -100px; /* Overlap the hero image */
-        position: relative;
-        z-index: 3;
-        border: 1px solid rgba(0,0,0,0.05);
+    .municipality-details-page .md-dest-sub {
+        font-size: 1rem;
+        color: var(--md-muted);
+        margin: 0;
+        max-width: 26rem;
     }
 
-    /* Spots Grid */
-    .spot-card {
-        background: white;
-        border-radius: 1rem;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-        border: 1px solid #e2e8f0;
-        transition: transform 0.2s ease;
-        height: 100%;
+    .municipality-details-page .md-btn-map {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.82rem 1.5rem;
+        font-family: var(--md-font-display);
+        font-weight: 800;
+        font-size: 0.9375rem;
+        letter-spacing: 0.02em;
+        color: #fff !important;
         text-decoration: none;
-        display: block;
+        border: none;
+        border-radius: 14px;
+        background: linear-gradient(145deg, var(--md-primary) 0%, var(--md-primary-deep) 100%);
+        box-shadow:
+            0 6px 22px rgba(155, 44, 44, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        transition: transform 0.35s var(--md-ease-spring), box-shadow 0.35s var(--md-ease);
+        position: relative;
+        overflow: hidden;
+        flex-shrink: 0;
+        min-height: 3rem;
+    }
+
+    .municipality-details-page .md-btn-map:hover {
+        color: #fff !important;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(155, 44, 44, 0.42);
+    }
+
+    .municipality-details-page .md-btn-map::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            110deg,
+            transparent 35%,
+            rgba(255, 255, 255, 0.18) 50%,
+            transparent 65%
+        );
+        transform: translateX(-120%);
+        transition: transform 0.65s var(--md-ease);
+        pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .municipality-details-page .md-btn-map:hover::after {
+            transform: translateX(120%);
+        }
+    }
+
+    .municipality-details-page .md-btn-map .ph-arrow-right {
+        transition: transform 0.35s var(--md-ease-spring);
+        font-size: 1.1rem;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .municipality-details-page .md-btn-map:hover .ph-arrow-right {
+            transform: translateX(4px);
+        }
+    }
+
+    /* Spot cards */
+    .municipality-details-page .md-spots-grid .md-spot-col {
+        margin-bottom: 1.5rem;
+    }
+
+    .municipality-details-page .md-spot-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background: var(--md-surface);
+        border-radius: var(--md-radius-lg);
+        overflow: hidden;
+        border: 1px solid var(--md-border);
+        box-shadow: var(--md-shadow-soft);
+        text-decoration: none;
         color: inherit;
+        transition:
+            transform 0.42s var(--md-ease-spring),
+            box-shadow 0.4s var(--md-ease),
+            border-color 0.35s ease;
     }
 
-    .spot-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    @media (prefers-reduced-motion: no-preference) {
+        .municipality-details-page .md-spot-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--md-shadow-brand), 0 2px 0 rgba(155, 44, 44, 0.12);
+            border-color: rgba(155, 44, 44, 0.16);
+        }
     }
 
-    .spot-img {
-        height: 180px;
+    .municipality-details-page .md-spot-card:focus-visible {
+        outline: 3px solid rgba(155, 44, 44, 0.55);
+        outline-offset: 3px;
+    }
+
+    .municipality-details-page .md-spot-media {
+        position: relative;
+        aspect-ratio: 16 / 10;
+        overflow: hidden;
+        background: #e7e5e4;
+    }
+
+    .municipality-details-page .md-spot-media img {
         width: 100%;
+        height: 100%;
         object-fit: cover;
+        transition: transform 0.55s var(--md-ease);
     }
 
-    .spot-body {
-        padding: 1.25rem;
+    @media (prefers-reduced-motion: no-preference) {
+        .municipality-details-page .md-spot-card:hover .md-spot-media img {
+            transform: scale(1.06);
+        }
     }
 
-    .badge-nature { background-color: #10b981; color: white; }
-    .badge-resort { background-color: #f59e0b; color: white; }
-    .badge-pilgrimage { background-color: #8b5cf6; color: white; }
+    .municipality-details-page .md-spot-media::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(26, 26, 26, 0.55) 0%, transparent 45%);
+        opacity: 0.85;
+        pointer-events: none;
+        transition: opacity 0.35s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .municipality-details-page .md-spot-card:hover .md-spot-media::after {
+            opacity: 1;
+        }
+    }
+
+    .municipality-details-page .md-spot-arrow {
+        position: absolute;
+        bottom: 0.85rem;
+        right: 0.85rem;
+        z-index: 2;
+        width: 2.5rem;
+        height: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        color: #fff;
+        font-size: 1.25rem;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: transform 0.35s var(--md-ease-spring), background 0.25s ease;
+        pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .municipality-details-page .md-spot-card:hover .md-spot-arrow {
+            transform: scale(1.08) rotate(-8deg);
+            background: rgba(155, 44, 44, 0.85);
+        }
+    }
+
+    .municipality-details-page .md-spot-body {
+        padding: 1.35rem 1.35rem 1.45rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        gap: 0.65rem;
+    }
+
+    .municipality-details-page .md-cat-badge {
+        display: inline-flex;
+        align-items: center;
+        align-self: flex-start;
+        gap: 0.35rem;
+        padding: 0.38rem 0.75rem;
+        font-family: var(--md-font-display);
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        line-height: 1.2;
+    }
+
+    /* Category chips — harmonious with theme */
+    .municipality-details-page .md-cat-badge--resort {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(254, 243, 199, 0.8));
+        color: #92400e;
+        border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    .municipality-details-page .md-cat-badge--pilgrimage {
+        background: linear-gradient(135deg, rgba(155, 44, 44, 0.12), rgba(254, 243, 199, 0.5));
+        color: var(--md-primary-deep);
+        border-color: rgba(155, 44, 44, 0.2);
+    }
+
+    .municipality-details-page .md-cat-badge--heritage {
+        background: rgba(254, 243, 199, 0.65);
+        color: var(--md-primary-deep);
+        border-color: rgba(155, 44, 44, 0.15);
+    }
+
+    .municipality-details-page .md-cat-badge--nature {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(209, 250, 229, 0.6));
+        color: #047857;
+        border-color: rgba(16, 185, 129, 0.25);
+    }
+
+    .municipality-details-page .md-spot-title {
+        font-size: 1.125rem;
+        font-weight: 800;
+        letter-spacing: -0.015em;
+        line-height: 1.35;
+        color: var(--md-ink);
+        margin: 0;
+        transition: color 0.25s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .municipality-details-page .md-spot-card:hover .md-spot-title {
+            color: var(--md-primary);
+        }
+    }
+
+    .municipality-details-page .md-spot-desc {
+        font-size: 0.9rem;
+        line-height: 1.62;
+        color: var(--md-muted);
+        margin: 0;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+    }
+
+    @media (max-width: 767px) {
+        .municipality-details-page .md-dest-head {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .municipality-details-page .md-btn-map {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    /* Scroll reveal */
+    @media (prefers-reduced-motion: no-preference) {
+        .municipality-details-page .md-reveal-scroll {
+            opacity: 0;
+            transform: translate3d(0, 22px, 0);
+            transition:
+                opacity 0.72s var(--md-ease),
+                transform 0.72s var(--md-ease);
+        }
+
+        .municipality-details-page .md-reveal-scroll.md-is-visible {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+<style>
+    .municipality-details-page .md-hero {
+        background-image: url('{{ municipality.hero_image_url if municipality and municipality.hero_image_url else "https://images.unsplash.com/photo-1548625361-ec8464673327?auto=format&fit=crop&w=1920&q=80" }}');
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<div class="muni-hero">
-    <div class="hero-overlay"></div>
-    <div class="container hero-content">
-        <span class="badge bg-white text-dark px-3 py-2 rounded-pill mb-3 fw-bold shadow-sm" style="color: var(--primary) !important;">
-            <i class="ph ph-buildings me-1"></i> Component City
-        </span>
-        <h1 class="display-3 fw-bold mb-3">Calamba City</h1>
-        <p class="fs-4 fw-light">The Resort Capital of the Philippines</p>
-    </div>
-</div>
+{% set muni_name = municipality.name if municipality else 'Calamba City' %}
+{% set muni_type = municipality.type_label if municipality and municipality.type_label else 'Component City' %}
+{% set muni_tagline = municipality.tagline if municipality and municipality.tagline else 'The Resort Capital of the Philippines' %}
+{% set about_title = municipality.about_heading if municipality and municipality.about_heading else 'About ' ~ muni_name.split(' ')[0] %}
+{% set about_body = municipality.description if municipality and municipality.description else 'Calamba is a first-class component city in the province of Laguna, Philippines. It is the regional center of the CALABARZON region. Celebrated as the birthplace of the Philippine national hero, Dr. Jose Rizal, Calamba seamlessly blends rich historical heritage with natural wonders. It is renowned nationwide for its numerous hot spring resorts fed by the geothermal waters of Mount Makiling, making it the perfect destination for both history enthusiasts and relaxation seekers.' %}
 
-<!-- Main Content -->
-<section class="content-section">
-    <div class="container">
-        
-        <!-- About Section (Overlapping Hero) -->
-        <div class="row justify-content-center mb-5">
-            <div class="col-lg-10">
-                <div class="about-card text-center">
-                    <h3 class="fw-bold mb-4" style="color: var(--primary);">About Calamba</h3>
-                    <p class="fs-5 text-muted lh-lg mb-0">
-                        Calamba is a first-class component city in the province of Laguna, Philippines. It is the regional center of the CALABARZON region. Celebrated as the birthplace of the Philippine national hero, Dr. Jose Rizal, Calamba seamlessly blends rich historical heritage with natural wonders. It is renowned nationwide for its numerous hot spring resorts fed by the geothermal waters of Mount Makiling, making it the perfect destination for both history enthusiasts and relaxation seekers.
-                    </p>
+<div class="municipality-details-page">
+    <header class="md-hero" aria-label="Municipality hero">
+        <div class="md-hero-overlay"></div>
+        <div class="md-hero-glow"></div>
+        <div class="md-hero-vignette" aria-hidden="true"></div>
+        <div class="md-hero-wave" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 48" preserveAspectRatio="none">
+                <path fill="currentColor" d="M0,26 C288,72 528,8 720,28 C928,52 1176,-4 1440,24 L1440,48 L0,48 Z"/>
+            </svg>
+        </div>
+        <div class="container md-hero-inner">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-9 col-xl-8">
+                    <div class="md-hero-card">
+                        <p class="md-eyebrow md-hero-enter md-hero-enter--1 mb-0">Laguna · LTCATO</p>
+                        <span class="md-chip md-hero-enter md-hero-enter--2">
+                            <i class="ph ph-buildings" aria-hidden="true"></i> {{ muni_type }}
+                        </span>
+                        <h1 class="md-hero-title md-hero-enter md-hero-enter--3">{{ muni_name }}</h1>
+                        <p class="md-hero-tagline md-hero-enter md-hero-enter--4 mb-0">
+                            <i class="ph ph-sparkle me-2" aria-hidden="true"></i>{{ muni_tagline }}
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
+    </header>
 
-        <!-- Tourist Spots List -->
-        <div class="row mt-5 pt-4">
-            <div class="col-12 mb-4 d-flex justify-content-between align-items-end">
+    <section class="md-content content-section">
+        <div class="container px-3 px-lg-4">
+            <div class="row justify-content-center md-about-wrap">
+                <div class="col-lg-10 col-xl-9">
+                    <article class="md-about-card md-reveal-scroll about-card text-center">
+                        <span class="md-section-kicker">Local spotlight</span>
+                        <h2 class="md-about-title">
+                            <span class="md-title-icon"><i class="ph ph-flag-banner" aria-hidden="true"></i></span>{{ about_title }}
+                        </h2>
+                        <p class="md-prose text-muted lh-lg">{{ about_body }}</p>
+                    </article>
+                </div>
+            </div>
+
+            <header class="md-dest-head md-reveal-scroll">
                 <div>
-                    <h2 class="fw-bold" style="color: var(--primary);">Discover Destinations</h2>
-                    <p class="text-muted mb-0">Top tourist spots you can visit in Calamba City.</p>
+                    <span class="md-section-kicker">Places to explore</span>
+                    <h2 class="md-dest-title mb-0" style="color: var(--primary);">Discover destinations</h2>
+                    <p class="md-dest-sub">Top tourist spots you can visit in {{ muni_name }}.</p>
                 </div>
-                <a href="/explore-map" class="btn btn-outline-dark rounded-pill px-4">View on Map</a>
-            </div>
-
-            <!-- Spot Grid -->
-            <div class="col-md-4 mb-4">
-                <a href="/destination/s1" class="spot-card">
-                    <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=600&q=80" alt="Resort" class="spot-img">
-                    <div class="spot-body">
-                        <span class="badge badge-resort mb-2 px-2 py-1"><i class="ph ph-swimming-pool me-1"></i> Resort</span>
-                        <h5 class="fw-bold mb-2">Wonderland Hot Spring</h5>
-                        <p class="text-muted small mb-0 line-clamp-2">Relaxing natural hot spring resort featuring multiple therapeutic pools.</p>
-                    </div>
+                <a href="/explore-map" class="md-btn-map">
+                    <i class="ph ph-map-trifold" aria-hidden="true"></i>
+                    View on map
+                    <i class="ph ph-arrow-right" aria-hidden="true"></i>
                 </a>
-            </div>
+            </header>
 
-            <div class="col-md-4 mb-4">
-                <a href="/destination/s2" class="spot-card">
-                    <img src="https://images.unsplash.com/photo-1548625361-ec8464673327?auto=format&fit=crop&w=600&q=80" alt="Church" class="spot-img">
-                    <div class="spot-body">
-                        <span class="badge badge-pilgrimage mb-2 px-2 py-1"><i class="ph ph-hands-praying me-1"></i> Pilgrimage</span>
-                        <h5 class="fw-bold mb-2">St. John the Baptist Parish</h5>
-                        <p class="text-muted small mb-0 line-clamp-2">Historical church where the national hero Jose Rizal was baptized.</p>
-                    </div>
-                </a>
+            <div class="row md-spots-grid g-4 g-xl-4">
+                <div class="col-md-6 col-lg-4 md-spot-col md-reveal-scroll">
+                    <a href="/destination/s1" class="md-spot-card spot-card">
+                        <div class="md-spot-media">
+                            <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=900&q=80" alt="Wonderland Hot Spring resort">
+                            <span class="md-spot-arrow" aria-hidden="true"><i class="ph ph-arrow-up-right"></i></span>
+                        </div>
+                        <div class="md-spot-body spot-body">
+                            <span class="md-cat-badge md-cat-badge--resort"><i class="ph ph-swimming-pool"></i> Resort</span>
+                            <h3 class="md-spot-title h5 fw-bold mb-0">Wonderland Hot Spring</h3>
+                            <p class="md-spot-desc text-muted mb-0">Relaxing natural hot spring resort featuring multiple therapeutic pools.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-4 md-spot-col md-reveal-scroll">
+                    <a href="/destination/s2" class="md-spot-card spot-card">
+                        <div class="md-spot-media">
+                            <img src="https://images.unsplash.com/photo-1548625361-ec8464673327?auto=format&fit=crop&amp;w=900&amp;q=80" alt="">
+                            <span class="md-spot-arrow"><i class="ph ph-arrow-up-right" aria-hidden="true"></i></span>
+                        </div>
+                        <div class="md-spot-body spot-body">
+                            <span class="md-cat-badge md-cat-badge--pilgrimage"><i class="ph ph-hands-praying"></i> Pilgrimage</span>
+                            <h3 class="md-spot-title h5 fw-bold mb-0">St. John the Baptist Parish</h3>
+                            <p class="md-spot-desc text-muted mb-0">Historical church where the national hero Jose Rizal was baptized.</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-4 md-spot-col md-reveal-scroll">
+                    <a href="/destination/s3" class="md-spot-card spot-card">
+                        <div class="md-spot-media">
+                            <img src="https://images.unsplash.com/photo-1505305976870-c0be1cd39939?auto=format&fit=crop&w=900&q=80" alt="Rizal Shrine">
+                            <span class="md-spot-arrow"><i class="ph ph-arrow-up-right" aria-hidden="true"></i></span>
+                        </div>
+                        <div class="md-spot-body spot-body">
+                            <span class="md-cat-badge md-cat-badge--heritage"><i class="ph ph-bank"></i> Heritage</span>
+                            <h3 class="md-spot-title h5 fw-bold mb-0">Rizal Shrine</h3>
+                            <p class="md-spot-desc text-muted mb-0">A reproduction of the original two-story, Spanish-colonial style house where Jose Rizal was born.</p>
+                        </div>
+                    </a>
+                </div>
             </div>
-
-            <div class="col-md-4 mb-4">
-                <a href="/destination/s3" class="spot-card">
-                    <img src="https://images.unsplash.com/photo-1505305976870-c0be1cd39939?auto=format&fit=crop&w=600&q=80" alt="Shrine" class="spot-img">
-                    <div class="spot-body">
-                        <span class="badge badge-nature mb-2 px-2 py-1 bg-secondary"><i class="ph ph-bank me-1"></i> Heritage</span>
-                        <h5 class="fw-bold mb-2">Rizal Shrine</h5>
-                        <p class="text-muted small mb-0 line-clamp-2">A reproduction of the original two-story, Spanish-colonial style house where Jose Rizal was born.</p>
-                    </div>
-                </a>
-            </div>
-            
         </div>
+    </section>
+</div>
+{% endblock %}
 
-    </div>
-</section>
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var root = document.querySelector('.municipality-details-page');
+        if (!root || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        var nodes = root.querySelectorAll('.md-reveal-scroll');
+        if (!nodes.length || !('IntersectionObserver' in window)) {
+            nodes.forEach(function (el) { el.classList.add('md-is-visible'); });
+            return;
+        }
+
+        var io = new IntersectionObserver(
+            function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('md-is-visible');
+                        io.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.07, rootMargin: '0px 0px -40px 0px' }
+        );
+
+        nodes.forEach(function (el) { io.observe(el); });
+    });
+</script>
 {% endblock %}

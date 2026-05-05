@@ -1,0 +1,890 @@
+{% extends "dashboard-base.html" %}
+
+{% block title %}Chatbot Configuration{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header-section">
+  <div class="header-content">
+    <div class="page-info">
+      <h1 class="page-title">
+        <i class='bx bx-bot'></i>
+        Chatbot Configuration
+      </h1>
+      <p class="page-description">Manage frequently asked questions and answers to improve AI responses</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-dashboard-action" onclick="openAddQuestionModal()">
+        <i class='bx bx-plus-circle'></i>
+        Add New Question
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Stats Overview -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon">
+      <i class='bx bx-help-circle'></i>
+    </div>
+    <div class="stat-info">
+      <div class="stat-number" id="totalQuestions">0</div>
+      <p class="stat-label">Total Questions</p>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon active">
+      <i class='bx bx-check-circle'></i>
+    </div>
+    <div class="stat-info">
+      <div class="stat-number" id="activeQuestions">0</div>
+      <p class="stat-label">Active Questions</p>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon pending">
+      <i class='bx bx-time-five'></i>
+    </div>
+    <div class="stat-info">
+      <div class="stat-number" id="pendingQuestions">0</div>
+      <p class="stat-label">Pending Review</p>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">
+      <i class='bx bx-category'></i>
+    </div>
+    <div class="stat-info">
+      <div class="stat-number" id="totalCategories">0</div>
+      <p class="stat-label">Categories</p>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content Area -->
+<div class="row">
+  <!-- Questions Management Section -->
+  <div class="col-lg-8">
+    <div class="table-section">
+      <div class="section-header">
+        <h2 class="section-title">Frequent Questions</h2>
+        <div class="table-controls">
+          <div class="search-box">
+            <i class='bx bx-search'></i>
+            <input type="text" id="searchQuestions" placeholder="Search questions..." class="form-control">
+          </div>
+          <select id="categoryFilter" class="filter-select">
+            <option value="">All Categories</option>
+            <option value="general">General</option>
+            <option value="services">Services</option>
+            <option value="technical">Technical</option>
+            <option value="billing">Billing</option>
+            <option value="support">Support</option>
+          </select>
+          <select id="statusFilter" class="filter-select">
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="pending">Pending</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="table arrivals-table" id="questionsTable">
+          <thead>
+            <tr>
+              <th>Question</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th>Usage Count</th>
+              <th>Last Updated</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="questionsTableBody">
+            <!-- Questions will be populated here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar Section -->
+  <div class="col-lg-4">
+    <!-- Quick Actions -->
+    <div class="mockup-card mb-4">
+      <div class="card-header">
+        <h5 class="mb-0">Quick Actions</h5>
+      </div>
+      <div class="card-body">
+        <div class="quick-actions">
+          <button class="quick-action-btn" onclick="bulkImport()">
+            <i class='bx bx-upload'></i>
+            <span>Import Questions</span>
+          </button>
+          <button class="quick-action-btn" onclick="exportQuestions()">
+            <i class='bx bx-download'></i>
+            <span>Export Questions</span>
+          </button>
+          <button class="quick-action-btn" onclick="testChatbot()">
+            <i class='bx bx-play-circle'></i>
+            <span>Test Chatbot</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories Overview -->
+    <div class="mockup-card mb-4">
+      <div class="card-header">
+        <h5 class="mb-0">Categories Overview</h5>
+      </div>
+      <div class="card-body">
+        <div id="categoriesList">
+          <!-- Categories will be populated here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="mockup-card">
+      <div class="card-header">
+        <h5 class="mb-0">Recent Activity</h5>
+      </div>
+      <div class="card-body">
+        <div class="activity-feed" id="recentActivity">
+          <!-- Activity items will be populated here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Question Modal -->
+<div class="modal fade" id="questionModal" tabindex="-1" aria-labelledby="questionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="questionModalLabel">Add New Question</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="questionForm">
+          <input type="hidden" id="questionId">
+          
+          <div class="mb-3">
+            <label for="questionText" class="form-label">Question *</label>
+            <textarea class="form-control" id="questionText" rows="3" required placeholder="Enter the frequently asked question..."></textarea>
+          </div>
+          
+          <div class="mb-3">
+            <label for="answerText" class="form-label">Answer *</label>
+            <div id="answerEditor" style="height: 200px;"></div>
+            <textarea class="form-control d-none" id="answerText" required placeholder="Enter the answer..."></textarea>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="questionCategory" class="form-label">Category *</label>
+              <select class="form-select" id="questionCategory" required>
+                <option value="">Select Category</option>
+                <option value="general">General</option>
+                <option value="services">Services</option>
+                <option value="technical">Technical</option>
+                <option value="billing">Billing</option>
+                <option value="support">Support</option>
+              </select>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+              <label for="questionStatus" class="form-label">Status *</label>
+              <select class="form-select" id="questionStatus" required>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="pending">Pending</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="keywords" class="form-label">Keywords</label>
+            <input type="text" class="form-control" id="keywords" placeholder="Enter keywords separated by commas...">
+            <small class="text-muted">Helps the AI match similar questions</small>
+          </div>
+          
+          <div class="mb-3">
+            <label for="priority" class="form-label">Priority</label>
+            <select class="form-select" id="priority">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn-dashboard-action" onclick="saveQuestion()">
+          <i class='bx bx-save'></i>
+          Save Question
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- View Question Modal -->
+<div class="modal fade" id="viewQuestionModal" tabindex="-1" aria-labelledby="viewQuestionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewQuestionModalLabel">Question Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="viewQuestionContent">
+        <!-- Question details will be populated here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn-dashboard-action" onclick="editQuestion()">
+          <i class='bx bx-edit'></i>
+          Edit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Test Chatbot Modal -->
+<div class="modal fade" id="testChatbotModal" tabindex="-1" aria-labelledby="testChatbotModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="testChatbotModalLabel">Test Chatbot</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="chat-container">
+          <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+              <div class="message-content">
+                <p>Hello! I'm the LTCATO chatbot. How can I help you today?</p>
+              </div>
+            </div>
+          </div>
+          <div class="chat-input">
+            <div class="input-group">
+              <input type="text" class="form-control" id="testQuestion" placeholder="Type your question here...">
+              <button class="btn-dashboard-action" onclick="sendTestMessage()">
+                <i class='bx bx-send'></i>
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+// Global variables
+let questions = [];
+let quillEditor = null;
+let currentEditingId = null;
+
+// Initialize the page
+$(document).ready(function() {
+  initializeQuillEditor();
+  loadQuestions();
+  loadCategories();
+  loadRecentActivity();
+  setupEventListeners();
+});
+
+// Initialize Quill editor
+function initializeQuillEditor() {
+  quillEditor = new Quill('#answerEditor', {
+    theme: 'snow',
+    placeholder: 'Enter the answer...',
+    modules: {
+      toolbar: [
+        ['bold', 'italic', 'underline', 'strike'],
+        ['blockquote', 'code-block'],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'header': [1, 2, 3, false] }],
+        ['clean']
+      ]
+    }
+  });
+  
+  // Sync Quill content with hidden textarea
+  quillEditor.on('text-change', function() {
+    $('#answerText').val(quillEditor.root.innerHTML);
+  });
+}
+
+// Setup event listeners
+function setupEventListeners() {
+  $('#searchQuestions').on('input', filterQuestions);
+  $('#categoryFilter').on('change', filterQuestions);
+  $('#statusFilter').on('change', filterQuestions);
+  
+  // Form submission
+  $('#questionForm').on('submit', function(e) {
+    e.preventDefault();
+    saveQuestion();
+  });
+}
+
+// Load questions (mock data for now)
+function loadQuestions() {
+  // Mock data - replace with actual API call
+  questions = [
+    {
+      id: 1,
+      question: "What is LTCATO?",
+      answer: "LTCATO is a comprehensive local government management system that helps municipalities streamline their operations and provide better services to citizens.",
+      category: "general",
+      status: "active",
+      usageCount: 45,
+      keywords: "ltcato, system, platform, government",
+      priority: "high",
+      createdAt: "2024-01-15T10:30:00",
+      updatedAt: "2024-01-20T14:22:00"
+    },
+    {
+      id: 2,
+      question: "How do I submit a report?",
+      answer: "You can submit a report by logging into your account and navigating to the Reports section. Click on 'Submit New Report' and fill out the required information.",
+      category: "services",
+      status: "active",
+      usageCount: 32,
+      keywords: "report, submit, file, document",
+      priority: "medium",
+      createdAt: "2024-01-16T09:15:00",
+      updatedAt: "2024-01-18T11:45:00"
+    },
+    {
+      id: 3,
+      question: "What are the system requirements?",
+      answer: "The system requires a modern web browser (Chrome, Firefox, Safari, or Edge) with JavaScript enabled. For mobile devices, iOS 12+ or Android 8+ is recommended.",
+      category: "technical",
+      status: "active",
+      usageCount: 28,
+      keywords: "requirements, browser, compatibility, system",
+      priority: "medium",
+      createdAt: "2024-01-17T13:20:00",
+      updatedAt: "2024-01-19T16:30:00"
+    }
+  ];
+  
+  renderQuestionsTable();
+  updateStats();
+}
+
+// Render questions table
+function renderQuestionsTable() {
+  const tbody = $('#questionsTableBody');
+  tbody.empty();
+  
+  const filteredQuestions = getFilteredQuestions();
+  
+  filteredQuestions.forEach(question => {
+    const row = `
+      <tr>
+        <td>
+          <div class="question-cell">
+            <strong>${escapeHtml(question.question)}</strong>
+            <div class="question-keywords">
+              <small class="text-muted">${question.keywords}</small>
+            </div>
+          </div>
+        </td>
+        <td>
+          <span class="status-badge ${question.category}">
+            ${getCategoryLabel(question.category)}
+          </span>
+        </td>
+        <td>
+          <span class="status-badge ${question.status}">
+            ${getStatusLabel(question.status)}
+          </span>
+        </td>
+        <td>
+          <div class="usage-count">
+            <i class='bx bx-bar-chart'></i>
+            ${question.usageCount}
+          </div>
+        </td>
+        <td>
+          <div class="date-info">
+            <div class="date-display">${formatDate(question.updatedAt)}</div>
+            <div class="time-display">${formatTime(question.updatedAt)}</div>
+          </div>
+        </td>
+        <td>
+          <div class="arrival-actions">
+            <button class="btn btn-sm btn-outline-primary" onclick="viewQuestion(${question.id})" title="View">
+              <i class='bx bx-show'></i>
+            </button>
+            <button class="btn btn-sm btn-outline-warning" onclick="openEditQuestionModal(${question.id})" title="Edit">
+              <i class='bx bx-edit'></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteQuestion(${question.id})" title="Delete">
+              <i class='bx bx-trash'></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+    tbody.append(row);
+  });
+}
+
+// Get filtered questions
+function getFilteredQuestions() {
+  let filtered = [...questions];
+  
+  const searchTerm = $('#searchQuestions').val().toLowerCase();
+  const categoryFilter = $('#categoryFilter').val();
+  const statusFilter = $('#statusFilter').val();
+  
+  if (searchTerm) {
+    filtered = filtered.filter(q => 
+      q.question.toLowerCase().includes(searchTerm) ||
+      q.answer.toLowerCase().includes(searchTerm) ||
+      q.keywords.toLowerCase().includes(searchTerm)
+    );
+  }
+  
+  if (categoryFilter) {
+    filtered = filtered.filter(q => q.category === categoryFilter);
+  }
+  
+  if (statusFilter) {
+    filtered = filtered.filter(q => q.status === statusFilter);
+  }
+  
+  return filtered;
+}
+
+// Filter questions
+function filterQuestions() {
+  renderQuestionsTable();
+}
+
+// Update statistics
+function updateStats() {
+  $('#totalQuestions').text(questions.length);
+  $('#activeQuestions').text(questions.filter(q => q.status === 'active').length);
+  $('#pendingQuestions').text(questions.filter(q => q.status === 'pending').length);
+  
+  const categories = [...new Set(questions.map(q => q.category))];
+  $('#totalCategories').text(categories.length);
+}
+
+// Load categories overview
+function loadCategories() {
+  const categories = {};
+  questions.forEach(q => {
+    if (!categories[q.category]) {
+      categories[q.category] = 0;
+    }
+    categories[q.category]++;
+  });
+  
+  const categoriesList = $('#categoriesList');
+  categoriesList.empty();
+  
+  Object.entries(categories).forEach(([category, count]) => {
+    const categoryItem = `
+      <div class="category-item mb-2">
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="category-label">${getCategoryLabel(category)}</span>
+          <span class="badge bg-primary">${count}</span>
+        </div>
+      </div>
+    `;
+    categoriesList.append(categoryItem);
+  });
+}
+
+// Load recent activity
+function loadRecentActivity() {
+  const activities = [
+    { type: 'user', title: 'Added new question', time: '2 hours ago', icon: 'bx-plus-circle' },
+    { type: 'system', title: 'Updated answer for "What is LTCATO?"', time: '5 hours ago', icon: 'bx-edit' },
+    { type: 'user', title: 'Deleted question', time: '1 day ago', icon: 'bx-trash' },
+    { type: 'system', title: 'Imported 10 questions', time: '2 days ago', icon: 'bx-upload' }
+  ];
+  
+  const activityFeed = $('#recentActivity');
+  activityFeed.empty();
+  
+  activities.forEach(activity => {
+    const activityItem = `
+      <div class="activity-item">
+        <div class="activity-icon ${activity.type}">
+          <i class='bx ${activity.icon}'></i>
+        </div>
+        <div class="activity-content">
+          <div class="activity-title">${activity.title}</div>
+          <div class="activity-time">${activity.time}</div>
+        </div>
+      </div>
+    `;
+    activityFeed.append(activityItem);
+  });
+}
+
+// Open add question modal
+function openAddQuestionModal() {
+  currentEditingId = null;
+  $('#questionModalLabel').text('Add New Question');
+  $('#questionForm')[0].reset();
+  quillEditor.setText('');
+  $('#questionModal').modal('show');
+}
+
+// Open edit question modal
+function openEditQuestionModal(id) {
+  const question = questions.find(q => q.id === id);
+  if (!question) return;
+  
+  currentEditingId = id;
+  $('#questionModalLabel').text('Edit Question');
+  $('#questionId').val(id);
+  $('#questionText').val(question.question);
+  quillEditor.root.innerHTML = question.answer;
+  $('#answerText').val(question.answer);
+  $('#questionCategory').val(question.category);
+  $('#questionStatus').val(question.status);
+  $('#keywords').val(question.keywords);
+  $('#priority').val(question.priority);
+  
+  $('#questionModal').modal('show');
+}
+
+// Save question
+function saveQuestion() {
+  const questionData = {
+    question: $('#questionText').val().trim(),
+    answer: quillEditor.root.innerHTML,
+    category: $('#questionCategory').val(),
+    status: $('#questionStatus').val(),
+    keywords: $('#keywords').val().trim(),
+    priority: $('#priority').val()
+  };
+  
+  if (!questionData.question || !questionData.answer || !questionData.category) {
+    showToast('Please fill in all required fields', 'error');
+    return;
+  }
+  
+  if (currentEditingId) {
+    // Update existing question
+    const index = questions.findIndex(q => q.id === currentEditingId);
+    if (index !== -1) {
+      questions[index] = {
+        ...questions[index],
+        ...questionData,
+        updatedAt: new Date().toISOString()
+      };
+      showToast('Question updated successfully', 'success');
+    }
+  } else {
+    // Add new question
+    const newQuestion = {
+      id: Math.max(...questions.map(q => q.id)) + 1,
+      ...questionData,
+      usageCount: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    questions.unshift(newQuestion);
+    showToast('Question added successfully', 'success');
+  }
+  
+  $('#questionModal').modal('hide');
+  renderQuestionsTable();
+  updateStats();
+  loadCategories();
+  loadRecentActivity();
+}
+
+// View question
+function viewQuestion(id) {
+  const question = questions.find(q => q.id === id);
+  if (!question) return;
+  
+  currentEditingId = id;
+  
+  const content = `
+    <div class="question-details">
+      <div class="mb-3">
+        <label class="form-label fw-bold">Question:</label>
+        <p>${escapeHtml(question.question)}</p>
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label fw-bold">Answer:</label>
+        <div class="answer-content">${question.answer}</div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <label class="form-label fw-bold">Category:</label>
+          <p><span class="status-badge ${question.category}">${getCategoryLabel(question.category)}</span></p>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-bold">Status:</label>
+          <p><span class="status-badge ${question.status}">${getStatusLabel(question.status)}</span></p>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <label class="form-label fw-bold">Priority:</label>
+          <p><span class="badge bg-${getPriorityColor(question.priority)}">${question.priority}</span></p>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-bold">Usage Count:</label>
+          <p>${question.usageCount} times</p>
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label fw-bold">Keywords:</label>
+        <p>${question.keywords || 'No keywords'}</p>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <label class="form-label fw-bold">Created:</label>
+          <p>${formatDateTime(question.createdAt)}</p>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-bold">Last Updated:</label>
+          <p>${formatDateTime(question.updatedAt)}</p>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  $('#viewQuestionContent').html(content);
+  $('#viewQuestionModal').modal('show');
+}
+
+// Edit question from view modal
+function editQuestion() {
+  $('#viewQuestionModal').modal('hide');
+  openEditQuestionModal(currentEditingId);
+}
+
+// Delete question
+function deleteQuestion(id) {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'This question will be permanently deleted.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#7f1d1d',
+    cancelButtonColor: '#6b7280',
+    confirmButtonText: 'Delete',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      questions = questions.filter(q => q.id !== id);
+      renderQuestionsTable();
+      updateStats();
+      loadCategories();
+      loadRecentActivity();
+      showToast('Question deleted successfully', 'success');
+    }
+  });
+}
+
+// Test chatbot
+function testChatbot() {
+  $('#testChatbotModal').modal('show');
+}
+
+// Send test message
+function sendTestMessage() {
+  const input = $('#testQuestion');
+  const message = input.val().trim();
+  
+  if (!message) return;
+  
+  // Add user message
+  addChatMessage(message, 'user');
+  input.val('');
+  
+  // Simulate bot response
+  setTimeout(() => {
+    const response = generateBotResponse(message);
+    addChatMessage(response, 'bot');
+  }, 1000);
+}
+
+// Add chat message
+function addChatMessage(message, sender) {
+  const chatMessages = $('#chatMessages');
+  const messageClass = sender === 'user' ? 'user-message' : 'bot-message';
+  const messageHtml = `
+    <div class="message ${messageClass}">
+      <div class="message-content">
+        <p>${escapeHtml(message)}</p>
+      </div>
+    </div>
+  `;
+  chatMessages.append(messageHtml);
+  chatMessages.scrollTop(chatMessages[0].scrollHeight);
+}
+
+// Generate bot response (mock)
+function generateBotResponse(message) {
+  const lowerMessage = message.toLowerCase();
+  
+  // Check if message matches any configured questions
+  const matchedQuestion = questions.find(q => 
+    q.question.toLowerCase().includes(lowerMessage) ||
+    q.keywords.toLowerCase().includes(lowerMessage)
+  );
+  
+  if (matchedQuestion && matchedQuestion.status === 'active') {
+    // Strip HTML from answer for chat display
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = matchedQuestion.answer;
+    return tempDiv.textContent || tempDiv.innerText || matchedQuestion.answer;
+  }
+  
+  // Default responses
+  if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+    return 'Hello! How can I help you with LTCATO today?';
+  } else if (lowerMessage.includes('help')) {
+    return 'I can help you with information about LTCATO services, system requirements, and common questions. What would you like to know?';
+  } else {
+    return 'I\'m sorry, I don\'t have an answer for that question yet. You can contact our support team for more assistance, or this question can be added to our knowledge base.';
+  }
+}
+
+// Bulk import
+function bulkImport() {
+  showToast('Import functionality coming soon!', 'info');
+}
+
+// Export questions
+function exportQuestions() {
+  const dataStr = JSON.stringify(questions, null, 2);
+  const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+  
+  const exportFileDefaultName = 'chatbot-questions.json';
+  
+  const linkElement = document.createElement('a');
+  linkElement.setAttribute('href', dataUri);
+  linkElement.setAttribute('download', exportFileDefaultName);
+  linkElement.click();
+  
+  showToast('Questions exported successfully', 'success');
+}
+
+// Utility functions
+function escapeHtml(text) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+function getCategoryLabel(category) {
+  const labels = {
+    general: 'General',
+    services: 'Services',
+    technical: 'Technical',
+    billing: 'Billing',
+    support: 'Support'
+  };
+  return labels[category] || category;
+}
+
+function getStatusLabel(status) {
+  const labels = {
+    active: 'Active',
+    inactive: 'Inactive',
+    pending: 'Pending'
+  };
+  return labels[status] || status;
+}
+
+function getPriorityColor(priority) {
+  const colors = {
+    low: 'success',
+    medium: 'warning',
+    high: 'danger'
+  };
+  return colors[priority] || 'secondary';
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'short', 
+    day: 'numeric' 
+  });
+}
+
+function formatTime(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleTimeString('en-US', { 
+    hour: '2-digit', 
+    minute: '2-digit' 
+  });
+}
+
+function formatDateTime(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleString('en-US', { 
+    year: 'numeric', 
+    month: 'short', 
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+function showToast(message, type = 'info') {
+  const toast = `
+    <div class="toast toast-${type}" role="alert">
+      <div class="toast-header">
+        <strong class="me-auto">${type.charAt(0).toUpperCase() + type.slice(1)}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+      </div>
+      <div class="toast-body">
+        ${message}
+      </div>
+    </div>
+  `;
+  
+  const toastContainer = $('.toast-container') || $('<div class="toast-container"></div>').appendTo('body');
+  const toastElement = $(toast).appendTo(toastContainer);
+  
+  const bsToast = new bootstrap.Toast(toastElement[0]);
+  bsToast.show();
+  
+  toastElement.on('hidden.bs.toast', function() {
+    $(this).remove();
+  });
+}
+</script>
+{% endblock %}
