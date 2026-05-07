@@ -828,6 +828,14 @@
               <input type="text" name="address" id="editAddress" class="form-control">
             </div>
             <div class="col-md-6">
+              <label class="form-label fw-medium">Latitude</label>
+              <input type="number" step="any" name="latitude" id="editLatitude" class="form-control" placeholder="e.g. 14.3995">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-medium">Longitude</label>
+              <input type="number" step="any" name="longitude" id="editLongitude" class="form-control" placeholder="e.g. 121.0283">
+            </div>
+            <div class="col-md-6">
               <label class="form-label fw-medium">Hook Title</label>
               <input type="text" name="hook_title" id="editHookTitle" class="form-control">
             </div>
@@ -1310,6 +1318,8 @@
         document.getElementById('editName').value = spot.name || '';
         document.getElementById('editCategory').value = spot.category || 'other';
         document.getElementById('editAddress').value = spot.address || '';
+        document.getElementById('editLatitude').value = spot.latitude || '';
+        document.getElementById('editLongitude').value = spot.longitude || '';
         document.getElementById('editHookTitle').value = spot.hook_title || '';
         document.getElementById('editHookText').value = spot.hook_text || '';
         document.getElementById('editDescription').value = spot.description || '';

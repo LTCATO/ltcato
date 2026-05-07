@@ -132,6 +132,16 @@ def register_routes(app):
         return render_template('views/dashboard/lgu/feedbacks.html')
 
 # API ROUTES
+    @app.route('/api/municipalities', methods=['GET'])
+    def municipalities_api():
+        from flask import jsonify
+        from supabase_client import supabase
+        try:
+            response = supabase.table('municipalities').select('id, name').execute()
+            return jsonify(response.data)
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+
     @app.route('/api/lara-chat', methods=['POST'])
     def lara_chat_api():
         from controller.HomeController import lara_chat
@@ -142,7 +152,7 @@ def register_routes(app):
     def login_page():
         return login()
 
-    @app.route("/register")
+    @app.route("/register", methods=["GET", "POST"])
     def register_page():
         return register()
     
