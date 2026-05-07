@@ -313,12 +313,6 @@
                     <label class="auth-label">Email</label>
                     <input class="form-control auth-input" type="email" name="email" autocomplete="email" required placeholder="you@example.com">
                   </div>
-                  <div class="col-12">
-                    <label class="auth-label">Municipality</label>
-                    <select class="form-control auth-input" name="municipality_id" required>
-                      <option value="">Select your municipality</option>
-                    </select>
-                  </div>
                   <div class="col-md-6">
                     <label class="auth-label">Password</label>
                     <input class="form-control auth-input" type="password" name="password" autocomplete="new-password" required placeholder="Create a password">
@@ -382,33 +376,11 @@
     linkToSignup.addEventListener('click', () => setView('signup'));
     linkToLogin.addEventListener('click', () => setView('login'));
 
-    // Load municipalities for signup form
-    async function loadMunicipalities() {
-      try {
-        const response = await fetch('/api/municipalities');
-        const municipalities = await response.json();
-        const select = document.querySelector('select[name="municipality_id"]');
-        
-        municipalities.forEach(municipality => {
-          const option = document.createElement('option');
-          option.value = municipality.id;
-          option.textContent = municipality.name;
-          select.appendChild(option);
-        });
-      } catch (error) {
-        console.error('Error loading municipalities:', error);
-      }
-    }
 
     // Support direct linking
     if (location.hash === '#signup') {
       setView('signup');
-      loadMunicipalities();
     }
-
-    // Load municipalities when switching to signup
-    tabSignup.addEventListener('click', loadMunicipalities);
-    linkToSignup.addEventListener('click', loadMunicipalities);
   })();
 </script>
 {% endblock %}

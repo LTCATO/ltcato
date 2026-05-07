@@ -18,7 +18,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto fw-medium">
           <li class="nav-item">
-            <a class="nav-link active" href="/explore-map">Explore Laguna</a>
+            <a class="nav-link active" href="/explore-map">Itinerary</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/lgu">LGU</a>
@@ -28,9 +28,22 @@
           </li>
         </ul>
         <div class="d-flex ms-lg-3 mt-3 mt-lg-0">
-          <a href="/login-signup" class="btn btn-sm px-3 py-2 fw-semibold text-white" style="background: var(--primary); border-radius: 999px;">
-            Login
-          </a>
+          {% if 'user' in session %}
+            <div class="dropdown">
+              <button class="btn btn-sm px-3 py-2 fw-semibold text-white dropdown-toggle" style="background: var(--primary); border-radius: 999px;" data-bs-toggle="dropdown">
+                <i class="ph ph-user me-1"></i> {{ session.get('first_name', 'User') }}
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="/logout">
+                  <i class="ph ph-sign-out me-2"></i> Logout
+                </a></li>
+              </ul>
+            </div>
+          {% else %}
+            <a href="/login-signup" class="btn btn-sm px-3 py-2 fw-semibold text-white" style="background: var(--primary); border-radius: 999px;">
+              Login
+            </a>
+          {% endif %}
         </div>
       </div>
     </div>
