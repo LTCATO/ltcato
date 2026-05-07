@@ -28,15 +28,14 @@
 
   <!-- custom styles -->
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom.css') }}">
 
   {% block style %} {% endblock %}
 </head>
 
 <body class="bg-light">
   <!-- Common navigation for public guest pages -->
-    {% if 'admin-ltcato' not in request.host: %}
-       {% include 'include/navbar.html' ignore missing %}
+  {% if 'admin-ltcato' not in request.host: %}
+  {% include 'include/navbar.html' ignore missing %}
   {% endif %}
 
   <!-- Main content block where child templates will insert content -->

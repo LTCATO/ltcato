@@ -3,6 +3,7 @@ from controller.LoginController import login, register, logout
 from controller.DashboardController import dashboardIndex, accounts, create_account, update_account, delete_account, lgu_dashboard, tourist_spots as lgu_tourist_spots, lgu_add_spot, lgu_get_spot_data, lgu_edit_spot, lgu_delete_spot
 from controller.ArrivalsController import arrivals
 from controller.DecisionController import decision
+from controller.ItineraryController import itinerary_page, optimize_itinerary, get_spots_map_data
 
 def register_routes(app):
 # CLIENT-FACING ROUTES
@@ -53,6 +54,18 @@ def register_routes(app):
     @app.route('/lgu-support')
     def lgu_support_page():
         return lgu_support()
+
+    @app.route('/itinerary')
+    def itinerary_page_route():
+        return itinerary_page()
+
+    @app.route('/api/itinerary/optimize', methods=['POST'])
+    def itinerary_optimize_api():
+        return optimize_itinerary()
+
+    @app.route('/api/spots/map-data')
+    def spots_map_data_api():
+        return get_spots_map_data()
 
 # SUPERADMIN DASHBOARD ROUTES
     
