@@ -367,12 +367,18 @@ def lgu_add_spot():
         # 4. Get municipality ID from logged-in LGU session
         municipality_id = session.get('municipality_id')
 
-        # 5. Construct payload
+        # 5. Get latitude and longitude from form
+        latitude = request.form.get('latitude')
+        longitude = request.form.get('longitude')
+
+        # 6. Construct payload
         payload = {
             "name": request.form.get('name'),
             "category": request.form.get('category'),
             "address": request.form.get('address'),
             "municipality_id": municipality_id,
+            "latitude": float(latitude) if latitude else None,
+            "longitude": float(longitude) if longitude else None,
             "hook_title": request.form.get('hook_title'),
             "hook_text": request.form.get('hook_text'),
             "description": request.form.get('description'),
@@ -435,10 +441,16 @@ def lgu_edit_spot(spot_id):
         audience_str = request.form.get('target_audience', '')
         target_audience = [t.strip() for t in audience_str.split(',') if t.strip()]
 
+        # Get latitude and longitude from form
+        latitude = request.form.get('latitude')
+        longitude = request.form.get('longitude')
+
         payload = {
             "name": request.form.get('name'),
             "category": request.form.get('category'),
             "address": request.form.get('address'),
+            "latitude": float(latitude) if latitude else None,
+            "longitude": float(longitude) if longitude else None,
             "hook_title": request.form.get('hook_title'),
             "hook_text": request.form.get('hook_text'),
             "description": request.form.get('description'),
