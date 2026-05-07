@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, url_for, flash, session
-from supabase_client import supabase
+from supabase_client import supabase, service_supabase
 
 def login():
     # Check if this is admin portal or client portal
@@ -152,7 +152,7 @@ def register():
         municipality_id = request.form.get("municipality_id")
         
         # Validation
-        if not all([first_name, last_name, email, password, confirm_password, municipality_id]):
+        if not all([first_name, last_name, email, password, confirm_password]):
             flash("All fields are required.", "error")
             return render_template('views/client/login_signup.html')
         
@@ -165,15 +165,14 @@ def register():
             return render_template('views/client/login_signup.html')
         
         try:
-            # Create user in Supabase Auth
-            auth_response = supabase.auth.sign_up({
+            # Create user in Supabase Auth using service client (auto-confirmed)
+            auth_response = service_supabase.auth.admin.create_user({
                 "email": email,
                 "password": password,
-                "options": {
-                    "data": {
-                        "first_name": first_name,
-                        "last_name": last_name
-                    }
+                "email_confirm": True,  # Auto-confirm email
+                "user_metadata": {
+                    "first_name": first_name,
+                    "last_name": last_name
                 }
             })
             
@@ -184,18 +183,18 @@ def register():
                     "first_name": first_name,
                     "last_name": last_name,
                     "role_id": 3,  # Client/Tourist role
-                    "municipality_id": int(municipality_id)
+                    "municipality_id": None
                 }
                 
-                profile_response = supabase.table('profiles').insert(profile_data).execute()
+                profile_response = service_supabase.table('profiles').insert(profile_data).execute()
                 
                 if profile_response.data:
-                    flash("Account created successfully! Please check your email to verify your account.", "success")
+                    flash("Account created successfully! You can now login.", "success")
                     return redirect(url_for('login_signup_page'))
                 else:
                     # If profile creation fails, try to clean up the auth user
                     try:
-                        supabase.auth.admin.delete_user(auth_response.user.id)
+                        service_supabase.auth.admin.delete_user(auth_response.user.id)
                     except:
                         pass
                     flash("Error creating profile. Please try again.", "error")
@@ -219,4 +218,4 @@ def logout():
     except:
         pass
     flash("You have been successfully logged out.", "success")
-    return redirect(url_for('login_page'))
+    return redirect(url_for('home_page'))
