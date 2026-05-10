@@ -1,5 +1,5 @@
 from controller.HomeController import home, explore_map, login_signup, destination_details, municipalities, municipality_details, tourist_spots, lara_ai, test_uploader, platform_features, security, lgu_support
-from controller.LoginController import login, register, logout
+from controller.LoginController import admin_login, client_login, register, logout
 from controller.DashboardController import dashboardIndex, accounts, create_account, update_account, delete_account, lgu_dashboard, tourist_spots as lgu_tourist_spots, lgu_add_spot, lgu_get_spot_data, lgu_edit_spot, lgu_delete_spot
 from controller.ArrivalsController import arrivals
 from controller.DecisionController import decision
@@ -163,7 +163,7 @@ def register_routes(app):
 # AUTH ROUTES
     @app.route("/login", methods=["GET", "POST"])
     def login_page():
-        return login()
+        return admin_login()
 
     @app.route("/register", methods=["GET", "POST"])
     def register_page():

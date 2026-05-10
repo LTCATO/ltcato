@@ -1,14 +1,14 @@
 from flask import render_template, request, redirect, url_for, flash, session
 from supabase_client import supabase, service_supabase
 
-def login():
-    # Check if this is admin portal or client portal
-    is_admin_portal = 'admin-ltcato' in request.host
+# def login():
+#     # Check if this is admin portal or client portal
+#     is_admin_portal = 'admin-ltcato' in request.host
     
-    if is_admin_portal:
-        return admin_login()
-    else:
-        return client_login()
+#     if is_admin_portal:
+#         return admin_login()
+#     else:
+#         return client_login()
 
 def admin_login():
     # If already logged in, redirect to dashboard
