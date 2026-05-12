@@ -729,9 +729,10 @@
   let startSearchTimer = null;
   let stopSearchTimer  = null;
   let _durModalStopId  = null;
+  let routeMarkers = [];
+  let routePolyline = null;
   let sortableInstance = null;
   const LS_KEY = 'ltcato_itinerary';
-
   // ─── localStorage Persistence ─────────────────────────────────────────────
   function saveState() {
     try {
@@ -1128,6 +1129,33 @@
     if (editBtn) showDurationModal(editBtn.dataset.editDur);
   });
 
+  function highlightMarker(id, highlight) {
+    const marker = spotMarkers[id];
+    if (!marker) return;
+    
+    if (highlight) {
+      // Highlight the marker by changing its icon
+      const currentIcon = marker.getIcon();
+      const highlightedIcon = L.divIcon({
+        html: `<div style="width:32px;height:32px;background:#f59e0b;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 3px rgba(245,158,11,.3),0 2px 8px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.8rem;">★</div>`,
+        className: '',
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      });
+      marker.setIcon(highlightedIcon);
+    } else {
+      // Restore original icon based on category
+      const spot = selectedStops.find(s => String(s.id) === String(id));
+      if (spot) {
+        marker.setIcon(makeDivIcon(spot.category));
+      } else {
+        // If spot is not in selectedStops, remove the marker entirely
+        map.removeLayer(marker);
+        delete spotMarkers[id];
+      }
+    }
+  }
+
   function removeStop(id) {
     selectedStops = selectedStops.filter(s => String(s.id) !== String(id));
     delete durationOverrides[String(id)];
@@ -1251,10 +1279,22 @@
       }
     });
   }
-
+  console.log(routingControl)
   // --- Route Drawing ---
   function clearRoute() {
     if (routingControl) { map.removeControl(routingControl); routingControl = null; }
+    
+    // Remove route markers
+    routeMarkers.forEach(marker => {
+      map.removeLayer(marker);
+    });
+    routeMarkers = [];
+    
+    // Remove route polyline
+    if (routePolyline) {
+      map.removeLayer(routePolyline);
+      routePolyline = null;
+    }
   }
 
   function drawRoute(stops, travelMode) {
@@ -1300,26 +1340,28 @@
       
       // Draw route polyline
       if (polylineCoords.length > 0) {
-        L.polyline(polylineCoords, { color: '#9b2c2c', weight: 4, opacity: 0.85 }).addTo(map);
+        routePolyline = L.polyline(polylineCoords, { color: '#9b2c2c', weight: 4, opacity: 0.85 }).addTo(map);
       }
       
       // Add start marker
-      L.marker([startLat, startLng], {
+      const startMarker = L.marker([startLat, startLng], {
         icon: L.divIcon({
           html: '<div style="width:30px;height:30px;background:#2563eb;border-radius:50%;border:2px solid #fff;color:#fff;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.4);">S</div>',
           className: '', iconSize: [30, 30], iconAnchor: [15, 15]
         })
       }).bindPopup('<b>Your Start</b>').addTo(map);
+      routeMarkers.push(startMarker);
       
       // Add stop markers
       stops.forEach((stop, i) => {
         const label = String(i + 1);
-        L.marker([stop.latitude, stop.longitude], {
+        const stopMarker = L.marker([stop.latitude, stop.longitude], {
           icon: L.divIcon({
             html: '<div style="width:30px;height:30px;background:#9b2c2c;border-radius:50%;border:2px solid #fff;color:#fff;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.4);">' + label + '</div>',
             className: '', iconSize: [30, 30], iconAnchor: [15, 15]
           })
         }).bindPopup('<b>' + stop.name + '</b><br><small>🕐 ' + stop.estimated_arrival + '</small>').addTo(map);
+        routeMarkers.push(stopMarker);
       });
       
       // Fit map to route

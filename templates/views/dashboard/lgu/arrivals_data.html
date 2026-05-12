@@ -56,7 +56,7 @@
 
 <!-- Add Arrivals Modal -->
 <div class="modal fade" id="addArrivalModal" tabindex="-1" aria-labelledby="addArrivalModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title fw-bold" id="addArrivalModalLabel">
@@ -69,16 +69,12 @@
                 <div class="modal-body p-4">
                     <!-- HIDDEN FIELD: This sends the actual calculated "End of Month" date to Python/DB -->
                     <input type="hidden" name="submission_date" id="submissionDate">
-                    
-                    <!-- HIDDEN FIELDS: Fallbacks for aggregated totals -->
-                    <input type="hidden" name="domestic_total" id="hiddenDomesticTotal" value="0">
-                    <input type="hidden" name="foreign_total" id="hiddenForeignTotal" value="0">
 
                     <div class="row g-4 mb-4">
                         <!-- Reporting Month -->
                         <div class="col-md-6">
                             <label for="monthPicker" class="form-label fw-semibold text-secondary">Reporting Month</label>
-                            <input type="month" id="monthPicker" class="form-control" required>
+                            <input type="month" id="monthPicker" class="form-control form-control-lg" required>
                             <small class="text-primary d-block mt-1 fw-medium">
                                 <i class="fas fa-info-circle me-1"></i> Data logs automatically to the end of the month.
                             </small>
@@ -87,11 +83,14 @@
                         <!-- Tourist Spot Dropdown -->
                         <div class="col-md-6">
                             <label for="touristSpot" class="form-label fw-semibold text-secondary">Tourist Spot</label>
-                            <select name="tourist_spot_id" id="touristSpot" class="form-select" required>
+                            <select name="tourist_spot_id" id="touristSpot" class="form-select form-select-lg" required>
                                 <option value="" disabled selected>Select specific spot...</option>
                                 {% for spot in spots %}
                                 <option value="{{ spot.id }}">{{ spot.name }}</option>
                                 {% endfor %}
+                                <!-- Fallback mock options for testing -->
+                                <option value="mock-1">Rizal Shrine</option>
+                                <option value="mock-2">Mt. Makiling</option>
                             </select>
                         </div>
                     </div>
@@ -114,60 +113,28 @@
                     <hr class="my-4 text-muted">
                     
                     <div class="mb-3">
-                        <h6 class="fw-bold text-dark mb-1">Visitor Demographics & Totals</h6>
-                        <p class="text-muted small">Input the volume of visitors separated by origin and gender. Totals are calculated automatically.</p>
+                        <h6 class="fw-bold text-dark mb-1">Category Totals</h6>
+                        <p class="text-muted small">Input the total volume of visitors for each category. No need to separate by gender.</p>
                     </div>
                     
-                    <!-- Detailed Breakdown Table -->
-                    <div class="table-responsive bg-light p-3 rounded-3 border">
-                        <table class="table table-bordered table-sm align-middle text-center mb-0 bg-white shadow-sm">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="text-start py-2 w-25">Origin of Visitor</th>
-                                    <th class="py-2">Male</th>
-                                    <th class="py-2">Female</th>
-                                    <th class="py-2 bg-light">Combined Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Domestic 1: This City/Municipality -->
-                                <tr class="visitor-row dom-row">
-                                    <td class="text-start fw-semibold ps-3">This City/Municipality</td>
-                                    <td><input type="text" class="form-control calc-input calc-male text-center" name="this_city_male" min="0" value="0" pattern="[0-9]*" inputmode="numeric"></td>
-                                    <td><input type="text" class="form-control calc-input calc-female text-center" name="this_city_female" min="0" value="0" pattern="[0-9]*" inputmode="numeric"></td>
-                                    <td class="bg-light"><input type="number" class="form-control row-total text-center fw-bold bg-transparent border-0" name="this_city_total" readonly tabindex="-1" value="0"></td>
-                                </tr>
-                                <!-- Domestic 2: Other City/Municipality -->
-                                <tr class="visitor-row dom-row">
-                                    <td class="text-start fw-semibold ps-3">Other City/Municipality</td>
-                                    <td><input type="text" class="form-control calc-input calc-male text-center" name="other_city_male" min="0" value="0" pattern="[0-9]*" inputmode="numeric"></td>
-                                    <td><input type="text" class="form-control calc-input calc-female text-center" name="other_city_female" min="0" value="0" pattern="[0-9]*" inputmode="numeric"></td>
-                                    <td class="bg-light"><input type="number" class="form-control row-total text-center fw-bold bg-transparent border-0" name="other_city_total" readonly tabindex="-1" value="0"></td>
-                                </tr>
-                                <!-- Domestic 3: Other Province -->
-                                <tr class="visitor-row dom-row">
-                                    <td class="text-start fw-semibold ps-3">Other Province</td>
-                                    <td><input type="text" class="form-control calc-input calc-male text-center" name="other_prov_male" min="0" value="0" pattern="[0-9]*" inputmode="numeric"></td>
-                                    <td><input type="text" class="form-control calc-input calc-female text-center" name="other_prov_female" min="0" value="0" pattern="[0-9]*" inputmode="numeric"></td>
-                                    <td class="bg-light"><input type="number" class="form-control row-total text-center fw-bold bg-transparent border-0" name="other_prov_total" readonly tabindex="-1" value="0"></td>
-                                </tr>
-                                <!-- Foreign -->
-                                <tr class="visitor-row for-row">
-                                    <td class="text-start fw-semibold ps-3">Foreign Country Residence</td>
-                                    <td><input type="text" class="form-control calc-input calc-male text-center" name="foreign_male" min="0" value="0" pattern="[0-9]*" inputmode="numeric"></td>
-                                    <td><input type="text" class="form-control calc-input calc-female text-center" name="foreign_female" min="0" value="0" pattern="[0-9]*" inputmode="numeric"></td>
-                                    <td class="bg-light"><input type="number" class="form-control row-total text-center fw-bold bg-transparent border-0" name="foreign_total" readonly tabindex="-1" value="0"></td>
-                                </tr>
-                            </tbody>
-                            <tfoot class="table-light fw-bold">
-                                <tr>
-                                    <td class="text-end text-uppercase pe-3 py-3">Grand Total:</td>
-                                    <td class="py-3 fs-6" id="grandMale">0</td>
-                                    <td class="py-3 fs-6" id="grandFemale">0</td>
-                                    <td class="py-3 fs-5 text-success" id="grandTotal">0</td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                    <div class="row g-4 bg-light p-3 rounded-3 border">
+                        <!-- Domestic Total -->
+                        <div class="col-md-6">
+                            <label for="domesticTotal" class="form-label fw-semibold text-dark">Domestic Arrivals</label>
+                            <div class="input-group input-group-lg shadow-sm">
+                                <span class="input-group-text bg-white text-primary border-end-0"><i class="fas fa-users"></i></span>
+                                <input type="number" name="domestic_total" id="domesticTotal" class="form-control border-start-0 ps-0" min="0" placeholder="0" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Foreign Total -->
+                        <div class="col-md-6">
+                            <label for="foreignTotal" class="form-label fw-semibold text-dark">Foreign Arrivals</label>
+                            <div class="input-group input-group-lg shadow-sm">
+                                <span class="input-group-text bg-white text-success border-end-0"><i class="fas fa-globe-americas"></i></span>
+                                <input type="number" name="foreign_total" id="foreignTotal" class="form-control border-start-0 ps-0" min="0" placeholder="0" required>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -185,9 +152,7 @@
         const form = document.getElementById("addArrivalForm");
         const monthPicker = document.getElementById("monthPicker");
         const submissionDate = document.getElementById("submissionDate");
-        const calcInputs = document.querySelectorAll('.calc-input');
 
-        // Form Submit - Date Logic
         form.addEventListener("submit", function(e) {
             const selectedMonth = monthPicker.value; // Format: "YYYY-MM"
             
@@ -196,7 +161,8 @@
                 const year = parseInt(parts[0], 10);
                 const month = parseInt(parts[1], 10);
                 
-                // Calculates the last day of the chosen month
+                // By passing 0 as the day argument, Date returns the last day of the PREVIOUS month. 
+                // Since 'month' parameter is 1-indexed for the next month here, it perfectly calculates the last day of our chosen month.
                 const lastDay = new Date(year, month, 0); 
                 
                 // Format to YYYY-MM-DD
@@ -204,52 +170,9 @@
                                      String(lastDay.getMonth() + 1).padStart(2, '0') + "-" + 
                                      String(lastDay.getDate()).padStart(2, '0');
                 
+                // Apply the calculated End-of-Month date to the hidden input
                 submissionDate.value = formattedDate;
             }
-        });
-
-        // Auto Calculation Logic
-        function calculateTotals() {
-            let totalDom = 0;
-            let totalFor = 0;
-            let gMale = 0;
-            let gFemale = 0;
-
-            const rows = document.querySelectorAll('.visitor-row');
-            
-            rows.forEach(row => {
-                const maleVal = parseInt(row.querySelector('.calc-male').value) || 0;
-                const femaleVal = parseInt(row.querySelector('.calc-female').value) || 0;
-                const rowTotalInput = row.querySelector('.row-total');
-                
-                const rowTotal = maleVal + femaleVal;
-                rowTotalInput.value = rowTotal;
-                
-                gMale += maleVal;
-                gFemale += femaleVal;
-
-                if (row.classList.contains('dom-row')) {
-                    totalDom += rowTotal;
-                } else if (row.classList.contains('for-row')) {
-                    totalFor += rowTotal;
-                }
-            });
-
-            // Update visible grand totals
-            document.getElementById('grandMale').textContent = gMale;
-            document.getElementById('grandFemale').textContent = gFemale;
-            document.getElementById('grandTotal').textContent = (gMale + gFemale);
-
-            // Update hidden values for backend aggregation
-            document.getElementById('hiddenDomesticTotal').value = totalDom;
-            document.getElementById('hiddenForeignTotal').value = totalFor;
-        }
-
-        // Attach listeners to all inputs
-        calcInputs.forEach(input => {
-            input.addEventListener('input', calculateTotals);
-            // Select contents on focus for easier typing
-            input.addEventListener('focus', function() { this.select(); });
         });
     });
 </script>
