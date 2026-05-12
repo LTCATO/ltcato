@@ -137,12 +137,6 @@ def client_login():
     return render_template('views/client/login_signup.html')
 
 def register():
-    """
-    Handle client registration with role_id 3 (tourist/client role).
-    """
-    if request.method == 'GET':
-        return render_template('views/client/login_signup.html')
-    
     if request.method == 'POST':
         first_name = request.form.get("first_name")
         last_name = request.form.get("last_name")
@@ -190,6 +184,71 @@ def register():
                 
                 if profile_response.data:
                     flash("Account created successfully! You can now login.", "success")
+                    return redirect(url_for('login_signup_page'))
+                else:
+                    # If profile creation fails, try to clean up the auth user
+                    try:
+                        service_supabase.auth.admin.delete_user(auth_response.user.id)
+                    except:
+                        pass
+                    flash("Error creating profile. Please try again.", "error")
+            else:
+                flash("Error creating account. Please try again.", "error")
+                
+        except Exception as e:
+            error_msg = str(e)
+            if "User already registered" in error_msg or "already been registered" in error_msg:
+                flash("An account with this email already exists.", "error")
+            else:
+                flash(f"Registration error: {error_msg}", "error")
+        
+        return render_template('views/client/login_signup.html')
+
+def client_create_account():
+    if request.method == 'POST':
+        first_name = request.form.get("first_name")
+        last_name = request.form.get("last_name")
+        email = request.form.get("email")
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
+        
+        # Validation
+        if not all([first_name, last_name, email, password, confirm_password]):
+            flash("All fields are required.", "error")
+            return render_template('views/client/login_signup.html')
+        
+        if password != confirm_password:
+            flash("Passwords do not match.", "error")
+            return render_template('views/client/login_signup.html')
+        
+        if len(password) < 6:
+            flash("Password must be at least 6 characters long.", "error")
+            return render_template('views/client/login_signup.html')
+        
+        try:
+            auth_response = supabase.auth.sign_up({
+                "email": email,
+                "password": password,
+                "user_metadata": {
+                    "first_name": first_name,
+                    "last_name": last_name
+                }
+            })
+            
+            if auth_response.user:
+                # Create profile record with role_id 3 (client/tourist)
+                profile_data = {
+                    "id": auth_response.user.id,
+                    "first_name": first_name,
+                    "last_name": last_name,
+                    "role_id": 3,  # Client/Tourist role
+                    "municipality_id": None
+                }
+                
+                profile_response = supabase.table('profiles').insert(profile_data).execute()
+                
+                if profile_response.data:
+                    flash("Account created successfully! Please check your email to confirm your account, then login.", "success")
                     return redirect(url_for('login_signup_page'))
                 else:
                     # If profile creation fails, try to clean up the auth user

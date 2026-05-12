@@ -4607,8 +4607,8 @@ body {
   }
 }
 
-/* Dark Mode Support
-@media (prefers-color-scheme: dark) {
+/* Dark Mode Support */
+/* @media (prefers-color-scheme: dark) {
   :root {
     --card: #292524;
     --ring: #b91c1c;
