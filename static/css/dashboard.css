@@ -4608,7 +4608,7 @@ body {
 }
 
 /* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --card: #292524;
     --ring: #b91c1c;
@@ -4634,7 +4634,7 @@ body {
     --sidebar-accent-foreground: #fef3c7;
     --sidebar-primary-foreground: #faf7f5;
   }
-}
+} */
 
 /* Animation Classes */
 .fade-in {
