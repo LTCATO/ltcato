@@ -1,7 +1,7 @@
 from controller.HomeController import home, explore_map, login_signup, destination_details, municipalities, municipality_details, tourist_spots, lara_ai, test_uploader, platform_features, security, lgu_support
 from controller.LoginController import admin_login,client_login, register, logout, client_create_account
 from controller.DashboardController import dashboardIndex, accounts, create_account, update_account, delete_account, lgu_dashboard, tourist_spots as lgu_tourist_spots, lgu_add_spot, lgu_get_spot_data, lgu_edit_spot, lgu_delete_spot
-from controller.ArrivalsController import arrivals
+from controller.ArrivalsController import ArrivalsController
 from controller.DecisionController import decision
 from controller.ItineraryController import itinerary_page, optimize_itinerary, get_spots_map_data
 from utils import login_required
@@ -68,6 +68,71 @@ def register_routes(app):
     def spots_map_data_api():
         return get_spots_map_data()
 
+    @app.route('/api/explore-map/data')
+    def explore_map_data_api():
+        """API endpoint to fetch tourist spots and municipalities for the explore map"""
+        from flask import jsonify
+        from supabase_client import supabase
+        
+        try:
+            # Fetch all municipalities
+            municipalities_response = supabase.table('municipalities').select('*').execute()
+            municipalities = municipalities_response.data
+            
+            # Fetch all approved tourist spots with municipality data
+            spots_response = supabase.table('tourist_spots').select('*, municipalities(name)').eq('status', 'approved').execute()
+            spots = spots_response.data
+            
+            # Helper function to safely convert to float with fallback
+            def safe_float(value, default):
+                try:
+                    if value is None:
+                        return default
+                    return float(value)
+                except (ValueError, TypeError):
+                    return default
+            
+            # Group spots by municipality
+            municipalities_with_spots = []
+            for municipality in municipalities:
+                municipality_spots = [spot for spot in spots if spot.get('municipality_id') == municipality.get('id')]
+                
+                # Get municipality coordinates with fallback
+                mun_lat = safe_float(municipality.get('latitude'), 14.2)
+                mun_lng = safe_float(municipality.get('longitude'), 121.3)
+                
+                municipalities_with_spots.append({
+                    'id': f"m{municipality['id']}",
+                    'name': municipality['name'],
+                    'type': 'municipality',
+                    'lat': mun_lat,
+                    'lng': mun_lng,
+                    'spots': [
+                        {
+                            'id': f"s{spot['id']}",
+                            'name': spot['name'],
+                            'type': (spot.get('category') or 'nature').lower(),
+                            'lat': safe_float(spot.get('latitude'), mun_lat),
+                            'lng': safe_float(spot.get('longitude'), mun_lng),
+                            'description': spot.get('description', ''),
+                            'image': spot.get('main_image_url', 'https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=400&q=80'),
+                            'category': spot.get('category', 'Nature'),
+                            'address': spot.get('address', ''),
+                            'rating': safe_float(spot.get('rating'), 0.0),
+                            'reviews_count': int(spot.get('reviews_count', 0))
+                        } for spot in municipality_spots
+                    ]
+                })
+            
+            return jsonify({
+                'success': True,
+                'data': municipalities_with_spots
+            })
+            
+        except Exception as e:
+            print(f"Error fetching explore map data: {e}")
+            return jsonify({'success': False, 'error': str(e)}), 500
+
 # SUPERADMIN DASHBOARD ROUTES
     
     @app.route('/dashboard')
@@ -80,7 +145,7 @@ def register_routes(app):
     
     @app.route('/dashboard/arrivals')
     def arrivals_page():
-        return arrivals()
+        return ArrivalsController.arrivals()
     
     @app.route('/dashboard/decision')
     def decision_page():
@@ -277,6 +342,13 @@ def register_routes(app):
     def lara_chat_api():
         from controller.HomeController import lara_chat
         return lara_chat()
+
+    @app.route('/dashboard/arrivals/export', methods=['GET'])
+    @login_required
+    def export_arrivals():
+        # This calls the controller method we just created
+        return ArrivalsController.export_arrivals_to_excel()
+
 
 # AUTH ROUTES
     @app.route("/login", methods=["GET", "POST"])

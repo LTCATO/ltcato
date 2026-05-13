@@ -3684,6 +3684,36 @@ body {
   color: white;
 }
 
+/* Export Button Styles */
+.btn-export {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+  border: none;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius);
+  font-weight: 500;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.2);
+}
+
+.btn-export:hover {
+  background: linear-gradient(135deg, #15803d 0%, #166534 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+  color: white;
+  text-decoration: none;
+}
+
+.btn-export i {
+  font-size: 1rem;
+}
+
 /* Account Status */
 .account-status {
   display: inline-flex;
