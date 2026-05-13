@@ -18,8 +18,14 @@ CATEGORY_DURATION = {
     "park":          90,
     "museum":        60,
     "landmark":      45,
+    "restaurant":    45,
+    "cafe":          30,
+    "food":          45,
 }
 DEFAULT_DURATION = 60  # fallback: 1 hour
+
+# Food/Restaurant category keywords for lunch suggestions
+FOOD_KEYWORDS = ['restaurant', 'cafe', 'food', 'fast food', 'pizzeria', 'bar', 'diner']
 
 # Buffer between stops in minutes (travel overhead, short breaks)
 STOP_BUFFER = 15
@@ -194,13 +200,33 @@ def build_timeline(ordered_stops, start_lat, start_lng, departure_time: datetime
 
 
 # ---------------------------------------------------------------------------
+# Food suggestion helpers
+# ---------------------------------------------------------------------------
+def is_food_category(category):
+    """Check if a category is a food/restaurant type."""
+    if not category:
+        return False
+    cat_lower = str(category).lower()
+    return any(keyword in cat_lower for keyword in FOOD_KEYWORDS)
+
+
+def should_suggest_food(start_time_str: str) -> bool:
+    """Check if current trip time is during lunch hours (11am - 1pm)."""
+    try:
+        hour = int(start_time_str.split(':')[0])
+        return 11 <= hour < 13
+    except (ValueError, IndexError):
+        return False
+
+
+# ---------------------------------------------------------------------------
 # Nearby suggestion logic
 # ---------------------------------------------------------------------------
-def find_nearby_suggestions(ordered_stops, all_spots, max_suggestions=3):
+def find_nearby_suggestions(ordered_stops, all_spots, max_suggestions=3, start_time_str=None):
     """
     Given an ordered itinerary, find approved spots that are close to any
     stop in the itinerary but NOT already included.  Returns up to
-    `max_suggestions` unique nearby spots.
+    `max_suggestions` unique nearby spots, prioritizing food stops during lunch hours.
     """
     selected_ids = {s["id"] for s in ordered_stops}
     suggestions = {}  # id -> (spot, min_dist)
@@ -214,8 +240,23 @@ def find_nearby_suggestions(ordered_stops, all_spots, max_suggestions=3):
                 if spot["id"] not in suggestions or dist < suggestions[spot["id"]][1]:
                     suggestions[spot["id"]] = (spot, round(dist, 2))
 
-    # Sort by distance ascending and return top N
+    # Sort by distance ascending
     sorted_suggestions = sorted(suggestions.values(), key=lambda x: x[1])
+    
+    # If it's lunch time, prioritize food stops
+    if start_time_str and should_suggest_food(start_time_str):
+        food_suggestions = []
+        other_suggestions = []
+        
+        for s in sorted_suggestions:
+            if is_food_category(s[0].get("category")):
+                food_suggestions.append(s)
+            else:
+                other_suggestions.append(s)
+        
+        # Combine: food first, then others
+        sorted_suggestions = food_suggestions + other_suggestions
+    
     return [
         {**s[0], "nearest_km": s[1]}
         for s in sorted_suggestions[:max_suggestions]
@@ -444,7 +485,7 @@ def optimize_itinerary():
             print(f"[ItineraryController] suggestion fetch error: {db_err}")
             all_spots = []
 
-        suggestions = find_nearby_suggestions(ordered, all_spots, max_suggestions=3)
+        suggestions = find_nearby_suggestions(ordered, all_spots, max_suggestions=5, start_time_str=start_time)
 
         return jsonify({
             "success":                True,

@@ -26,8 +26,8 @@
   .itin-panel {
     width: 400px;
     min-width: 320px;
-    background: #faf7f5;
-    border-right: 1px solid #e2e8f0;
+    background: linear-gradient(180deg, #faf7f5 0%, #fef5f3 100%);
+    border-right: 2px solid #e2e8f0;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -37,11 +37,12 @@
 
   .panel-header {
     padding: 1.25rem 1.5rem;
-    background: var(--primary);
+    background: linear-gradient(135deg, var(--primary) 0%, #c53030 100%);
     color: #fff;
     position: sticky;
     top: 0;
     z-index: 20;
+    box-shadow: 0 4px 12px rgba(155, 44, 44, .2);
   }
 
   .panel-header h5 {
@@ -66,6 +67,11 @@
   .section-block {
     padding: .9rem 1.1rem;
     border-bottom: 1px solid #e9ecef;
+    transition: background .2s ease;
+  }
+  
+  .section-block:hover {
+    background: rgba(155, 44, 44, .02);
   }
 
   .section-title {
@@ -79,15 +85,37 @@
 
   .form-control,
   .form-select {
-    border-radius: .5rem;
+    border-radius: .65rem;
     font-size: .83rem;
-    border: 1px solid #cbd5e1;
+    border: 2px solid #e2e8f0;
+    background: #fff;
+    transition: all .25s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
+    color: #1e293b;
+  }
+
+  .form-control:hover,
+  .form-select:hover {
+    border-color: #cbd5e1;
+    background: #fafafa;
   }
 
   .form-control:focus,
   .form-select:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(155, 44, 44, .15);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(155, 44, 44, .1), 0 2px 8px rgba(155, 44, 44, .15);
+    outline: none;
+  }
+  
+  .form-control::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+  }
+  
+  .form-label {
+    color: #475569;
+    letter-spacing: .03em;
   }
 
   .spot-search-wrap {
@@ -100,28 +128,31 @@
     left: 0;
     right: 0;
     background: #fff;
-    border: 1px solid #e2e8f0;
+    border: 2px solid #e2e8f0;
     border-top: none;
     border-radius: 0 0 .5rem .5rem;
     z-index: 9999;
-    max-height: 240px;
+    max-height: 280px;
     overflow-y: auto;
     display: none;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+    box-shadow: 0 10px 32px rgba(0, 0, 0, .15);
   }
 
   .dropdown-item-spot {
-    padding: .55rem .9rem;
+    padding: .65rem .9rem;
     cursor: pointer;
     font-size: .82rem;
     display: flex;
     align-items: center;
     gap: .55rem;
     border-bottom: 1px solid #f1f5f9;
+    transition: all .15s ease;
   }
 
   .dropdown-item-spot:hover {
     background: #fef2f2;
+    padding-left: 1.2rem;
+    border-left: 3px solid var(--primary);
   }
 
   .cat-icon {
@@ -174,14 +205,15 @@
 
   .category-badge {
     font-size: .62rem;
-    padding: .12rem .4rem;
+    padding: .15rem .45rem;
     border-radius: 99px;
     color: #fff;
-    font-weight: 600;
+    font-weight: 700;
     white-space: nowrap;
     display: inline-flex;
     align-items: center;
-    gap: .2rem;
+    gap: .25rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
   }
 
   .cb-nature {
@@ -222,13 +254,19 @@
 
   .stop-card {
     background: #fff;
-    border: 1px solid #e2e8f0;
+    border: 2px solid #e2e8f0;
     border-radius: .65rem;
     padding: .7rem;
     margin-bottom: .5rem;
     display: flex;
     align-items: flex-start;
     gap: .6rem;
+    transition: all .2s ease;
+  }
+  
+  .stop-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 2px 8px rgba(155, 44, 44, .12);
   }
 
   .stop-num {
@@ -252,8 +290,8 @@
   }
 
   .stop-name {
-    font-weight: 600;
-    font-size: .84rem;
+    font-weight: 700;
+    font-size: .85rem;
     color: #1e293b;
     margin: 0;
     white-space: nowrap;
@@ -279,35 +317,50 @@
     border: none;
     color: #cbd5e1;
     cursor: pointer;
-    padding: .1rem;
+    padding: .3rem .2rem;
     font-size: 1rem;
     flex-shrink: 0;
     line-height: 1;
+    border-radius: .3rem;
+    transition: all .2s ease;
   }
 
   .remove-btn:hover {
     color: #ef4444;
+    background: #fef2f2;
+    transform: scale(1.1);
+  }
+  
+  .remove-btn:active {
+    transform: scale(0.95);
   }
 
   .btn-gps {
     background: #fff;
-    border: 1.5px solid var(--primary);
+    border: 2px solid var(--primary);
     color: var(--primary);
     border-radius: .5rem;
     padding: .4rem .8rem;
     font-size: .79rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: .35rem;
-    transition: .2s;
+    transition: all .2s ease;
     white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(155, 44, 44, .1);
   }
 
   .btn-gps:hover {
     background: var(--primary);
     color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(155, 44, 44, .2);
+  }
+  
+  .btn-gps:active {
+    transform: translateY(0);
   }
 
   .btn-optimize {
@@ -315,7 +368,7 @@
     color: #fff;
     border: none;
     border-radius: .65rem;
-    padding: .75rem 1rem;
+    padding: .85rem 1.1rem;
     font-size: .88rem;
     font-weight: 700;
     width: 100%;
@@ -324,13 +377,19 @@
     align-items: center;
     justify-content: center;
     gap: .5rem;
-    transition: .25s;
-    box-shadow: 0 4px 14px rgba(155, 44, 44, .35);
+    transition: all .3s ease;
+    box-shadow: 0 6px 20px rgba(155, 44, 44, .35);
+    text-transform: uppercase;
+    letter-spacing: .04em;
   }
 
-  .btn-optimize:hover {
+  .btn-optimize:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(155, 44, 44, .45);
+  }
+
+  .btn-optimize:active:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(155, 44, 44, .4);
   }
 
   .btn-optimize:disabled {
@@ -365,20 +424,22 @@
 
   .suggestion-card {
     background: #fff;
-    border: 1.5px dashed #cbd5e1;
+    border: 2px dashed #d1d5db;
     border-radius: .65rem;
-    padding: .65rem;
+    padding: .75rem;
     margin-bottom: .5rem;
     display: flex;
     align-items: center;
     gap: .6rem;
     cursor: pointer;
-    transition: .2s;
+    transition: all .25s ease;
   }
 
   .suggestion-card:hover {
     border-color: var(--primary);
     background: #fef2f2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(155, 44, 44, .15);
   }
 
   .suggestion-card img {
@@ -413,6 +474,16 @@
     font-size: 2.2rem;
     display: block;
     margin-bottom: .5rem;
+  }
+  
+  @keyframes slideInRight {
+    from { transform: translateX(400px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  
+  @keyframes slideOutRight {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(400px); opacity: 0; }
   }
 
   .leaflet-routing-container {
@@ -459,28 +530,31 @@
     left: 0;
     right: 0;
     background: #fff;
-    border: 1px solid #e2e8f0;
+    border: 2px solid #e2e8f0;
     border-top: none;
-    border-radius: 0 0 .5rem .5rem;
+    border-radius: 0 0 .65rem .65rem;
     z-index: 9999;
-    max-height: 200px;
+    max-height: 240px;
     overflow-y: auto;
     display: none;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .15);
   }
 
   .place-item {
-    padding: .55rem .9rem;
+    padding: .65rem .9rem;
     cursor: pointer;
-    font-size: .81rem;
+    font-size: .82rem;
     border-bottom: 1px solid #f1f5f9;
     display: flex;
     align-items: center;
-    gap: .5rem;
+    gap: .55rem;
+    transition: all .15s ease;
   }
 
   .place-item:hover {
     background: #fef2f2;
+    padding-left: 1.1rem;
+    border-left: 3px solid var(--primary);
   }
 
   .place-item i {
@@ -587,6 +661,40 @@
     line-height: 1;
   }
   .edit-dur-btn:hover { color: var(--primary); }
+
+  /* Travel mode select styling */
+  .form-select option {
+    color: #1e293b;
+    background: #fff;
+    padding: .5rem;
+  }
+  
+  .form-select option:checked {
+    background: linear-gradient(var(--primary), var(--primary));
+    color: #fff;
+  }
+  
+  /* Scrollbar styling for dropdowns */
+  #spot-dropdown::-webkit-scrollbar,
+  .place-dropdown::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  #spot-dropdown::-webkit-scrollbar-track,
+  .place-dropdown::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  #spot-dropdown::-webkit-scrollbar-thumb,
+  .place-dropdown::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+  
+  #spot-dropdown::-webkit-scrollbar-thumb:hover,
+  .place-dropdown::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
 </style>
 {% endblock %}
 
@@ -619,7 +727,7 @@
           <label class="form-label small fw-semibold mb-1">Travel Mode</label>
           <select id="travelModeSelect" class="form-select form-select-sm">
             <option value="driving">🚗 Car</option>
-            <option value="motorcycle">🛵 Motorcycle</option>
+            <option value="motorcycle">🏍️ Motorcycle</option>
             <option value="bus">🚌 Bus</option>
             <option value="bike">🚲 Bicycle</option>
             <option value="foot">🚶 Walking</option>
@@ -732,7 +840,9 @@
   let routeMarkers = [];
   let routePolyline = null;
   let sortableInstance = null;
+  let foodSuggestionMarkers = [];
   const LS_KEY = 'ltcato_itinerary';
+  const FOOD_CATEGORIES = ['restaurant', 'cafe', 'food', 'fast food', 'pizzeria', 'bar'];
   // ─── localStorage Persistence ─────────────────────────────────────────────
   function saveState() {
     try {
@@ -931,9 +1041,39 @@
       startLng = pos.coords.longitude;
       document.getElementById('startLat').value = startLat;
       document.getElementById('startLng').value = startLng;
-      document.getElementById('startPlaceSearch').value = `${startLat.toFixed(5)}, ${startLng.toFixed(5)}`;
-      document.getElementById('gpsStatus').textContent = '✓ Current location detected!';
-      placeGPSMarker(startLat, startLng, 'Your Location');
+      
+      // Reverse geocode to get address
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${startLat}&lon=${startLng}`)
+        .then(r => r.json())
+        .then(data => {
+          const address = data.address;
+          let displayName = '';
+          // Prefer municipality first, then city
+          if (address.municipality) displayName = address.municipality;
+          else if (address.city) displayName = address.city;
+          else if (address.town) displayName = address.town;
+          else if (address.village) displayName = address.village;
+          
+          // Add province/state
+          if (address.state || address.province) {
+            const province = address.state || address.province;
+            displayName += (displayName ? ', ' : '') + province;
+          }
+          
+          // Fallback
+          if (!displayName) displayName = data.name || `${startLat.toFixed(5)}, ${startLng.toFixed(5)}`;
+          
+          document.getElementById('startPlaceSearch').value = displayName;
+          document.getElementById('gpsStatus').textContent = '✓ Location found: ' + displayName;
+          placeGPSMarker(startLat, startLng, displayName);
+          saveState();
+        })
+        .catch(() => {
+          document.getElementById('startPlaceSearch').value = `📍 Location (${startLat.toFixed(4)}, ${startLng.toFixed(4)})`;
+          document.getElementById('gpsStatus').textContent = '✓ Current location detected!';
+          placeGPSMarker(startLat, startLng, 'Your Location');
+          saveState();
+        });
     }, () => {
       document.getElementById('gpsStatus').textContent = '✗ Could not get location. Search manually.';
     });
@@ -1055,12 +1195,36 @@
   }
 
   function addCustomPlace(item) {
+    const lat = parseFloat(item.lat);
+    const lng = parseFloat(item.lon);
+    
+    // Check if a stop at the same location already exists (within 50m)
+    const TOLERANCE_KM = 0.05; // ~50 meters
+    const isDuplicate = selectedStops.some(s => {
+      if (!s.latitude || !s.longitude) return false;
+      const dist = haversine(s.latitude, s.longitude, lat, lng);
+      return dist < TOLERANCE_KM;
+    });
+    
+    if (isDuplicate) {
+      Swal.fire({ 
+        icon: 'info', 
+        title: 'Already Added', 
+        text: 'A location near this place is already in your itinerary.', 
+        timer: 2000, 
+        showConfirmButton: false 
+      });
+      dropdown.style.display = 'none';
+      searchInput.value = '';
+      return;
+    }
+    
     const stop = {
       id: 'custom_' + Date.now(),
       name: item.name || item.display_name.split(',')[0],
       category: 'landmark',
-      latitude: parseFloat(item.lat),
-      longitude: parseFloat(item.lon),
+      latitude: lat,
+      longitude: lng,
       municipality_name: 'Custom',
       entrance_fees: '0',
       description: item.display_name,
@@ -1107,11 +1271,23 @@
   // ─── Stop Management ──────────────────────────────────────────────────────
   function addStop(spot) {
     if (selectedStops.find(s => s.id == spot.id)) {
-      Swal.fire({ icon: 'info', title: 'Already Added', text: `${spot.name} is already in your list.`, timer: 1800, showConfirmButton: false });
+      Swal.fire({ 
+        icon: 'info', 
+        title: 'Already Added', 
+        text: `${spot.name} is already in your itinerary.`, 
+        timer: 1800, 
+        showConfirmButton: false 
+      });
       return;
     }
     if (!spot.latitude || !spot.longitude) {
-      Swal.fire({ icon: 'warning', title: 'No Coordinates', text: 'This spot has no map coordinates yet.', timer: 2000, showConfirmButton: false });
+      Swal.fire({ 
+        icon: 'warning', 
+        title: 'No Coordinates', 
+        text: 'This spot has no map coordinates yet.', 
+        timer: 2000, 
+        showConfirmButton: false 
+      });
       return;
     }
     selectedStops.push(spot);
@@ -1119,6 +1295,28 @@
     highlightMarker(spot.id, true);
     fitMapToStops();
     saveState();
+    // Show brief success feedback
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #10b981;
+      color: #fff;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+      animation: slideInRight 0.3s ease;
+      z-index: 10000;
+    `;
+    notification.textContent = `✓ ${spot.name} added to itinerary`;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+      notification.style.animation = 'slideOutRight 0.3s ease';
+      setTimeout(() => notification.remove(), 300);
+    }, 2500);
   }
 
   // ─── Event Delegation for Delete + Edit Duration ─────────────────────────────
@@ -1131,27 +1329,23 @@
 
   function highlightMarker(id, highlight) {
     const marker = spotMarkers[id];
-    if (!marker) return;
+    if (!marker) return; // Only apply to existing database markers
     
     if (highlight) {
-      // Highlight the marker by changing its icon
-      const currentIcon = marker.getIcon();
+      // Highlight the marker by changing its icon to gold star
       const highlightedIcon = L.divIcon({
-        html: `<div style="width:32px;height:32px;background:#f59e0b;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 3px rgba(245,158,11,.3),0 2px 8px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.8rem;">★</div>`,
+        html: `<div style="width:36px;height:36px;background:#f59e0b;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 3px rgba(245,158,11,.3),0 2px 8px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.9rem;">★</div>`,
         className: '',
-        iconSize: [32, 32],
-        iconAnchor: [16, 16]
+        iconSize: [36, 36],
+        iconAnchor: [18, 18]
       });
       marker.setIcon(highlightedIcon);
     } else {
-      // Restore original icon based on category
-      const spot = selectedStops.find(s => String(s.id) === String(id));
+      // Restore original icon based on category (do NOT remove marker from map)
+      const allSpots = ALL_SPOTS; // Use all available spots to maintain display
+      const spot = allSpots.find(s => String(s.id) === String(id));
       if (spot) {
         marker.setIcon(makeDivIcon(spot.category));
-      } else {
-        // If spot is not in selectedStops, remove the marker entirely
-        map.removeLayer(marker);
-        delete spotMarkers[id];
       }
     }
   }
@@ -1258,7 +1452,7 @@
       drawRoute(data.ordered_stops, data.travel_mode);
       renderSummary(data);
       renderTimeWarning(data.time_warning);
-      renderSuggestions(data.suggestions);
+      renderSuggestions(data.suggestions, data.ordered_stops);
       document.getElementById('resultsSection').style.display = 'block';
       fitMapToStops();
       saveState();
@@ -1289,6 +1483,12 @@
       map.removeLayer(marker);
     });
     routeMarkers = [];
+    
+    // Remove food suggestion markers
+    foodSuggestionMarkers.forEach(marker => {
+      map.removeLayer(marker);
+    });
+    foodSuggestionMarkers = [];
     
     // Remove route polyline
     if (routePolyline) {
@@ -1438,23 +1638,113 @@
     }).catch(() => { prompt('Copy this link:', url); });
   }
 
-  function renderSuggestions(suggestions) {
+  function isFoodCategory(category) {
+    const cat = (category || '').toLowerCase();
+    return FOOD_CATEGORIES.some(fc => cat.includes(fc));
+  }
+
+  function shouldSuggestFood() {
+    // Check if ANY stop's ETA falls within lunch hours (11am - 1pm)
+    if (!selectedStops.length) return false;
+    
+    for (const stop of selectedStops) {
+      if (stop.estimated_arrival) {
+        try {
+          // Parse time like "01:05 PM" or "1:05 PM"
+          const timeStr = stop.estimated_arrival;
+          const timeParts = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+          if (timeParts) {
+            let hours = parseInt(timeParts[1]);
+            const meridiem = timeParts[3].toUpperCase();
+            if (meridiem === 'PM' && hours !== 12) hours += 12;
+            if (meridiem === 'AM' && hours === 12) hours = 0;
+            
+            // Lunch hours: 11am (11) to 1pm (13)
+            if (hours >= 11 && hours < 13) return true;
+          }
+        } catch(e) {}
+      }
+    }
+    return false;
+  }
+
+  function findFoodStops(suggestions, ordered_stops) {
+    // Check if it's lunch time based on ETAs of the ordered stops
+    let isLunchTime = false;
+    if (ordered_stops && ordered_stops.length) {
+      for (const stop of ordered_stops) {
+        if (stop.estimated_arrival) {
+          try {
+            const timeStr = stop.estimated_arrival;
+            const timeParts = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+            if (timeParts) {
+              let hours = parseInt(timeParts[1]);
+              const meridiem = timeParts[3].toUpperCase();
+              if (meridiem === 'PM' && hours !== 12) hours += 12;
+              if (meridiem === 'AM' && hours === 12) hours = 0;
+              if (hours >= 11 && hours < 13) { isLunchTime = true; break; }
+            }
+          } catch(e) {}
+        }
+      }
+    }
+    
+    if (!isLunchTime) return suggestions;
+    
+    const foodStops = ALL_SPOTS.filter(spot => {
+      const selected = selectedStops.find(s => s.id == spot.id);
+      if (selected) return false; // Skip already selected
+      if (!spot.latitude || !spot.longitude) return false;
+      return isFoodCategory(spot.category);
+    }).slice(0, 2); // Max 2 food suggestions
+
+    return [...suggestions, ...foodStops];
+  }
+
+  function renderSuggestions(suggestions, ordered_stops) {
     const sec  = document.getElementById('suggestionsSection');
     const list = document.getElementById('suggestionsList');
-    if (!suggestions || !suggestions.length) { sec.style.display = 'none'; return; }
+    
+    // Add food suggestions if it's lunch time (based on ETAs)
+    let allSuggestions = findFoodStops(suggestions, ordered_stops);
+    
+    if (!allSuggestions || !allSuggestions.length) { sec.style.display = 'none'; return; }
     sec.style.display = 'block';
-    list.innerHTML = suggestions.map(s => {
+    
+    // Clear food suggestion markers
+    foodSuggestionMarkers.forEach(marker => map.removeLayer(marker));
+    foodSuggestionMarkers = [];
+    
+    list.innerHTML = allSuggestions.map(s => {
       const cat = (s.category || 'default').toLowerCase();
       const img = s.main_image_url
         ? '<img src="' + s.main_image_url + '" alt="' + s.name + '">'
         : '<div class="cat-icon ' + cat + '" style="width:40px;height:40px;"><i class="ph ' + getCatIcon(cat) + '"></i></div>';
+      const isFoodSugg = isFoodCategory(cat);
+      const label = isFoodSugg ? '<span style="font-size:.62rem;background:#f59e0b;color:#fff;padding:.1rem .3rem;border-radius:3px;margin-left:.25rem;">🍽️ Lunch</span>' : '';
       return '<div class="suggestion-card" data-sug-id="' + s.id + '">' + img +
         '<div style="min-width:0;flex:1;">' +
-          '<div style="font-size:.82rem;font-weight:600;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + s.name + '</div>' +
-          '<div style="font-size:.72rem;color:#64748b;">' + (s.municipality_name || '') + ' \xb7 ' + s.nearest_km + ' km away</div>' +
+          '<div style="font-size:.82rem;font-weight:600;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + s.name + label + '</div>' +
+          '<div style="font-size:.72rem;color:#64748b;">' + (s.municipality_name || '') + ' \xb7 ' + (s.nearest_km || 'nearby') + ' km away</div>' +
         '</div>' +
         '<button class="add-sug-btn">+ Add</button></div>';
     }).join('');
+    
+    // Add markers for food suggestions on map
+    allSuggestions.forEach((s, i) => {
+      if (!s.latitude || !s.longitude) return;
+      const isFoodSugg = isFoodCategory(s.category);
+      const marker = L.marker([s.latitude, s.longitude], {
+        icon: L.divIcon({
+          html: '<div style="width:28px;height:28px;background:' + (isFoodSugg ? '#f59e0b' : getCatColor(s.category)) + ';border-radius:50%;border:2px solid #fff;color:#fff;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.3);">' + (isFoodSugg ? '🍽️' : '<i class="ph ' + getCatIcon(s.category) + '"></i>') + '</div>',
+          className: '',
+          iconSize: [28, 28],
+          iconAnchor: [14, 14]
+        })
+      }).bindPopup('<b>' + s.name + '</b><br><small>' + (s.municipality_name || '') + '</small>').addTo(map);
+      foodSuggestionMarkers.push(marker);
+    });
+    
     list.querySelectorAll('.suggestion-card').forEach(el => {
       el.querySelector('.add-sug-btn').addEventListener('click', () => addStopById(el.dataset.sugId));
     });
