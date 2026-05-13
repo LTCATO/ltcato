@@ -23,20 +23,25 @@
     href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
     rel="stylesheet">
 
+
+  <link rel="stylesheet" type="text/css"
+    href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+  <link rel="stylesheet" type="text/css"
+    href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css" />
+
   <!-- Phosphor Icons for modern UI icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
   <!-- custom styles -->
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom.css') }}">
 
   {% block style %} {% endblock %}
 </head>
 
 <body class="bg-light">
   <!-- Common navigation for public guest pages -->
-    {% if 'admin-ltcato' not in request.host: %}
-       {% include 'include/navbar.html' ignore missing %}
+  {% if 'admin-ltcato' not in request.host: %}
+  {% include 'include/navbar.html' ignore missing %}
   {% endif %}
 
   <!-- Main content block where child templates will insert content -->

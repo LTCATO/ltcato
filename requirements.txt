@@ -1,4 +1,6 @@
 flask
-supabase==2.15.0
+supabase
 python-dotenv
 google-generativeai
+pandas==2.2.0
+openpyxl==3.1.2

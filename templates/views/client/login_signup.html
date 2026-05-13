@@ -261,7 +261,7 @@
               </div>
 
               <div class="auth-card">
-                <form method="POST" action="/login" class="row g-3">
+                <form method="POST" action="{{ url_for('login_signup_page') }}" class="row g-3">
                   <div class="col-12">
                     <label class="auth-label">Email</label>
                     <input class="form-control auth-input" type="email" name="email" autocomplete="email" required placeholder="you@example.com">
@@ -300,7 +300,7 @@
               </div>
 
               <div class="auth-card">
-                <form method="POST" action="/register" class="row g-3">
+                <form method="POST" action="{{ url_for('client_create_account_page') }}" class="row g-3">
                   <div class="col-md-6">
                     <label class="auth-label">First name</label>
                     <input class="form-control auth-input" type="text" name="first_name" autocomplete="given-name" placeholder="Juan" required>
